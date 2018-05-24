@@ -28,7 +28,7 @@ function createChannel(connection) {
         // подписываемся на получения транзакциий, которые нужно выполнить
         ch.consume(emsDataNormalizationServiceResponsesChannel, msg => {
             const message = JSON.parse(msg.content);
-            console.log(message);
+            console.log('Получил: ', message);
             // if (message.operation) {
             //     eventEmitter.emit(message.operation, message, msg);
             // }
@@ -60,6 +60,24 @@ function connect() {
 }
 
 connect();
+
+
+
+
+const PATRH = '';
+
+setTimeout(async ()=>{
+    await pushToEmsDataNormalizationServiceChannel({
+        messageType: ['urn:message:BusContracts:IDataNormalizationRequest'],
+        Folder: PATRH,
+        SatelliteType: 1
+    });
+}, 1000);
+
+
+
+
+
 
 module.exports = {
     pushToEmsDataNormalizationServiceChannel: async data=>{

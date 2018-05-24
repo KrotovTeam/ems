@@ -9,8 +9,6 @@ const SERVICES = {
 };
 
 
-
-
 const RESEARCHES = {
     FOREST_DISEASES: {
         name: 'Болезни лесных насаждений',
@@ -143,12 +141,12 @@ async function handleResearch(research, startData, endData, countYears = 2, coor
 
 
             amqp.pushToEmsDataNormalizationServiceChannel({
-                data: {
-                    Folder: arrayPath[0],
-                    SatelliteType: 1
-                }
-            });
+                messageType: ['urn:message:BusContracts:IDataNormalizationRequest'],
+                Folder: arrayPath[0],
+                SatelliteType: 1
 
+            });
+            amqp.listenEmsDataNormalizationServiceResponsesChannel()
 
 
         });

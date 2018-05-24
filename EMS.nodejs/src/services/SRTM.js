@@ -73,6 +73,5 @@ function getDownloadLink(satellite, coord) {
 
 //console.log(getSrtmNameFiles());
 module.exports = {
-    getSrtmNameFiles,
     getDownloadLink
 };

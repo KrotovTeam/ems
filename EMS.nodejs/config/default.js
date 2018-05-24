@@ -12,7 +12,8 @@ module.exports = {
             url: 'amqp://localhost'
         },
         channels: {
-            EMS_DATA_NORMALIZATION_SERVICE: 'EMS.DataNormalizationService',
+            EMS_DATA_NORMALIZATION_SERVICE_REQUESTS: 'EMS.DataNormalizationService.Requests',
+            EMS_DATA_NORMALIZATION_SERVICE_RESPONSES: 'EMS.DataNormalizationService.Responses',
             result: 'RESULT',
             error: 'ERROR'
         }
