@@ -62,38 +62,35 @@ function connect() {
 connect();
 
 
+async function pushToEmsDataNormalizationServiceChannel(data){
+    if (!channel) {
+        console.error(`Channel for connect ampq server not created`);
+        return false;
+    }
+    try {
+        console.log('Отправляем результат транзакции', data);
+        return await channel
+            .sendToQueue(emsDataNormalizationServiceRequestsChannel, Buffer.from(JSON.stringify(data)), {persistent: true});
+    } catch (err) {
+        console.error(`Не удалось записать ${JSON.stringify(data)} в очередь ${emsDataNormalizationServiceRequestsChannel} ${err}`);
+    }
+    return false;
+}
 
 
-const PATRH = '';
+
+const PATH = 'F:\\TEST\\';
 
 setTimeout(async ()=>{
     await pushToEmsDataNormalizationServiceChannel({
         messageType: ['urn:message:BusContracts:IDataNormalizationRequest'],
-        Folder: PATRH,
+        Folder: PATH,
         SatelliteType: 1
     });
 }, 1000);
 
-
-
-
-
-
 module.exports = {
-    pushToEmsDataNormalizationServiceChannel: async data=>{
-        if (!channel) {
-            console.error(`Channel for connect ampq server not created`);
-            return false;
-        }
-        try {
-            console.log('Отправляем результат транзакции', data);
-            return await channel
-                .sendToQueue(emsDataNormalizationServiceRequestsChannel, Buffer.from(JSON.stringify(data)), {persistent: true});
-        } catch (err) {
-            console.error(`Не удалось записать ${JSON.stringify(data)} в очередь ${emsDataNormalizationServiceRequestsChannel} ${err}`);
-        }
-        return false;
-    },
+    pushToEmsDataNormalizationServiceChannel:pushToEmsDataNormalizationServiceChannel,
     listenEmsDataNormalizationServiceResponsesChannel: (event, cb) => {
         eventEmitter.on(event, cb);
     },
