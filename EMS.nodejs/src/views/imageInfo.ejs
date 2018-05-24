@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Hello, world!</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/jquery-ui.js"></script>
+</head>
+<body>
+<h1>Исследование снимков спутника: </h1>
+
+<%console.log(result)%>;
+<div class="row">
+
+<% for(let i=0;i<result.length;i++){const imageInfo = result[i]%>
+    <div class="col-md-4">
+        <div class="thumbnail">
+            <a href="<%= imageInfo.imagePath.replace('src/views','')%>">
+                <img src="<%= imageInfo.imagePath.replace('src/views','')%>" alt="Lights" style="width:100%">
+                <div class="caption">
+                    <p><a href="<%= imageInfo.linkDownloadArchive%>">Скачать</a></p>
+                </div>
+            </a>
+        </div>
+    </div>
+<%};%>
+</div>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+
+</body>
+</html>

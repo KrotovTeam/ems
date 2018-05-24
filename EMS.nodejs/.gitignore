@@ -1,0 +1,6 @@
+.idea/
+*.log
+node_modules/
+~$*.xlsx
+downloadImage/
+package-lock.json

@@ -1,0 +1,50 @@
+{
+  "name": "diplomkrotov",
+  "version": "1.0.0",
+  "description": "",
+  "main": "testGetPhotoMaps.js",
+  "dependencies": {
+    "5": "0.0.1",
+    "amqplib": "^0.5.2",
+    "assert-plus": "^1.0.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.1",
+    "boom": "^7.2.0",
+    "config": "^1.30.0",
+    "cookie-parser": "^1.4.3",
+    "decompress": "^4.2.0",
+    "ejs": "^2.5.7",
+    "express": "^4.15.4",
+    "express-session": "^1.15.6",
+    "gdal": "^0.9.6",
+    "geotiff": "^0.4.1",
+    "hawk": "^7.0.7",
+    "http-signature": "^1.2.0",
+    "jsonschema": "^1.2.4",
+    "jsonwebtoken": "^8.2.1",
+    "node-schedule": "^1.3.0",
+    "pg": "^7.4.3",
+    "progress-stream": "^2.0.0",
+    "redis": "^2.8.0",
+    "request": "^2.83.0",
+    "request-progress": "^3.0.0",
+    "request-promise": "^4.2.2",
+    "sequelize": "^4.37.7",
+    "stack-trace": "0.0.10",
+    "tough-cookie": "^2.3.3",
+    "uuid": "^3.2.1",
+    "xml2js": "^0.4.19",
+    "xml2js-parser": "^1.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://facelinker@bitbucket.org/facelinker/diplomkrotov.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/facelinker/diplomkrotov#readme"
+}

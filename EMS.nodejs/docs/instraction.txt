@@ -1,0 +1,3 @@
+Обрезка снимка:
+gdal_translate -srcwin 1000 1000 7000 7000 LC08_L1TP_178029_20150722_20170406_01_T1_B5.TIF mmm.tif
+gdal_translate -projwin 1000 1000 7000 7000 LC08_L1TP_178029_20150722_20170406_01_T1_B5.TIF mmm.tif с шеографческой привязкой
