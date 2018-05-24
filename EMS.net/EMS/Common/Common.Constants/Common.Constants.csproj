@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A745DA87-1A5D-4390-86F3-0395F8CC783D}</ProjectGuid>
+    <ProjectGuid>{C7564C11-CA5D-4AC7-B1E8-9D18422B830D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BusContracts</RootNamespace>
-    <AssemblyName>BusContracts</AssemblyName>
+    <RootNamespace>Common.Constants</RootNamespace>
+    <AssemblyName>Common.Constants</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -40,15 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IDataNormalizationRequest.cs" />
-    <Compile Include="IDataNormalizationResponse.cs" />
+    <Compile Include="BusQueueConstants.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Common\Common.Enums\Common.Enums.csproj">
-      <Project>{d695ac71-efdf-45d5-a818-c0e0a84ddce3}</Project>
-      <Name>Common.Enums</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
