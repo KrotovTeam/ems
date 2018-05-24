@@ -18,28 +18,15 @@ const initialize = force => {
             console.log('Connection has been established successfully.');
             // выполняет создание таблиц, если их не существует или если признак force=true
             Users = await Users.sync({force});
-            // const bcrypt = require('bcryptjs');
-            // await Users.create({
-            //     userId: 1,
-            //     username: 'user1',
-            //     password: bcrypt.hashSync('12345', config.auth.salt),
-            //     email: 'user1@gmail.com'
-            // });
+            const bcrypt = require('bcryptjs');
+            await Users.create({
+                userId: 1,
+                username: 'user1',
+                password: bcrypt.hashSync('12345', config.auth.salt),
+                email: 'user1@gmail.com'
+            });
             Requests = await Requests.sync({force});
             Users.hasMany(Requests, {foreignKey: 'userId'});
-
-            // const user = await Users.findOne({where:{
-            //         username: 'user1'
-            // }});
-            // const request = await Requests.create({
-            //     phenomenonName: 'Lnfldnkf',
-            //     status: 0,
-            //     result: {},
-            //     resultPath: 'ddddddddd'
-            // });
-            //
-            //
-            // await user.addRequest(request);
             console.log();
         })
         .catch(err => {

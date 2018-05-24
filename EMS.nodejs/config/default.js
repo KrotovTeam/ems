@@ -12,7 +12,7 @@ module.exports = {
             url: 'amqp://localhost'
         },
         channels: {
-            pending: 'PENDING',
+            EMS_DATA_NORMALIZATION_SERVICE: 'EMS.DataNormalizationService',
             result: 'RESULT',
             error: 'ERROR'
         }

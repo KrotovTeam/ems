@@ -79,14 +79,11 @@
             const STATE = {
                 1:'Создан. На обработке.',
                 2:'Загрузка снимков',
-                3:'Проверка облочности',
-                4:'Проверка на наличие явления',
-                5:'Получение характеристик',
-                6:'Обработка результатов',
-                7:'Завершен',
-                8:'Ошибка при получение снимков',
-                9:'Ошибка полученые снимки большой облачности',
-                10:'Неизвестная ошибка',
+                3:'Исследование сников',
+                4:'Обработка результатов',
+                5:'Завершен',
+                6:'Ошибка при получение снимков',
+                7:'Неизвестная ошибка'
             };
 
             let elementTable = $('<table/>', {
@@ -200,16 +197,15 @@
                             elementRow.append(elementDiv);
 
                             $('.content').append(elementRow);
-
-
                             for (let i = 0; i < data.data.miniImagePath.length; i++) {
-                                elementThumbnail.append(`<img src="${data.data.miniImagePath[i].replace('D:\\JS\\diplom\\external\\', '')}" alt="Lights" style="width:100%">`);
+                                const imageName = data.data.miniImagePath[i].split('external\\')[1];
+
+
+                                elementThumbnail.append(`<img src="${imageName}" alt="Lights" style="width:100%">`);
                             }
                             elementDiv.append(`<p>${infoResearchString}</p>`);
                             elementDiv.append(createTable(data.data));
                             //elementThumbnail.append(`<img src="image\\xiroc.jpg" alt="Lights" style="width:100%">`);
-
-
                         }
                         else {
                             alert('Ошибка авторизации');

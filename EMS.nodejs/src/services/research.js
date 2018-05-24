@@ -1,15 +1,20 @@
 const researchController = require('../controllers/research');
 const downloadScheduler = require('./downloadScheduller');
+const amqp = require('./../amqp/index');
+
 
 const SERVICES = {
     SRTM: require('./SRTM'),
     USGS: require('./usgs')
 };
 
+
+
+
 const RESEARCHES = {
     FOREST_DISEASES: {
         name: 'Болезни лесных насаждений',
-        satellites: ['LANDSAT', 'SENTINEL']
+        satellites: ['LANDSAT']
     },
     SOIL_EROSION: {
         name: 'Эрозия почвы',
@@ -74,7 +79,6 @@ const STATE = {
         code: 7,
         message: 'Неизвестная ошибка'
     }
-
 };
 
 
@@ -136,6 +140,17 @@ async function handleResearch(research, startData, endData, countYears = 2, coor
             // Файлы скачались безошибочно
             await researchController.setStatus(researchRes.id, STATE.HANDLE_RESULT.code);
             await researchController.setPathsDownload(researchRes.id, arrayPath);
+
+
+            amqp.pushToEmsDataNormalizationServiceChannel({
+                data: {
+                    Folder: arrayPath[0],
+                    SatelliteType: 1
+                }
+            });
+
+
+
         });
     }, 10);
 
