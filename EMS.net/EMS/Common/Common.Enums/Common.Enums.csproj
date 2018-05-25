@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="Landsat8Channel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReliefCharacteristicType.cs" />
     <Compile Include="SatelliteType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
