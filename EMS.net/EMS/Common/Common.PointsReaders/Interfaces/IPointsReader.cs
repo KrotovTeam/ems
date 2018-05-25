@@ -1,19 +1,9 @@
 ﻿using System;
 
-namespace Isodata.Abstraction
+namespace Common.PointsReaders.Interfaces
 {
-    public interface IIsodataPointsReader
+    public interface IPointsReader
     {
-        /// <summary>
-        /// Высота снимка
-        /// </summary>
-        int Heigth { get; }
-
-        /// <summary>
-        /// Ширина
-        /// </summary>
-        int Width { get; }
-
         /// <summary>
         /// Общее количество точек
         /// </summary>
