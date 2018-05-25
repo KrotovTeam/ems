@@ -134,4 +134,4 @@ module.exports = {
     parseWithJSON
 };
 
-parseWithJSON('C:\\Users\\User\\Desktop\\Карпатыф\\2015-07-23','LC08_L1TP_185026_20150723_20170406_01_T1_MTL.txt');
+parseWithJSON('C:\\Users\\User\\Downloads\\Карпаты2\\186026_20170804','LC08_L1TP_186026_20170804_20170812_01_T1_MTL.txt');

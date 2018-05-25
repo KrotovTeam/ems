@@ -12,7 +12,7 @@ namespace BusContracts
         /// <summary>
         /// Нижняя правая точка
         /// </summary>
-        IGeographicPoint RigthLower { get; set; }
+        IGeographicPoint RightLower { get; set; }
 
         /// <summary>
         /// Папка с данными (абсолютный путь)
