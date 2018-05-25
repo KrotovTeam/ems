@@ -38,7 +38,7 @@ namespace DeterminingPhenomenonService
             processor.Coordinates = new Dictionary<ImageCorner, double[]>()
             {
                 {ImageCorner.UpperLeft, new []{request.LeftUpper.Latitude, request.LeftUpper.Longitude}},
-                {ImageCorner.LowerRight, new[]{request.RigthLower.Latitude, request.RigthLower.Longitude}},
+                {ImageCorner.LowerRight, new[]{request.RightLower.Latitude, request.RightLower.Longitude}},
             };
             processor.ResultFolder = request.ResultFolder;
             processor.DataFolders = request.DataFolders;
