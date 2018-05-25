@@ -42,6 +42,10 @@
   <ItemGroup>
     <Compile Include="IDataNormalizationRequest.cs" />
     <Compile Include="IDataNormalizationResponse.cs" />
+    <Compile Include="IGeographicPoint.cs" />
+    <Compile Include="IReliefCharacteristicProduct.cs" />
+    <Compile Include="IReliefCharacteristicRequest.cs" />
+    <Compile Include="IReliefCharacteristicResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
