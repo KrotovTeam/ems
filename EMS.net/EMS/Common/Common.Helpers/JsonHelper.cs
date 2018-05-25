@@ -14,8 +14,8 @@ namespace Common.Helpers
         /// <returns></returns>
         public static T Deserialize<T>(string fileName) where T : class
         {
-            using (var metadataFileStream = new FileStream(fileName, FileMode.Open))
-            using (var reader = new StreamReader(metadataFileStream))
+            using (var fileStream = new FileStream(fileName, FileMode.Open))
+            using (var reader = new StreamReader(fileStream))
             {
                 var jsonString = reader.ReadToEnd();
                 return JsonConvert.DeserializeObject<T>(jsonString);
