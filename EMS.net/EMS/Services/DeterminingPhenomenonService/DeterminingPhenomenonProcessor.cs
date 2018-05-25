@@ -43,8 +43,8 @@ namespace DeterminingPhenomenonService
             {
                 
                 var files = Directory.EnumerateFiles(folder).ToList();
-                var channel4 = files.SingleOrDefault(f => f.Contains("B4") && !f.Contains("cutted") && !f.EndsWith(".l8n"));
-                var channel5 = files.SingleOrDefault(f => f.Contains("B5") && !f.Contains("cutted") && !f.EndsWith(".l8n"));
+                var channel4 = files.SingleOrDefault(f => f.EndsWith("B4.tif", StringComparison.InvariantCultureIgnoreCase));
+                var channel5 = files.SingleOrDefault(f => f.EndsWith("B5.tif", StringComparison.InvariantCultureIgnoreCase));
 
                 using (var isodataPointsReader = new LandsatIsodataPointsReader(channel4 + ".l8n", channel5 + ".l8n"))
                 {
@@ -130,11 +130,12 @@ namespace DeterminingPhenomenonService
             {
                 var temporaryNormilizedDataFiles = Directory.EnumerateFiles(temporaryClustersData.Key)
                     .Where(f => f.Contains(".l8n") && !f.Contains("cutted"));
+
                 var pastTemporaryGeotiffDataFile =
-                    Directory.EnumerateFiles(temporaryClustersData.Key).First(f => f.Contains("B4"));
+                    Directory.EnumerateFiles(temporaryClustersData.Key).First(f => f.EndsWith("B4.TIF", StringComparison.InvariantCultureIgnoreCase));
 
                 var cuttedImageInfo = ClipImageHelper.GetCuttedImageInfoByCoordinates(pastTemporaryGeotiffDataFile, coordinates);
-
+                
                 var temporaryDataBuffers = temporaryNormilizedDataFiles.Select(
                     pastTemporaryNormilizedDataFile => ClipImageHelper.ReadBufferByIndexes(
                         cuttedImageInfo,

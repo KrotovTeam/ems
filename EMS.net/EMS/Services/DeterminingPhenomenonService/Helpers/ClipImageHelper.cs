@@ -61,7 +61,7 @@ namespace DeterminingPhenomenonService.Helpers
                 j = 0;
                 i++;
             }
-
+            reader.Dispose();
             return buffer;
         }
     }

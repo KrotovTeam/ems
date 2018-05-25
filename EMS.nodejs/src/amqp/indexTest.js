@@ -144,18 +144,18 @@ async function getCharacteristics(message){
 
 async function test(){
     const resultPhenomen = await getPhenomenon({
-        ResultFolder: '',
+        ResultFolder: 'C:\\Users\\User\\Downloads\\IsodataV7\\Isodata\\Isodata\\bin\\Debug\\Karpati',
         LeftUpper: {
-            Latitude: 1.23,
-            Longitude:1.23
+            Latitude: 49.203399,
+            Longitude: 24.0546005
         },
         RightLower:{
-            Latitude: 1.23,
-            Longitude:1.23
+            Latitude: 48.7853,
+            Longitude: 25.087399
         },
         DataFolders:[
-            '',
-            ''
+            'C:\\Users\\User\\Downloads\\IsodataV7\\Isodata\\Isodata\\bin\\Debug\\Karpati\\2014',
+            'C:\\Users\\User\\Downloads\\IsodataV7\\Isodata\\Isodata\\bin\\Debug\\Karpati\\2015'
         ]
     });
     console.log('Результат ---------------', JSON.stringify(resultPhenomen));

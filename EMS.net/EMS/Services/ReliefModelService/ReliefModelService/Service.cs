@@ -42,7 +42,7 @@ namespace ReliefModelService
 
         private async Task ProcessRequest(IReliefCharacteristicRequest request)
         {
-            var dataset = new SrtmDataset(request.LeftUpper, request.RigthLower, request.DataFolder);
+            var dataset = new SrtmDataset(request.LeftUpper, request.RightLower, request.DataFolder);
             var response = new ReliefCharacteristicResponse
             {
                 Products = new IReliefCharacteristicProduct[request.CharacteristicTypes.Length]

@@ -21,6 +21,7 @@ namespace DeterminingPhenomenonService
             _busManager = new BusManager.BusManager();
             _busManager.StartBus(GetBusConfigurations());
 
+            _busManager.Send<IDeterminingPhenomenonResponse>("zalupa", new { }).Wait();
             return true;
         }
 
