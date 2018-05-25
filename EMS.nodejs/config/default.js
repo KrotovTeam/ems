@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-    phpSessionId: '4ranp6p1e8ve0g9jdgctc5nvu2',
+    phpSessionId: 'nkls8pj8aaggk78eekfitgrur2',
     downloadFolderPath: path.resolve('./external/download'),
     unzipFolderPath: path.resolve('./external/unzip'),
     exampleImageFolderPath: path.resolve('./external/image'),
@@ -12,8 +12,12 @@ module.exports = {
             url: 'amqp://localhost'
         },
         channels: {
-            EMS_DATA_NORMALIZATION_SERVICE_REQUESTS: 'EMS.DataNormalizationService.Requests',
-            EMS_DATA_NORMALIZATION_SERVICE_RESPONSES: 'EMS.DataNormalizationService.Responses',
+            PHENOMENON_REQUEST: 'EMS.DeterminingPhenomenonService.Requests',
+            PHENOMENON_RESULT: 'EMS.DeterminingPhenomenonService.Responses',
+            CALIBRATE_REQUEST: 'CALIBRATE_REQUEST',
+            CALIBRATE_RESULT: 'CALIBRATE_RESULT',
+            CHARACTERISTICS_REQUEST: 'CHARACTERISTICS_REQUEST',
+            CHARACTERISTICS_RESULT: 'CHARACTERISTICS_RESULT',
             EMS_DATA_RELIEF_MODEL_SERVICE_REQUESTS: 'EMS.ReliefModelService.Requests',
             EMS_DATA_RELIEF_MODEL_SERVICE_RESPONSES: 'EMS.ReliefModelService.Responses',
             result: 'RESULT',

@@ -2,10 +2,14 @@ const events = require('events');
 const eventEmitter = new events.EventEmitter();
 const config = require('config');
 const amqp = require('amqplib/callback_api');
-const emsDataNormalizationServiceRequestsChannel = config.amqp.channels.EMS_DATA_NORMALIZATION_SERVICE_REQUESTS;
-const emsDataNormalizationServiceResponsesChannel = config.amqp.channels.EMS_DATA_NORMALIZATION_SERVICE_RESPONSES;
-const emsReliefModelServiceRequestsChannel = config.amqp.channels.EMS_DATA_RELIEF_MODEL_SERVICE_REQUESTS;
-const emsReliefModelServiceResponsesChannel = config.amqp.channels.EMS_DATA_RELIEF_MODEL_SERVICE_RESPONSES;
+const uuid = require('uuid/v4');
+const phenomenonRequestChannel = config.amqp.channels.PHENOMENON_REQUEST;
+const phenomenonResultChannel = config.amqp.channels.PHENOMENON_RESULT;
+const calibrateRequestChannel = config.amqp.channels.CALIBRATE_REQUEST;
+const calibrateResultChannel = config.amqp.channels.CALIBRATE_RESULT;
+const characteristicsRequestChannel = config.amqp.channels.CHARACTERISTICS_REQUEST;
+const characteristicsResultChannel = config.amqp.channels.CHARACTERISTICS_RESULT;
+
 const errorChannel = config.amqp.channels.error;
 
 const RECONNECT_TIME = 7000;
@@ -23,29 +27,29 @@ function createChannel(connection) {
         });
 
         // создаем необходимые очереди
-        ch.assertQueue(emsDataNormalizationServiceResponsesChannel, {durable: true, noAck: true});
+        ch.assertQueue(phenomenonRequestChannel, {durable: true, noAck: true});
+        ch.assertQueue(phenomenonResultChannel, {durable: true, noAck: true});
+        ch.assertQueue(calibrateRequestChannel, {durable: true, noAck: true});
+        ch.assertQueue(calibrateResultChannel, {durable: true, noAck: true});
+        ch.assertQueue(characteristicsRequestChannel, {durable: true, noAck: true});
+        ch.assertQueue(characteristicsResultChannel, {durable: true, noAck: true});
         ch.assertQueue(errorChannel, {durable: true, noAck: true});
-        ch.assertQueue(emsDataNormalizationServiceRequestsChannel, {durable: true, noAck: true});
-        ch.assertQueue(emsReliefModelServiceRequestsChannel, {durable: true, noAck: true});
-        ch.assertQueue(emsReliefModelServiceResponsesChannel, {durable: true, noAck: true});
+
         // ch.prefetch(1);
         // подписываемся на получения транзакциий, которые нужно выполнить
-        ch.consume(emsDataNormalizationServiceResponsesChannel, msg => {
-            const message = JSON.parse(msg.content);
-            console.log('Получил: ', message);
-            // if (message.operation) {
-            //     eventEmitter.emit(message.operation, message, msg);
-            // }
-        });
 
 
-        ch.consume(emsReliefModelServiceResponsesChannel, msg => {
+        function listenResult(msg){
             const message = JSON.parse(msg.content);
-            console.log('emsReliefModelServiceResponsesChannel Получил: ', message);
-            // if (message.operation) {
-            //     eventEmitter.emit(message.operation, message, msg);
-            // }
-        });
+            console.log(message);
+            if (message.RequestId) {
+                eventEmitter.emit(message.RequestId, message, msg);
+            }
+        }
+
+        ch.consume(phenomenonResultChannel, listenResult);
+        ch.consume(calibrateResultChannel, listenResult);
+        ch.consume(characteristicsResultChannel, listenResult);
     });
 }
 
@@ -75,81 +79,114 @@ function connect() {
 connect();
 
 
-async function pushToEmsDataNormalizationServiceChannel(data) {
-    if (!channel) {
-        console.error(`Channel for connect ampq server not created`);
-        return false;
-    }
-    try {
-        console.log('Отправляем результат транзакции', data);
-        return await channel
-            .sendToQueue(emsDataNormalizationServiceRequestsChannel, Buffer.from(JSON.stringify(data)), {persistent: true});
-    } catch (err) {
-        console.error(`Не удалось записать ${JSON.stringify(data)} в очередь ${emsDataNormalizationServiceRequestsChannel} ${err}`);
-    }
-    return false;
-}
-async function pushToEmsReliefModelServiceRequestsChannel(data) {
-    if (!channel) {
-        console.error(`Channel for connect ampq server not created`);
-        return false;
-    }
-    try {
-        console.log('Отправляем результат транзакции', data);
-        return await channel
-            .sendToQueue(emsReliefModelServiceRequestsChannel, Buffer.from(JSON.stringify(data)), {persistent: true});
-    } catch (err) {
-        console.error(`Не удалось записать ${JSON.stringify(data)} в очередь ${emsReliefModelServiceRequestsChannel} ${err}`);
-    }
-    return false;
-}
 
+async function getPhenomenon(message){
+    const requestId = uuid();
+    const data = {
+        messageType: ['urn:message:BusContracts:IDeterminingPhenomenonRequest'],
+        message
+    };
+    message.RequestId = requestId;
 
-// const PATH = 'F:\\TEST\\';
-//
-// setTimeout(async ()=>{
-//     await pushToEmsDataNormalizationServiceChannel({
-//         messageType: ['urn:message:BusContracts:IDataNormalizationRequest'],
-//         message:{
-//             Folder: PATH,
-//             SatelliteType: 1
-//         }
-//     });
-// }, 1000);
-
-
-const DataFolder = 'F:\\TEST\\';
-const ResultFolder = 'F:\\TEST2\\';
-const LeftUpper = 1.23;
-const RigthLower = 1.23;
-
-
-
-
-setTimeout(async () => {
-    await pushToEmsReliefModelServiceRequestsChannel({
-        messageType: ['urn:message:BusContracts:IReliefCharacteristicRequest'],
-        message: {
-            LeftUpper: LeftUpper,
-            RigthLower: RigthLower,
-            DataFolder: DataFolder,
-            ResultFolder: ResultFolder,
-            CharacteristicTypes: [0, 1, 2]
-        }
+    return new Promise(async (resolve, reject)=>{
+        eventEmitter.on(requestId, (result, origMsg)=>{
+            // confirm(origMsg);
+            console.log(`получаем ответ на запрос ${requestId}: `, result);
+            resolve(result);
+        });
+        console.log(`Отправляем запрос ${requestId}: `,data);
+        await channel.sendToQueue(phenomenonRequestChannel, Buffer.from(JSON.stringify(data)), {persistent: true});
     });
-}, 1000);
+}
+
+async function calibration(message){
+    const requestId = uuid();
+    const data = {
+        messageType: ['urn:message:BusContracts:IDataNormalizationRequest'],
+        message
+    };
+    message.RequestId = requestId;
+
+    return new Promise(async (resolve, reject)=>{
+        eventEmitter.on(requestId, (result, origMsg)=>{
+            // confirm(origMsg);
+            console.log(`получаем ответ на запрос ${requestId}: `, result);
+            resolve(result);
+        });
+        console.log(`Отправляем запрос ${requestId}: `,data);
+        await channel.sendToQueue(calibrateRequestChannel, Buffer.from(JSON.stringify(data)), {persistent: true});
+    });
+}
+async function getCharacteristics(message){
+    const requestId = uuid();
+    const data = {
+        messageType: ['urn:message:BusContracts:IDataNormalizationRequest'],
+        message
+    };
+    message.RequestId = requestId;
+
+    return new Promise(async (resolve, reject)=>{
+        eventEmitter.on(requestId, (result, origMsg)=>{
+            // confirm(origMsg);
+            console.log(`получаем ответ на запрос ${requestId}: `, result);
+            resolve(result);
+        });
+        console.log(`Отправляем запрос ${requestId}: `,data);
+        await channel.sendToQueue(characteristicsResultChannel, Buffer.from(JSON.stringify(data)), {persistent: true});
+    });
+}
+
+
+
+
+
+
+
+async function test(){
+    const resultPhenomen = await getPhenomenon({
+        ResultFolder: '',
+        LeftUpper: {
+            Latitude: 1.23,
+            Longitude:1.23
+        },
+        RightLower:{
+            Latitude: 1.23,
+            Longitude:1.23
+        },
+        DataFolders:[
+            '',
+            ''
+        ]
+    });
+    console.log('Результат ---------------', JSON.stringify(resultPhenomen));
+
+}
+
+setTimeout(test, 2000);
 
 
 
 module.exports = {
-    pushToEmsDataNormalizationServiceChannel: pushToEmsDataNormalizationServiceChannel,
-    pushToEmsReliefModelServiceRequestsChannel: pushToEmsReliefModelServiceRequestsChannel,
+    getPhenomenon: getPhenomenon,
+    calibration: calibration,
+    getCharacteristics: getCharacteristics,
+    pushToEmsDataNormalizationServiceChannel: async data=>{
+        if (!channel) {
+            console.error(`Channel for connect ampq server not created`);
+            return false;
+        }
+        try {
+            console.log('Отправляем результат транзакции', data);
+            return await channel
+                .sendToQueue(emsDataNormalizationServiceRequestsChannel, Buffer.from(JSON.stringify(data)), {persistent: true});
+        } catch (err) {
+            console.error(`Не удалось записать ${JSON.stringify(data)} в очередь ${emsDataNormalizationServiceRequestsChannel} ${err}`);
+        }
+        return false;
+    },
     listenEmsDataNormalizationServiceResponsesChannel: (event, cb) => {
         eventEmitter.on(event, cb);
     },
-    // listenEmsDataNormalizationServiceResponsesChannel: (event, cb) => {
-    //     eventEmitter.on(event, cb);
-    // },
     confirm: msg => {
         return channel.ack(msg);
     }

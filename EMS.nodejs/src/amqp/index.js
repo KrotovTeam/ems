@@ -2,8 +2,14 @@ const events = require('events');
 const eventEmitter = new events.EventEmitter();
 const config = require('config');
 const amqp = require('amqplib/callback_api');
-const emsDataNormalizationServiceRequestsChannel = config.amqp.channels.EMS_DATA_NORMALIZATION_SERVICE_REQUESTS;
-const emsDataNormalizationServiceResponsesChannel = config.amqp.channels.EMS_DATA_NORMALIZATION_SERVICE_RESPONSES;
+const uuid = require('uuid/v4');
+const phenomenonRequestChannel = config.amqp.channels.PHENOMENON_REQUEST;
+const phenomenonResultChannel = config.amqp.channels.PHENOMENON_RESULT;
+const calibrateRequestChannel = config.amqp.channels.CALIBRATE_REQUEST;
+const calibrateResultChannel = config.amqp.channels.CALIBRATE_RESULT;
+const characteristicsRequestChannel = config.amqp.channels.CHARACTERISTICS_REQUEST;
+const characteristicsResultChannel = config.amqp.channels.CHARACTERISTICS_RESULT;
+
 const errorChannel = config.amqp.channels.error;
 
 const RECONNECT_TIME = 7000;
@@ -21,18 +27,29 @@ function createChannel(connection) {
         });
 
         // создаем необходимые очереди
-        ch.assertQueue(emsDataNormalizationServiceResponsesChannel, {durable: true, noAck: true});
+        ch.assertQueue(phenomenonRequestChannel, {durable: true, noAck: true});
+        ch.assertQueue(phenomenonResultChannel, {durable: true, noAck: true});
+        ch.assertQueue(calibrateRequestChannel, {durable: true, noAck: true});
+        ch.assertQueue(calibrateResultChannel, {durable: true, noAck: true});
+        ch.assertQueue(characteristicsRequestChannel, {durable: true, noAck: true});
+        ch.assertQueue(characteristicsResultChannel, {durable: true, noAck: true});
         ch.assertQueue(errorChannel, {durable: true, noAck: true});
-        ch.assertQueue(emsDataNormalizationServiceRequestsChannel, {durable: true, noAck: true});
+
         // ch.prefetch(1);
         // подписываемся на получения транзакциий, которые нужно выполнить
-        ch.consume(emsDataNormalizationServiceResponsesChannel, msg => {
+
+
+        function listenResult(msg){
             const message = JSON.parse(msg.content);
             console.log(message);
-            // if (message.operation) {
-            //     eventEmitter.emit(message.operation, message, msg);
-            // }
-        });
+            if (message.RequestId) {
+                eventEmitter.emit(message.RequestId, message, msg);
+            }
+        }
+
+        ch.consume(phenomenonResultChannel, listenResult);
+        ch.consume(calibrateResultChannel, listenResult);
+        ch.consume(characteristicsResultChannel, listenResult);
     });
 }
 
@@ -62,6 +79,60 @@ function connect() {
 connect();
 
 module.exports = {
+    getPhenomenon: async message =>{
+        const requestId = uuid();
+        const data = {
+            messageType: ['urn:message:BusContracts:IDeterminingPhenomenonRequest'],
+            message
+        };
+        message.RequestId = requestId;
+
+        return new Promise(async (resolve, reject)=>{
+            eventEmitter.on(requestId, (result, origMsg)=>{
+                // confirm(origMsg);
+                console.log(`получаем ответ на запрос ${requestId}: `, result);
+                resolve(result);
+            });
+            console.log(`Отправляем запрос ${requestId}: `,data);
+            await channel.sendToQueue(phenomenonRequestChannel, Buffer.from(JSON.stringify(data)), {persistent: true});
+        });
+    },
+    calibration: async message=>{
+        const requestId = uuid();
+        const data = {
+            messageType: ['urn:message:BusContracts:IDataNormalizationRequest'],
+            message
+        };
+        message.RequestId = requestId;
+
+        return new Promise(async (resolve, reject)=>{
+            eventEmitter.on(requestId, (result, origMsg)=>{
+                // confirm(origMsg);
+                console.log(`получаем ответ на запрос ${requestId}: `, result);
+                resolve(result);
+            });
+            console.log(`Отправляем запрос ${requestId}: `,data);
+            await channel.sendToQueue(calibrateRequestChannel, Buffer.from(JSON.stringify(data)), {persistent: true});
+        });
+    },
+    getCharacteristics: async message=>{
+        const requestId = uuid();
+        const data = {
+            messageType: ['urn:message:BusContracts:IDataNormalizationRequest'],
+            message
+        };
+        message.RequestId = requestId;
+
+        return new Promise(async (resolve, reject)=>{
+            eventEmitter.on(requestId, (result, origMsg)=>{
+                // confirm(origMsg);
+                console.log(`получаем ответ на запрос ${requestId}: `, result);
+                resolve(result);
+            });
+            console.log(`Отправляем запрос ${requestId}: `,data);
+            await channel.sendToQueue(characteristicsResultChannel, Buffer.from(JSON.stringify(data)), {persistent: true});
+        });
+    },
     pushToEmsDataNormalizationServiceChannel: async data=>{
         if (!channel) {
             console.error(`Channel for connect ampq server not created`);
