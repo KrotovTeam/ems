@@ -26,10 +26,10 @@ namespace DataNormalizationService
         /// <param name="d">EARTH_SUN_DISTANCE</param>
         /// <param name="radianceMax">RADIANCE_MAXIMUM_BAND_X</param>
         /// <param name="reflectanceMax">REFLECTANCE_MAXIMUM_BAND_X</param>
-        public void Normalization(string fileName, string folder, double ml, double al, double sunElevation, double d, double radianceMax, double reflectanceMax)
+        public void Normalization(string fileName, double ml, double al, double sunElevation, double d, double radianceMax, double reflectanceMax)
         {
             // Если файл уже существует не делать нормализацию
-            var normalizedFileName = $"{folder}{fileName}{_extension}";
+            var normalizedFileName = $"{fileName}{_extension}";
             if (File.Exists(normalizedFileName))
             {
                 return;

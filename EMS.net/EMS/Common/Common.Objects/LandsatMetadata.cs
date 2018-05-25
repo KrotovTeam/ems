@@ -242,7 +242,7 @@ namespace Common.Objects
         public string ResamplingOption { get; set; }
     }
 
-    public class LandsatMetadata
+    public class L1MetadataFile
     {
         public MetadataFileInfo MetadataFileInfo { get; set; }
         public ProductMetadata ProductMetadata { get; set; }
@@ -253,5 +253,10 @@ namespace Common.Objects
         public RadiometricRescaling RadiometricRescaling { get; set; }
         public TirsThermalConstants TirsThermalConstants { get; set; }
         public ProjectionParameters ProjectionParameters { get; set; }
+    }
+
+    public class LandsatMetadata
+    {
+        public L1MetadataFile L1MetadataFile { get; set; }
     }
 }

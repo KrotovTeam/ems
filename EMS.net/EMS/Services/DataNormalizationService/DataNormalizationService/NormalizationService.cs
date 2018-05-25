@@ -4,13 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BusContracts;
-using BusContracts.Implementation;
 using Common.Constants;
 using Common.Enums;
+using Common.Helpers;
 using Common.Objects;
 using MassTransit;
 using MassTransit.RabbitMqTransport;
-using Newtonsoft.Json;
 using Topshelf;
 
 namespace DataNormalizationService
@@ -45,71 +44,75 @@ namespace DataNormalizationService
             {
                 var fileNames = Directory.GetFiles(request.Folder);
 
-                var metadataFileName = fileNames.Single(name => name.EndsWith("mlt.json", StringComparison.CurrentCultureIgnoreCase));
-                LandsatMetadata metadata = null;
-                using (var metadataFileStream = new FileStream(metadataFileName, FileMode.Open))
-                using (var reader = new StreamReader(metadataFileStream))
-                {
-                    metadata = JsonConvert.DeserializeObject<LandsatMetadata>(reader.ReadToEnd());
-                }
+                var metadataFileName = fileNames.Single(name => name.EndsWith("mtl.json", StringComparison.OrdinalIgnoreCase));
+                LandsatMetadata metadataFile = JsonFileParser.Parse<LandsatMetadata>(metadataFileName);
 
                 LandsatNormalizationProcessor processor = new LandsatNormalizationProcessor();
 
-                var channel1 = fileNames.Single(name => name.EndsWith("B1.TIF", StringComparison.CurrentCultureIgnoreCase));
-                processor.Normalization(channel1, request.Folder,
-                    metadata.RadiometricRescaling.RadianceMultBand1, metadata.RadiometricRescaling.RadianceAddBand1,
-                    metadata.ImageAttributes.SunElevation, metadata.ImageAttributes.EarthSunDistance,
-                    metadata.MinMaxRadiance.RadianceMaximumBand1, metadata.MinMaxReflectance.ReflectanceMaximumBand1);
+                RadiometricRescaling radiometricRescaling = metadataFile.L1MetadataFile.RadiometricRescaling;
+                ImageAttributes imageAttributes = metadataFile.L1MetadataFile.ImageAttributes;
+                MinMaxRadiance minMaxRadiance = metadataFile.L1MetadataFile.MinMaxRadiance;
+                MinMaxReflectance minMaxReflectance = metadataFile.L1MetadataFile.MinMaxReflectance;
 
-                var channel2 = fileNames.Single(name => name.EndsWith("B2.TIF", StringComparison.CurrentCultureIgnoreCase));
-                processor.Normalization(channel2, request.Folder,
-                    metadata.RadiometricRescaling.RadianceMultBand2, metadata.RadiometricRescaling.RadianceAddBand2,
-                    metadata.ImageAttributes.SunElevation, metadata.ImageAttributes.EarthSunDistance,
-                    metadata.MinMaxRadiance.RadianceMaximumBand2, metadata.MinMaxReflectance.ReflectanceMaximumBand2);
+                #region Channel normalization
 
-                var channel3 = fileNames.Single(name => name.EndsWith("B3.TIF", StringComparison.CurrentCultureIgnoreCase));
-                processor.Normalization(channel3, request.Folder,
-                    metadata.RadiometricRescaling.RadianceMultBand3, metadata.RadiometricRescaling.RadianceAddBand3,
-                    metadata.ImageAttributes.SunElevation, metadata.ImageAttributes.EarthSunDistance,
-                    metadata.MinMaxRadiance.RadianceMaximumBand3, metadata.MinMaxReflectance.ReflectanceMaximumBand3);
+                var channel1 = fileNames.Single(name => name.EndsWith("B1.TIF", StringComparison.OrdinalIgnoreCase));
+                processor.Normalization(channel1,
+                    radiometricRescaling.RadianceMultBand1, radiometricRescaling.RadianceAddBand1,
+                    imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
+                    minMaxRadiance.RadianceMaximumBand1, minMaxReflectance.ReflectanceMaximumBand1);
 
-                var channel4 = fileNames.Single(name => name.EndsWith("B4.TIF", StringComparison.CurrentCultureIgnoreCase));
-                processor.Normalization(channel4, request.Folder,
-                    metadata.RadiometricRescaling.RadianceMultBand4, metadata.RadiometricRescaling.RadianceAddBand4,
-                    metadata.ImageAttributes.SunElevation, metadata.ImageAttributes.EarthSunDistance,
-                    metadata.MinMaxRadiance.RadianceMaximumBand4, metadata.MinMaxReflectance.ReflectanceMaximumBand4);
+                var channel2 = fileNames.Single(name => name.EndsWith("B2.TIF", StringComparison.OrdinalIgnoreCase));
+                processor.Normalization(channel2,
+                    radiometricRescaling.RadianceMultBand2, radiometricRescaling.RadianceAddBand2,
+                    imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
+                    minMaxRadiance.RadianceMaximumBand2, minMaxReflectance.ReflectanceMaximumBand2);
 
-                var channel5 = fileNames.Single(name => name.EndsWith("B5.TIF", StringComparison.CurrentCultureIgnoreCase));
-                processor.Normalization(channel5, request.Folder,
-                    metadata.RadiometricRescaling.RadianceMultBand5, metadata.RadiometricRescaling.RadianceAddBand5,
-                    metadata.ImageAttributes.SunElevation, metadata.ImageAttributes.EarthSunDistance,
-                    metadata.MinMaxRadiance.RadianceMaximumBand5, metadata.MinMaxReflectance.ReflectanceMaximumBand5);
+                var channel3 = fileNames.Single(name => name.EndsWith("B3.TIF", StringComparison.OrdinalIgnoreCase));
+                processor.Normalization(channel3,
+                    radiometricRescaling.RadianceMultBand3, radiometricRescaling.RadianceAddBand3,
+                    imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
+                    minMaxRadiance.RadianceMaximumBand3, minMaxReflectance.ReflectanceMaximumBand3);
 
-                var channel6 = fileNames.Single(name => name.EndsWith("B6.TIF", StringComparison.CurrentCultureIgnoreCase));
-                processor.Normalization(channel6, request.Folder,
-                    metadata.RadiometricRescaling.RadianceMultBand6, metadata.RadiometricRescaling.RadianceAddBand6,
-                    metadata.ImageAttributes.SunElevation, metadata.ImageAttributes.EarthSunDistance,
-                    metadata.MinMaxRadiance.RadianceMaximumBand6, metadata.MinMaxReflectance.ReflectanceMaximumBand6);
+                var channel4 = fileNames.Single(name => name.EndsWith("B4.TIF", StringComparison.OrdinalIgnoreCase));
+                processor.Normalization(channel4,
+                    radiometricRescaling.RadianceMultBand4, radiometricRescaling.RadianceAddBand4,
+                    imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
+                    minMaxRadiance.RadianceMaximumBand4, minMaxReflectance.ReflectanceMaximumBand4);
 
-                var channel7 = fileNames.Single(name => name.EndsWith("B7.TIF", StringComparison.CurrentCultureIgnoreCase));
-                processor.Normalization(channel7, request.Folder,
-                    metadata.RadiometricRescaling.RadianceMultBand7, metadata.RadiometricRescaling.RadianceAddBand7,
-                    metadata.ImageAttributes.SunElevation, metadata.ImageAttributes.EarthSunDistance,
-                    metadata.MinMaxRadiance.RadianceMaximumBand7, metadata.MinMaxReflectance.ReflectanceMaximumBand7);
+                var channel5 = fileNames.Single(name => name.EndsWith("B5.TIF", StringComparison.OrdinalIgnoreCase));
+                processor.Normalization(channel5,
+                    radiometricRescaling.RadianceMultBand5, radiometricRescaling.RadianceAddBand5,
+                    imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
+                    minMaxRadiance.RadianceMaximumBand5, minMaxReflectance.ReflectanceMaximumBand5);
 
-                var channel8 = fileNames.Single(name => name.EndsWith("B8.TIF", StringComparison.CurrentCultureIgnoreCase));
-                processor.Normalization(channel8, request.Folder,
-                    metadata.RadiometricRescaling.RadianceMultBand8, metadata.RadiometricRescaling.RadianceAddBand8,
-                    metadata.ImageAttributes.SunElevation, metadata.ImageAttributes.EarthSunDistance,
-                    metadata.MinMaxRadiance.RadianceMaximumBand8, metadata.MinMaxReflectance.ReflectanceMaximumBand8);
+                var channel6 = fileNames.Single(name => name.EndsWith("B6.TIF", StringComparison.OrdinalIgnoreCase));
+                processor.Normalization(channel6,
+                    radiometricRescaling.RadianceMultBand6, radiometricRescaling.RadianceAddBand6,
+                    imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
+                    minMaxRadiance.RadianceMaximumBand6, minMaxReflectance.ReflectanceMaximumBand6);
 
-                var channel9 = fileNames.Single(name => name.EndsWith("B9.TIF", StringComparison.CurrentCultureIgnoreCase));
-                processor.Normalization(channel9, request.Folder,
-                    metadata.RadiometricRescaling.RadianceMultBand9, metadata.RadiometricRescaling.RadianceAddBand9,
-                    metadata.ImageAttributes.SunElevation, metadata.ImageAttributes.EarthSunDistance,
-                    metadata.MinMaxRadiance.RadianceMaximumBand9, metadata.MinMaxReflectance.ReflectanceMaximumBand9);
+                var channel7 = fileNames.Single(name => name.EndsWith("B7.TIF", StringComparison.OrdinalIgnoreCase));
+                processor.Normalization(channel7,
+                    radiometricRescaling.RadianceMultBand7, radiometricRescaling.RadianceAddBand7,
+                    imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
+                    minMaxRadiance.RadianceMaximumBand7, minMaxReflectance.ReflectanceMaximumBand7);
 
-                await _busManager.Send<IDataNormalizationResponse>(BusQueueConstants.DataNormalizationResponsesQueueName, new DataNormalizationResponse
+                var channel8 = fileNames.Single(name => name.EndsWith("B8.TIF", StringComparison.OrdinalIgnoreCase));
+                processor.Normalization(channel8,
+                    radiometricRescaling.RadianceMultBand8, radiometricRescaling.RadianceAddBand8,
+                    imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
+                    minMaxRadiance.RadianceMaximumBand8, minMaxReflectance.ReflectanceMaximumBand8);
+
+                var channel9 = fileNames.Single(name => name.EndsWith("B9.TIF", StringComparison.OrdinalIgnoreCase));
+                processor.Normalization(channel9,
+                    radiometricRescaling.RadianceMultBand9, radiometricRescaling.RadianceAddBand9,
+                    imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
+                    minMaxRadiance.RadianceMaximumBand9, minMaxReflectance.ReflectanceMaximumBand9);
+
+                #endregion
+
+                await _busManager.Send<IDataNormalizationResponse>(BusQueueConstants.DataNormalizationResponsesQueueName, new
                 {
                     Folder = request.Folder
                 });

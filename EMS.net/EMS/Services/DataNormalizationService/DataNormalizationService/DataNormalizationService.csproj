@@ -101,10 +101,6 @@
     <Content Include="GdalConfiguration.vb" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Bus\BusContracts.Implementation\BusContracts.Implementation.csproj">
-      <Project>{966a79e4-be64-4148-9d32-d1cf6c2b43b2}</Project>
-      <Name>BusContracts.Implementation</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\Bus\BusContracts\BusContracts.csproj">
       <Project>{a745da87-1a5d-4390-86f3-0395f8cc783d}</Project>
       <Name>BusContracts</Name>
@@ -120,6 +116,10 @@
     <ProjectReference Include="..\..\..\Common\Common.Enums\Common.Enums.csproj">
       <Project>{d695ac71-efdf-45d5-a818-c0e0a84ddce3}</Project>
       <Name>Common.Enums</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\Common.Helpers\Common.Helpers.csproj">
+      <Project>{1c3ea9ca-822e-4c74-8207-0ec7bd98dcb8}</Project>
+      <Name>Common.Helpers</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Common\Common.Objects\Common.Objects.csproj">
       <Project>{8cbf0ae8-cdc9-4cbe-9cdc-2734bf8ba636}</Project>

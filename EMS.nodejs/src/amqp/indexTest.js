@@ -84,8 +84,10 @@ const PATH = 'F:\\TEST\\';
 setTimeout(async ()=>{
     await pushToEmsDataNormalizationServiceChannel({
         messageType: ['urn:message:BusContracts:IDataNormalizationRequest'],
-        Folder: PATH,
-        SatelliteType: 1
+		message: {
+			Folder: PATH,
+			SatelliteType: 1
+		}
     });
 }, 1000);
 

@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("BusContracts.Implementation")]
+[assembly: AssemblyTitle("Common.Helpers")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("BusContracts.Implementation")]
+[assembly: AssemblyProduct("Common.Helpers")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("966a79e4-be64-4148-9d32-d1cf6c2b43b2")]
+[assembly: Guid("1c3ea9ca-822e-4c74-8207-0ec7bd98dcb8")]
 
 // Version information for an assembly consists of the following four values:
 //
