@@ -45,7 +45,7 @@ namespace DataNormalizationService
                 var fileNames = Directory.GetFiles(request.Folder);
 
                 var metadataFileName = fileNames.Single(name => name.EndsWith("mtl.json", StringComparison.OrdinalIgnoreCase));
-                LandsatMetadata metadataFile = JsonFileParser.Parse<LandsatMetadata>(metadataFileName);
+                LandsatMetadata metadataFile = JsonHelper.Deserialize<LandsatMetadata>(metadataFileName);
 
                 LandsatNormalizationProcessor processor = new LandsatNormalizationProcessor();
 

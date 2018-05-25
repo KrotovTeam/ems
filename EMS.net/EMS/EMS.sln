@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Constants", "Common\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Helpers", "Common\Common.Helpers\Common.Helpers.csproj", "{1C3EA9CA-822E-4C74-8207-0EC7BD98DCB8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.PointsReaders", "Common\Common.PointsReaders\Common.PointsReaders.csproj", "{078146E0-F13F-4BF8-A883-75A598ADA16D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,10 @@ Global
 		{1C3EA9CA-822E-4C74-8207-0EC7BD98DCB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C3EA9CA-822E-4C74-8207-0EC7BD98DCB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C3EA9CA-822E-4C74-8207-0EC7BD98DCB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{078146E0-F13F-4BF8-A883-75A598ADA16D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{078146E0-F13F-4BF8-A883-75A598ADA16D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{078146E0-F13F-4BF8-A883-75A598ADA16D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{078146E0-F13F-4BF8-A883-75A598ADA16D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -112,6 +118,7 @@ Global
 		{8CBF0AE8-CDC9-4CBE-9CDC-2734BF8BA636} = {3ED08423-F49A-4548-9738-D31C40460D40}
 		{C7564C11-CA5D-4AC7-B1E8-9D18422B830D} = {3ED08423-F49A-4548-9738-D31C40460D40}
 		{1C3EA9CA-822E-4C74-8207-0EC7BD98DCB8} = {3ED08423-F49A-4548-9738-D31C40460D40}
+		{078146E0-F13F-4BF8-A883-75A598ADA16D} = {3ED08423-F49A-4548-9738-D31C40460D40}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0DF4ED1A-F495-4CAC-9DE6-262C7DBACA55}

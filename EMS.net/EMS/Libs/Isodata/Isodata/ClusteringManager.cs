@@ -4,7 +4,7 @@ using System.Linq;
 using Isodata.Abstraction;
 using Isodata.Helpers;
 using Isodata.Objects;
-
+using Common.PointsReaders.Interfaces;
 namespace Isodata
 {
     public class ClusteringManager
@@ -45,7 +45,7 @@ namespace Isodata
         /// <summary>
         /// Данные для кластеризации
         /// </summary>
-        private IIsodataPointsReader _isodataPointsReader;
+        private IPointsReader _isodataPointsReader;
 
         /// <summary>
         /// Профайл алгоритма
@@ -62,7 +62,7 @@ namespace Isodata
         /// <param name="isodataPointsReader">Данные для кластеризации</param>
         /// <param name="profile">Профайл с параметрами кластеризации</param>
         /// <returns></returns>
-        public List<Cluster> Process(IIsodataPointsReader isodataPointsReader, IIsodataProfile profile)
+        public List<Cluster> Process(IPointsReader isodataPointsReader, IIsodataProfile profile)
         {
             _isodataPointsReader = isodataPointsReader;
             _profile = profile;
