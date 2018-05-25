@@ -42,6 +42,8 @@
   <ItemGroup>
     <Compile Include="IDataNormalizationRequest.cs" />
     <Compile Include="IDataNormalizationResponse.cs" />
+    <Compile Include="IDeterminingPhenomenonRequest.cs" />
+    <Compile Include="IDeterminingPhenomenonResponse.cs" />
     <Compile Include="IGeographicPoint.cs" />
     <Compile Include="IReliefCharacteristicProduct.cs" />
     <Compile Include="IReliefCharacteristicRequest.cs" />
