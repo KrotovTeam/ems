@@ -153,6 +153,7 @@ async function test(){
             Latitude: 48.7853,
             Longitude: 25.087399
         },
+		Phenomenon: 1,
         DataFolders:[
             'C:\\Users\\User\\Downloads\\IsodataV7\\Isodata\\Isodata\\bin\\Debug\\Karpati\\2014',
             'C:\\Users\\User\\Downloads\\IsodataV7\\Isodata\\Isodata\\bin\\Debug\\Karpati\\2015'

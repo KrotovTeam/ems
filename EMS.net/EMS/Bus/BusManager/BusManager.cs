@@ -101,7 +101,7 @@ namespace BusManager
             {
                 throw new Exception("Шина не проинициализированна");
             }
-            var sendEndpoint = await _bus.GetSendEndpoint(new Uri($"{_host}/{queueName}"));
+            var sendEndpoint = await _bus.GetSendEndpoint(new Uri($"{_host}/{queueName}?bind=true&queue={queueName}"));
             if (sendEndpoint == null)
             {
                 throw new Exception($"Не удалось найти очередь {queueName}");
