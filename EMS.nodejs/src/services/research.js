@@ -1,7 +1,7 @@
 const researchController = require('../controllers/research');
 const downloadScheduler = require('./downloadScheduller');
 const amqp = require('./../amqp/index');
-
+const uuid = require('uuid/v4');
 
 const SERVICES = {
     SRTM: require('./SRTM'),
@@ -125,51 +125,51 @@ async function handleResearch(research, startData, endData, countYears = 2, coor
         // Для каждого спутника получаем ссылки для скачивания
         let linksDownload = [];
 
-        // for (let i = 0; i < satellitesHandle.length; i++) {
-        //     const satellite = satellitesHandle[i];
-        //     const satelliteName = satellites[satellite].name;
-        //
-        //     // По названию спутника определим сервис который получает ссылки на снимким
-        //     const serviceName = satellites[satellite].service;
-        //     switch (serviceName) {
-        //         case 'SRTM': {
-        //             const srtmResult = await SERVICES[serviceName].getDownloadLink(satelliteName, coord);
-        //             if (srtmResult.length === 0) {//Если модуль не получил ссылки для скачивания
-        //                 return await researchController.setStatus(researchRes.id, STATE.ERROR_GET_PHOTOS.code);
-        //             }
-        //             linksDownload = linksDownload.concat(srtmResult);
-        //
-        //             break;
-        //         }
-        //         case 'USGS': {
-        //             const usgsResult = await SERVICES[serviceName].getDownloadLink(satelliteName, startData, endData, countYears, coord, cloudMax, month);
-        //             if (usgsResult.length === 0) { //Если модуль не получил ссылки для скачивания
-        //                 return await researchController.setStatus(researchRes.id, STATE.ERROR_GET_PHOTOS.code);
-        //             }
-        //             linksDownload = linksDownload.concat(usgsResult);
-        //
-        //             break;
-        //         }
-        //     }
-        // }
-        //
-        //
-        // await researchController.setMiniImagePath(researchRes.id, linksDownload.filter(r => !!r.imagePath).map(r => r.imagePath));
-        // await researchController.setLinksDownload(researchRes.id, linksDownload.map(r => r.linkDownloadArchive));
-        //
-        // // Попытаемся скачать снимки
-        // await researchController.setStatus(researchRes.id, STATE.DOWNLOADING.code);
-        //
-        //
-        // let arrayLandsat = null;
-        // try {
-        //     arrayLandsat = await _downloadAsync(requestId, linksDownload);
-        // } catch (err) {
-        //     return await researchController.setStatus(researchRes.id, STATE.ERROR_GET_PHOTOS.code);
-        // }
-        // // Файлы скачались безошибочно
-        // await researchController.setStatus(researchRes.id, STATE.CALIBRATION.code);
-        // await researchController.setPathsDownload(researchRes.id, arrayLandsat);
+        for (let i = 0; i < satellitesHandle.length; i++) {
+            const satellite = satellitesHandle[i];
+            const satelliteName = satellites[satellite].name;
+
+            // По названию спутника определим сервис который получает ссылки на снимким
+            const serviceName = satellites[satellite].service;
+            switch (serviceName) {
+                case 'SRTM': {
+                    const srtmResult = await SERVICES[serviceName].getDownloadLink(satelliteName, coord);
+                    if (srtmResult.length === 0) {//Если модуль не получил ссылки для скачивания
+                        return await researchController.setStatus(researchRes.id, STATE.ERROR_GET_PHOTOS.code);
+                    }
+                    linksDownload = linksDownload.concat(srtmResult);
+
+                    break;
+                }
+                case 'USGS': {
+                    const usgsResult = await SERVICES[serviceName].getDownloadLink(satelliteName, startData, endData, countYears, coord, cloudMax, month);
+                    if (usgsResult.length === 0) { //Если модуль не получил ссылки для скачивания
+                        return await researchController.setStatus(researchRes.id, STATE.ERROR_GET_PHOTOS.code);
+                    }
+                    linksDownload = linksDownload.concat(usgsResult);
+
+                    break;
+                }
+            }
+        }
+
+
+        await researchController.setMiniImagePath(researchRes.id, linksDownload.filter(r => !!r.imagePath).map(r => r.imagePath));
+        await researchController.setLinksDownload(researchRes.id, linksDownload.map(r => r.linkDownloadArchive));
+
+        // Попытаемся скачать снимки
+        await researchController.setStatus(researchRes.id, STATE.DOWNLOADING.code);
+
+
+        let arrayLandsat = null;
+        try {
+            arrayLandsat = await _downloadAsync(requestId, linksDownload);
+        } catch (err) {
+            return await researchController.setStatus(researchRes.id, STATE.ERROR_GET_PHOTOS.code);
+        }
+        // Файлы скачались безошибочно
+        await researchController.setStatus(researchRes.id, STATE.CALIBRATION.code);
+        await researchController.setPathsDownload(researchRes.id, arrayLandsat);
 
         // После получения снимков Landsat
 
@@ -190,7 +190,7 @@ async function handleResearch(research, startData, endData, countYears = 2, coor
         //     await researchController.setStatus(researchRes.id, STATE.NO_FIND_PHENOMENON.code);
         // }
         const needSatellitesForCharacteristics = {};
-        Object.keys(RESEARCHES[research].characteristics).forEach(characteristicName => {
+        RESEARCHES[research].characteristics.forEach(characteristicName => {
             const satellite = CHARACTERISTICS[characteristicName].satellite;
             needSatellitesForCharacteristics[satellite] = 1;
         });
@@ -201,7 +201,8 @@ async function handleResearch(research, startData, endData, countYears = 2, coor
         for(let i =0;i<needSatellites.length;i++){
           const satellite = needSatellites[i];
             if(satellite==='LANDSAT'){ // Мы получали данные перед обнуружением явления
-                return needSatellitesForCharacteristics[satellite] = arrayLandsat[arrayLandsat.length-1]
+                needSatellitesForCharacteristics[satellite] = arrayLandsat[arrayLandsat.length-1];
+                continue;
             }
             const serviceName = satellites[satellite].service;
             const satelliteName = satellites[satellite].name;
@@ -230,6 +231,8 @@ async function handleResearch(research, startData, endData, countYears = 2, coor
             //     }, ...
             // ],
         });
+
+
 
 
         // downloadScheduler.addToQueDownload({

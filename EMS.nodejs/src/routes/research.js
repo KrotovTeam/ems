@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
     res.render('research', {username});
 });
 
-router.get('/:id/details', async(req, res, next) => {
+router.get('/:id/details', async (req, res, next) => {
     const id = req.params.id;
 
     const request = await Requests.findOne({where: {id}});
@@ -26,13 +26,25 @@ router.get('/:id/details', async(req, res, next) => {
 router.get('/list', async (req, res, next) => {
     const username = req.cookies.user ? JSON.parse(req.cookies.user).username : null;
     // TODO небезопасный метод
-    const user = await Users.findOne({ where: {username}});
-
+    const user = await Users.findOne({where: {username}});
+    const skip = req.query.skip ? parseInt(req.query.skip) : 0;
+    const take = req.query.take ? parseInt(req.query.take) : 10;
     if (!user) {
         throw boom.notFound('user no found');
     }
 
-    req.result = await user.getRequests({attributes: ['id', 'researchName', 'createdAt']});
+    const items = await Requests.findAndCountAll({
+        where: {userId: user.userId},
+        attributes: ['id', 'researchName', 'createdAt'],
+        order: [['createdAt', 'DESC']],
+        limit: take,
+        offset: skip
+    });
+
+    req.result = {
+        items: items.rows,
+        total: items.count
+    };
 
     next();
 });
