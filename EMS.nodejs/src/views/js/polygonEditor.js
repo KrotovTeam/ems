@@ -1,7 +1,7 @@
 ymaps.ready(init);
 
 function init() {
-    var myMap = new ymaps.Map("map", {
+    var myMap = new ymaps.Map('map', {
         center: [46.97, 33.82],
         zoom: 9
     }, {
@@ -20,7 +20,7 @@ function init() {
     // Создаем многоугольник без вершин.
     var myPolygon = new ymaps.Polygon([], {}, {
         // Курсор в режиме добавления новых вершин.
-        editorDrawingCursor: "crosshair",
+        editorDrawingCursor: 'crosshair',
         // Максимально допустимое количество вершин.
         editorMaxPoints: 5,
         // Цвет заливки.
@@ -48,33 +48,23 @@ function init() {
         const arr = e.originalEvent.originalEvent.originalEvent.newCoordinates[0];
         console.log(arr);
 
-
-
         if (arr && arr.length === 5) {
             let needPoints = getVertex(arr);
-
-
 
             $("#ex1").attr("value", needPoints.lowerLeft[0]);
             $("#ex2").attr("value", needPoints.lowerLeft[1]);
             $("#ex3").attr("value", needPoints.upperRight[0]);
             $("#ex4").attr("value", needPoints.upperRight[1]);
 
-
-            //arr[2][0] = arr[2][0] + 1;
+            // arr[2][0] = arr[2][0] + 1;
             // myPolygon.geometry.set(1, [45, 30]);
-            //console.log();
+            // console.log();
         }
     });
 
 
     // Включаем режим редактирования с возможностью добавления новых вершин.
     myPolygon.editor.startDrawing();
-
-
-
-
-
     setInterval(function () {
         console.log(myPolygon.geometry.getBounds());
     }, 5000);

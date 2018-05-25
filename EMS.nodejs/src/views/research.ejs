@@ -35,24 +35,55 @@
     <script>
 
         $(document).ready(function () {
+
+
+
             $.ajax({
                 type: "GET",
-                url: '/research/list',
+                url: `/research/list?skip=${0}&take=${10}`,
                 success: function (data) {
                     if (data.code === 200) {
-                        const arrayResearch = data.data
+                        const arrayResearch = data.data.items;
 
                         for (let i = 0; i < arrayResearch.length; i++) {
-                            $('.list-group-item.active').after(`<a href="#" id="${arrayResearch[i].id}" name="menu_item" class="list-group-item list-group-item-action">${new Date(arrayResearch[i].createdAt).toISOString().substring(0, 10)} ${arrayResearch[i].researchName}</a>`);
+                            $('.list-group').append(`<a href="#" id="${arrayResearch[i].id}" name="menu_item" class="list-group-item list-group-item-action">${new Date(arrayResearch[i].createdAt).toISOString().substring(0, 10)} ${arrayResearch[i].researchName}</a>`);
                         }
                         listenClickMenuItem();
                         $(function() {
                             $('#paginator').pagination({
-                                items: 100,
+                                items: data.data.total,
                                 itemsOnPage: 10,
-                                cssStyle: 'light-theme'
+                                cssStyle: 'light-theme',
+                                onPageClick: function(pageNumber, event){
+                                    $.ajax({
+                                        type: "GET",
+                                        url: `/research/list?skip=${(pageNumber-1)*10}&take=${10}`,
+                                        success: function (data) {
+                                            if (data.code === 200) {
+                                                const arrayResearch = data.data.items;
+
+                                                $('.list-group').empty();
+                                                $('.list-group').append(`<a href="#" class="list-group-item active">Выберите иследования</a>`)
+                                                for (let i = 0; i < arrayResearch.length; i++) {
+
+                                                    $('.list-group').append(`<a href="#" id="${arrayResearch[i].id}" name="menu_item" class="list-group-item list-group-item-action">${new Date(arrayResearch[i].createdAt).toISOString().substring(0, 10)} ${arrayResearch[i].researchName}</a>`);
+                                                }
+                                                listenClickMenuItem();
+                                            }
+                                            else {
+                                                alert('Ошибка авторизации');
+                                            }
+                                            console.log(data)
+                                        },
+                                        error: function (err) {
+                                            console.log(err)
+                                            alert('Ошибка получения списка запросов Вы не автроризированы');
+                                        }
+                                    });
+                                }
                             });
                         });
+                        //console.log($('#paginator').pagination('getCurrentPage'));
                     }
                     else {
                         alert('Ошибка авторизации');
@@ -179,7 +210,7 @@
 
 
                 $.ajax({
-                    type: "GET",
+                    type: 'GET',
                     url: `/research/${id}/details`,
 
                     success: function (data) {
