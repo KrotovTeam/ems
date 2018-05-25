@@ -7,7 +7,7 @@ module.exports = db => {
         userId: {
             primaryKey: true,
             type: Sequelize.STRING,
-            autoIncrement: true
+            //autoIncrement: true
         },
         username: {type: Sequelize.STRING},
         password: {type: Sequelize.STRING},

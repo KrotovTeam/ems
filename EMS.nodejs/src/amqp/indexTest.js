@@ -121,16 +121,18 @@ const ResultFolder = 'F:\\TEST2\\';
 const LeftUpper = '1.23';
 const RigthLower = '1.23';
 
-setTimeout(async () => {
-    await pushToEmsReliefModelServiceRequestsChannel({
-        messageType: ['urn:message:BusContracts:IReliefCharacteristicRequest'],
-        message: {
-            LeftUpper: LeftUpper,
-            RigthLower: RigthLower,
-            DataFolder: DataFolder,
-            ResultFolder: ResultFolder,
-            CharacteristicTypes: [0, 1, 2]
-        }
+
+
+
+const PATH = 'F:\\TEST\\';
+
+setTimeout(async ()=>{
+    await pushToEmsDataNormalizationServiceChannel({
+        messageType: ['urn:message:BusContracts:IDataNormalizationRequest'],
+		message: {
+			Folder: PATH,
+			SatelliteType: 1
+		}
     });
 }, 1000);
 

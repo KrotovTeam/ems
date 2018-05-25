@@ -31,6 +31,6 @@ namespace BusManager.Abstraction
         /// <param name="queueName"></param>
         /// <param name="message"></param>
         /// <returns></returns>
-        Task Send<TCommand>(string queueName, TCommand message) where TCommand : class;
+        Task Send<TCommand>(string queueName, object message) where TCommand : class;
     }
 }

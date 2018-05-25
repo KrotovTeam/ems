@@ -91,7 +91,7 @@ namespace BusManager
         /// <param name="queueName"></param>
         /// <param name="message"></param>
         /// <returns></returns>
-        public async Task Send<TCommand>(string queueName, TCommand message) where TCommand : class
+        public async Task Send<TCommand>(string queueName, object message) where TCommand : class
         {
             if (!InitAndStartBus())
             {
@@ -106,7 +106,7 @@ namespace BusManager
             {
                 throw new Exception($"Не удалось найти очередь {queueName}");
             }
-            await sendEndpoint.Send(message, pc => pc.SetAwaitAck(false));
+            await sendEndpoint.Send<TCommand>(message, pc => pc.SetAwaitAck(false));
         }
 
         #endregion Implementation of IBusManager
