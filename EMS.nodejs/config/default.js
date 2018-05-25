@@ -14,6 +14,8 @@ module.exports = {
         channels: {
             EMS_DATA_NORMALIZATION_SERVICE_REQUESTS: 'EMS.DataNormalizationService.Requests',
             EMS_DATA_NORMALIZATION_SERVICE_RESPONSES: 'EMS.DataNormalizationService.Responses',
+            EMS_DATA_RELIEF_MODEL_SERVICE_REQUESTS: 'EMS.ReliefModelService.Requests',
+            EMS_DATA_RELIEF_MODEL_SERVICE_RESPONSES: 'EMS.ReliefModelService.Responses',
             result: 'RESULT',
             error: 'ERROR'
         }
