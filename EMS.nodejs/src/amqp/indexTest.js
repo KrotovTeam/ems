@@ -120,8 +120,8 @@ async function pushToEmsReliefModelServiceRequestsChannel(data) {
 
 const DataFolder = 'F:\\TEST\\';
 const ResultFolder = 'F:\\TEST2\\';
-const LeftUpper = '1.23';
-const RigthLower = '1.23';
+const LeftUpper = 1.23;
+const RigthLower = 1.23;
 
 
 
