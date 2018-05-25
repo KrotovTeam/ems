@@ -5,16 +5,16 @@
         /// <summary>
         /// Экспозиция склонов
         /// </summary>
-        Exposition = 0,
+        Exposition = 1,
 
         /// <summary>
         /// Углы склонов
         /// </summary>
-        Skew = 1,
+        Skew = 2,
 
         /// <summary>
         /// Высотная карта
         /// </summary>
-        Height = 2
+        Height = 3
     }
 }

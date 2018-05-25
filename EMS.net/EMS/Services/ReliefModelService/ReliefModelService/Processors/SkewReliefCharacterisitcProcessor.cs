@@ -52,7 +52,7 @@ namespace ReliefModelService.Processors
             return new ReliefCharacteristicProduct
             {
                 FilePath = filePath,
-                Type = ReliefCharacteristicType.Height
+                Type = ReliefCharacteristicType.Skew
             };
         }
 
