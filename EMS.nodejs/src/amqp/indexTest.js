@@ -43,8 +43,8 @@ function createChannel(connection) {
             confirm(msg);
             const data = JSON.parse(msg.content);
             console.log(data);
-            if (data.message.RequestId) {
-                eventEmitter.emit(data.message.RequestId, data.message, msg);
+            if (data.message.requestId) {
+                eventEmitter.emit(data.message.requestId, data.message, msg);
             }
         }
 
@@ -87,7 +87,7 @@ async function getPhenomenon(message){
         messageType: ['urn:message:BusContracts:IDeterminingPhenomenonRequest'],
         message
     };
-    message.RequestId = requestId;
+    message.requestId = requestId;
 
     return new Promise(async (resolve, reject)=>{
         eventEmitter.on(requestId, (result, origMsg)=>{
@@ -108,7 +108,7 @@ async function calibration(message){
         messageType: ['urn:message:BusContracts:IDataNormalizationRequest'],
         message
     };
-    message.RequestId = requestId;
+    message.requestId = requestId;
 
     return new Promise(async (resolve, reject)=>{
         eventEmitter.on(requestId, (result, origMsg)=>{
@@ -126,7 +126,7 @@ async function getCharacteristics(message){
         messageType: ['urn:message:BusContracts:IDataNormalizationRequest'],
         message
     };
-    message.RequestId = requestId;
+    message.requestId = requestId;
 
     return new Promise(async (resolve, reject)=>{
         eventEmitter.on(requestId, (result, origMsg)=>{
