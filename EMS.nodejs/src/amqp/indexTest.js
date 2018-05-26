@@ -97,7 +97,7 @@ async function getPhenomenon(message){
         });
         console.log(`Отправляем запрос ${requestId}: `,data);
         await channel.sendToQueue(phenomenonRequestChannel, Buffer.from(JSON.stringify(data)), {persistent: true});
-        await channel.sendToQueue(phenomenonResultChannel, Buffer.from(JSON.stringify({message: {RequestId: requestId}})), {persistent: true});
+        //await channel.sendToQueue(phenomenonResultChannel, Buffer.from(JSON.stringify({message: {RequestId: requestId}})), {persistent: true});
 
     });
 }
