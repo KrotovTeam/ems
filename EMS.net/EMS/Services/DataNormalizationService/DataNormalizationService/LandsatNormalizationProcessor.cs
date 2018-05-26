@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
 using OSGeo.GDAL;
+using Topshelf.Logging;
 
 namespace DataNormalizationService
 {
@@ -10,6 +11,16 @@ namespace DataNormalizationService
         #region Private fields
 
         private readonly string _extension = ".l8n";
+        private readonly LogWriter _logger;
+
+        #endregion
+
+        #region Constructor
+
+        public LandsatNormalizationProcessor(LogWriter logger)
+        {
+            _logger = logger;
+        }
 
         #endregion
 
@@ -28,12 +39,17 @@ namespace DataNormalizationService
         /// <param name="reflectanceMax">REFLECTANCE_MAXIMUM_BAND_X</param>
         public void Normalization(string fileName, double ml, double al, double sunElevation, double d, double radianceMax, double reflectanceMax)
         {
+            _logger.Info($"Нормализация файла {fileName}...");
             // Если файл уже существует не делать нормализацию
             var normalizedFileName = $"{fileName}{_extension}";
             if (File.Exists(normalizedFileName))
             {
+                _logger.Info($"{normalizedFileName} уже существует");
                 return;
             }
+
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
 
             var channel = Gdal.Open(fileName, Access.GA_ReadOnly);
 
@@ -80,6 +96,9 @@ namespace DataNormalizationService
                     file.Flush(true);
                 }
             }
+
+            stopWatch.Stop();
+            _logger.Info($"Файл {fileName} нормализован, время {stopWatch.Elapsed:g}");
         }
 
         #endregion

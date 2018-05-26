@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,12 +12,14 @@ using Common.Objects;
 using MassTransit;
 using MassTransit.RabbitMqTransport;
 using Topshelf;
+using Topshelf.Logging;
 
 namespace DataNormalizationService
 {
     public class NormalizationService : ServiceControl
     {
         private BusManager.BusManager _busManager;
+        private static readonly LogWriter Logger = HostLogger.Get<NormalizationService>();
 
         public bool Start(HostControl hostControl)
         {
@@ -35,6 +38,7 @@ namespace DataNormalizationService
 
         private async Task ProcessRequest(IDataNormalizationRequest request)
         {
+            Logger.Info($"Получен запрос на нормализацию данных в папке {request.Folder}");
             if (request.SatelliteType != SatelliteType.Landsat8)
             {
                 throw new ArgumentException("Неверно задан тип спутника");
@@ -46,9 +50,7 @@ namespace DataNormalizationService
 
                 var metadataFileName = fileNames.Single(name => name.EndsWith("mtl.json", StringComparison.OrdinalIgnoreCase));
                 LandsatMetadata metadataFile = JsonHelper.Deserialize<LandsatMetadata>(metadataFileName);
-
-                LandsatNormalizationProcessor processor = new LandsatNormalizationProcessor();
-
+                LandsatNormalizationProcessor processor = new LandsatNormalizationProcessor(Logger);
                 RadiometricRescaling radiometricRescaling = metadataFile.L1MetadataFile.RadiometricRescaling;
                 ImageAttributes imageAttributes = metadataFile.L1MetadataFile.ImageAttributes;
                 MinMaxRadiance minMaxRadiance = metadataFile.L1MetadataFile.MinMaxRadiance;
@@ -116,6 +118,8 @@ namespace DataNormalizationService
                 {
                     Folder = request.Folder
                 });
+
+                Logger.Info($"Запрос обработан");
             }
             else
             {
