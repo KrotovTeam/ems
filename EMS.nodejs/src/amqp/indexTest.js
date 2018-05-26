@@ -35,15 +35,16 @@ function createChannel(connection) {
         ch.assertQueue(characteristicsResultChannel, {durable: true});
         ch.assertQueue(errorChannel, {durable: true, noAck: true});
 
-        ch.prefetch(1);
+       // ch.prefetch(1);
         // подписываемся на получения транзакциий, которые нужно выполнить
 
 
         function listenResult(msg){
-            const message = JSON.parse(msg.content);
-            console.log(message);
-            if (message.RequestId) {
-                eventEmitter.emit(message.RequestId, message, msg);
+            confirm(msg);
+            const data = JSON.parse(msg.content);
+            console.log(data);
+            if (data.message.RequestId) {
+                eventEmitter.emit(data.message.RequestId, data.message, msg);
             }
         }
 
@@ -90,12 +91,14 @@ async function getPhenomenon(message){
 
     return new Promise(async (resolve, reject)=>{
         eventEmitter.on(requestId, (result, origMsg)=>{
-             confirm(origMsg);
+             //confirm(origMsg);
             console.log(`получаем ответ на запрос ${requestId}: `, result);
             resolve(result);
         });
         console.log(`Отправляем запрос ${requestId}: `,data);
         await channel.sendToQueue(phenomenonRequestChannel, Buffer.from(JSON.stringify(data)), {persistent: true});
+        await channel.sendToQueue(phenomenonResultChannel, Buffer.from(JSON.stringify({message: {RequestId: requestId}})), {persistent: true});
+
     });
 }
 
@@ -159,13 +162,19 @@ async function test(){
             'C:\\Users\\User\\Downloads\\IsodataV7\\Isodata\\Isodata\\bin\\Debug\\Karpati\\2015'
         ]
     });
+
+
+
+
     console.log('Результат ---------------', JSON.stringify(resultPhenomen));
 
 }
 
 setTimeout(test, 2000);
 
-
+function confirm(msg){
+    return channel.ack(msg);
+}
 
 module.exports = {
     getPhenomenon: getPhenomenon,
@@ -188,7 +197,5 @@ module.exports = {
     listenEmsDataNormalizationServiceResponsesChannel: (event, cb) => {
         eventEmitter.on(event, cb);
     },
-    confirm: msg => {
-        return channel.ack(msg);
-    }
+    confirm: confirm
 };
