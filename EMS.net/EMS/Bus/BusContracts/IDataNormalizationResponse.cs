@@ -3,8 +3,8 @@
     public interface IDataNormalizationResponse
     {
         /// <summary>
-        /// Папка с нормализованными данными
+        /// Идентификатор запроса
         /// </summary>
-        string Folder { get; set; }
+        string RequestId { get; set; }
     }
 }

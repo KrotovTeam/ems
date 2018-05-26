@@ -1,4 +1,5 @@
-﻿using BusContracts;
+﻿using System;
+using BusContracts;
 using Common.Constants;
 using Common.Enums;
 
@@ -12,6 +13,7 @@ namespace NormalizationServiceStub
 
             var message = new 
             {
+                RequestId = Guid.NewGuid().ToString("N"),
                 Folder = @"F:\КАРПАТЫV2\185026_20150824",
                 SatelliteType = SatelliteType.Landsat8
             };

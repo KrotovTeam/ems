@@ -38,7 +38,7 @@ namespace DataNormalizationService
 
         private async Task ProcessRequest(IDataNormalizationRequest request)
         {
-            Logger.Info($"Получен запрос на нормализацию данных в папке {request.Folder}");
+            Logger.Info($"Получен запрос (RequestId = {request.RequestId}) на нормализацию данных в папке {request.Folder}");
             if (request.SatelliteType != SatelliteType.Landsat8)
             {
                 throw new ArgumentException("Неверно задан тип спутника");
@@ -47,6 +47,12 @@ namespace DataNormalizationService
             if (Directory.Exists(request.Folder))
             {
                 var fileNames = Directory.GetFiles(request.Folder);
+
+                var normalizationDataFolder = $@"{request.Folder}\NormalizationData";
+                if (!Directory.Exists(normalizationDataFolder))
+                {
+                    Directory.CreateDirectory(normalizationDataFolder);
+                }
 
                 var metadataFileName = fileNames.Single(name => name.EndsWith("mtl.json", StringComparison.OrdinalIgnoreCase));
                 LandsatMetadata metadataFile = JsonHelper.Deserialize<LandsatMetadata>(metadataFileName);
@@ -58,56 +64,56 @@ namespace DataNormalizationService
 
                 #region Channel normalization
 
-                var channel1 = fileNames.Single(name => name.EndsWith("B1.TIF", StringComparison.OrdinalIgnoreCase));
-                processor.Normalization(channel1,
+                var channel1FilePath = fileNames.Single(name => name.EndsWith("B1.TIF", StringComparison.OrdinalIgnoreCase));
+                processor.Normalization(channel1FilePath, normalizationDataFolder,
                     radiometricRescaling.RadianceMultBand1, radiometricRescaling.RadianceAddBand1,
                     imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
                     minMaxRadiance.RadianceMaximumBand1, minMaxReflectance.ReflectanceMaximumBand1);
 
-                var channel2 = fileNames.Single(name => name.EndsWith("B2.TIF", StringComparison.OrdinalIgnoreCase));
-                processor.Normalization(channel2,
+                var channel2FilePath = fileNames.Single(name => name.EndsWith("B2.TIF", StringComparison.OrdinalIgnoreCase));
+                processor.Normalization(channel2FilePath, normalizationDataFolder,
                     radiometricRescaling.RadianceMultBand2, radiometricRescaling.RadianceAddBand2,
                     imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
                     minMaxRadiance.RadianceMaximumBand2, minMaxReflectance.ReflectanceMaximumBand2);
 
-                var channel3 = fileNames.Single(name => name.EndsWith("B3.TIF", StringComparison.OrdinalIgnoreCase));
-                processor.Normalization(channel3,
+                var channel3FilePath = fileNames.Single(name => name.EndsWith("B3.TIF", StringComparison.OrdinalIgnoreCase));
+                processor.Normalization(channel3FilePath, normalizationDataFolder,
                     radiometricRescaling.RadianceMultBand3, radiometricRescaling.RadianceAddBand3,
                     imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
                     minMaxRadiance.RadianceMaximumBand3, minMaxReflectance.ReflectanceMaximumBand3);
 
-                var channel4 = fileNames.Single(name => name.EndsWith("B4.TIF", StringComparison.OrdinalIgnoreCase));
-                processor.Normalization(channel4,
+                var channel4FilePath = fileNames.Single(name => name.EndsWith("B4.TIF", StringComparison.OrdinalIgnoreCase));
+                processor.Normalization(channel4FilePath, normalizationDataFolder,
                     radiometricRescaling.RadianceMultBand4, radiometricRescaling.RadianceAddBand4,
                     imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
                     minMaxRadiance.RadianceMaximumBand4, minMaxReflectance.ReflectanceMaximumBand4);
 
-                var channel5 = fileNames.Single(name => name.EndsWith("B5.TIF", StringComparison.OrdinalIgnoreCase));
-                processor.Normalization(channel5,
+                var channel5FilePath = fileNames.Single(name => name.EndsWith("B5.TIF", StringComparison.OrdinalIgnoreCase));
+                processor.Normalization(channel5FilePath, normalizationDataFolder,
                     radiometricRescaling.RadianceMultBand5, radiometricRescaling.RadianceAddBand5,
                     imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
                     minMaxRadiance.RadianceMaximumBand5, minMaxReflectance.ReflectanceMaximumBand5);
 
-                var channel6 = fileNames.Single(name => name.EndsWith("B6.TIF", StringComparison.OrdinalIgnoreCase));
-                processor.Normalization(channel6,
+                var channel6FilePath = fileNames.Single(name => name.EndsWith("B6.TIF", StringComparison.OrdinalIgnoreCase));
+                processor.Normalization(channel6FilePath, normalizationDataFolder,
                     radiometricRescaling.RadianceMultBand6, radiometricRescaling.RadianceAddBand6,
                     imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
                     minMaxRadiance.RadianceMaximumBand6, minMaxReflectance.ReflectanceMaximumBand6);
 
-                var channel7 = fileNames.Single(name => name.EndsWith("B7.TIF", StringComparison.OrdinalIgnoreCase));
-                processor.Normalization(channel7,
+                var channel7FilePath = fileNames.Single(name => name.EndsWith("B7.TIF", StringComparison.OrdinalIgnoreCase));
+                processor.Normalization(channel7FilePath, normalizationDataFolder,
                     radiometricRescaling.RadianceMultBand7, radiometricRescaling.RadianceAddBand7,
                     imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
                     minMaxRadiance.RadianceMaximumBand7, minMaxReflectance.ReflectanceMaximumBand7);
 
-                var channel8 = fileNames.Single(name => name.EndsWith("B8.TIF", StringComparison.OrdinalIgnoreCase));
-                processor.Normalization(channel8,
+                var channel8FilePath = fileNames.Single(name => name.EndsWith("B8.TIF", StringComparison.OrdinalIgnoreCase));
+                processor.Normalization(channel8FilePath, normalizationDataFolder,
                     radiometricRescaling.RadianceMultBand8, radiometricRescaling.RadianceAddBand8,
                     imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
                     minMaxRadiance.RadianceMaximumBand8, minMaxReflectance.ReflectanceMaximumBand8);
 
-                var channel9 = fileNames.Single(name => name.EndsWith("B9.TIF", StringComparison.OrdinalIgnoreCase));
-                processor.Normalization(channel9,
+                var channel9FilePath = fileNames.Single(name => name.EndsWith("B9.TIF", StringComparison.OrdinalIgnoreCase));
+                processor.Normalization(channel9FilePath, normalizationDataFolder,
                     radiometricRescaling.RadianceMultBand9, radiometricRescaling.RadianceAddBand9,
                     imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
                     minMaxRadiance.RadianceMaximumBand9, minMaxReflectance.ReflectanceMaximumBand9);
@@ -116,10 +122,10 @@ namespace DataNormalizationService
 
                 await _busManager.Send<IDataNormalizationResponse>(BusQueueConstants.DataNormalizationResponsesQueueName, new
                 {
-                    Folder = request.Folder
+                    RequestId = request.RequestId
                 });
 
-                Logger.Info($"Запрос обработан");
+                Logger.Info($"Запрос обработан (RequestId = {request.RequestId})");
             }
             else
             {
