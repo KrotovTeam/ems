@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using BusContracts;
 using Topshelf;
@@ -9,12 +7,14 @@ using Common.Constants;
 using Common.Enums;
 using MassTransit;
 using MassTransit.RabbitMqTransport;
+using Topshelf.Logging;
 
 namespace DeterminingPhenomenonService
 {
-    public class Service: ServiceControl
+    public class Service : ServiceControl
     {
         private BusManager.BusManager _busManager;
+        private static readonly LogWriter Logger = HostLogger.Get<Service>();
 
         public bool Start(HostControl hostControl)
         {

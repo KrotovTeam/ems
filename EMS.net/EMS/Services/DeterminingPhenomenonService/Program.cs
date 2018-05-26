@@ -1,4 +1,5 @@
-﻿using Topshelf;
+﻿using Serilog;
+using Topshelf;
 
 namespace DeterminingPhenomenonService
 {
@@ -9,7 +10,15 @@ namespace DeterminingPhenomenonService
             GdalConfiguration.ConfigureGdal();
             GdalConfiguration.ConfigureOgr();
 
-            return (int)HostFactory.Run(cfg => cfg.Service(x => new Service()));
+            ILogger configuration = new LoggerConfiguration()
+                .WriteTo.Console()
+                .CreateLogger();
+
+            return (int)HostFactory.Run(cfg =>
+            {
+                cfg.Service(x => new Service());
+                cfg.UseSerilog(configuration);
+            });
         }
     }
 }

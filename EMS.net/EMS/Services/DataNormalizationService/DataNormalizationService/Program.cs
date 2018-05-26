@@ -1,4 +1,5 @@
-﻿using Topshelf;
+﻿using Serilog;
+using Topshelf;
 
 namespace DataNormalizationService
 {
@@ -9,7 +10,15 @@ namespace DataNormalizationService
             GdalConfiguration.ConfigureGdal();
             GdalConfiguration.ConfigureOgr();
 
-            return (int)HostFactory.Run(cfg => cfg.Service(x => new NormalizationService()));
+            ILogger configuration = new LoggerConfiguration()
+                .WriteTo.Console()
+                .CreateLogger();
+
+            return (int)HostFactory.Run(cfg =>
+            {
+                cfg.Service(x => new NormalizationService());
+                cfg.UseSerilog(configuration);
+            });
         }
     }
 }
