@@ -7,8 +7,7 @@ const createResearch = require('../schemes/createResearch');
 
 
 router.get('/', (req, res) => {
-    const username = req.cookies.user ? JSON.parse(req.cookies.user).username : null;
-    res.render('research', {username});
+    res.render('research');
 });
 
 router.get('/:id/details', async (req, res, next) => {
@@ -24,7 +23,7 @@ router.get('/:id/details', async (req, res, next) => {
 });
 
 router.get('/list', async (req, res, next) => {
-    const username = req.cookies.user ? JSON.parse(req.cookies.user).username : null;
+    const username = res.locals.user.username;
     // TODO небезопасный метод
     const user = await Users.findOne({where: {username}});
     const skip = req.query.skip ? parseInt(req.query.skip) : 0;
@@ -52,8 +51,7 @@ router.get('/list', async (req, res, next) => {
 router.post('/', async (req, res, next) => {
     validate(req.data, createResearch);
 
-    const username = req.cookies.user ? JSON.parse(req.cookies.user).username : null;
-    const usertoken = req.cookies.user ? JSON.parse(req.cookies.user).token : null;
+    const username = res.locals.user.username;
     // TODO небезопасный метод
     const user = Users.findOne({where: {username}});
 
