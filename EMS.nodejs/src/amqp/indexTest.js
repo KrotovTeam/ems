@@ -27,23 +27,24 @@ function createChannel(connection) {
         });
 
         // создаем необходимые очереди
-        ch.assertQueue(phenomenonRequestChannel, {durable: true, noAck: true});
-        ch.assertQueue(phenomenonResultChannel, {durable: true, noAck: true});
-        ch.assertQueue(calibrateRequestChannel, {durable: true, noAck: true});
-        ch.assertQueue(calibrateResultChannel, {durable: true, noAck: true});
-        ch.assertQueue(characteristicsRequestChannel, {durable: true, noAck: true});
-        ch.assertQueue(characteristicsResultChannel, {durable: true, noAck: true});
+        ch.assertQueue(phenomenonRequestChannel, {durable: true});
+        ch.assertQueue(phenomenonResultChannel, {durable: true});
+        ch.assertQueue(calibrateRequestChannel, {durable: true});
+        ch.assertQueue(calibrateResultChannel, {durable: true});
+        ch.assertQueue(characteristicsRequestChannel, {durable: true});
+        ch.assertQueue(characteristicsResultChannel, {durable: true});
         ch.assertQueue(errorChannel, {durable: true, noAck: true});
 
-        // ch.prefetch(1);
+       // ch.prefetch(1);
         // подписываемся на получения транзакциий, которые нужно выполнить
 
 
         function listenResult(msg){
-            const message = JSON.parse(msg.content);
-            console.log(message);
-            if (message.RequestId) {
-                eventEmitter.emit(message.RequestId, message, msg);
+            confirm(msg);
+            const data = JSON.parse(msg.content);
+            console.log(data);
+            if (data.message.requestId) {
+                eventEmitter.emit(data.message.requestId, data.message, msg);
             }
         }
 
@@ -86,16 +87,18 @@ async function getPhenomenon(message){
         messageType: ['urn:message:BusContracts:IDeterminingPhenomenonRequest'],
         message
     };
-    message.RequestId = requestId;
+    message.requestId = requestId;
 
     return new Promise(async (resolve, reject)=>{
         eventEmitter.on(requestId, (result, origMsg)=>{
-            // confirm(origMsg);
+             //confirm(origMsg);
             console.log(`получаем ответ на запрос ${requestId}: `, result);
             resolve(result);
         });
         console.log(`Отправляем запрос ${requestId}: `,data);
         await channel.sendToQueue(phenomenonRequestChannel, Buffer.from(JSON.stringify(data)), {persistent: true});
+        //await channel.sendToQueue(phenomenonResultChannel, Buffer.from(JSON.stringify({message: {RequestId: requestId}})), {persistent: true});
+
     });
 }
 
@@ -105,11 +108,11 @@ async function calibration(message){
         messageType: ['urn:message:BusContracts:IDataNormalizationRequest'],
         message
     };
-    message.RequestId = requestId;
+    message.requestId = requestId;
 
     return new Promise(async (resolve, reject)=>{
         eventEmitter.on(requestId, (result, origMsg)=>{
-            // confirm(origMsg);
+            confirm(origMsg);
             console.log(`получаем ответ на запрос ${requestId}: `, result);
             resolve(result);
         });
@@ -123,11 +126,11 @@ async function getCharacteristics(message){
         messageType: ['urn:message:BusContracts:IDataNormalizationRequest'],
         message
     };
-    message.RequestId = requestId;
+    message.requestId = requestId;
 
     return new Promise(async (resolve, reject)=>{
         eventEmitter.on(requestId, (result, origMsg)=>{
-            // confirm(origMsg);
+            confirm(origMsg);
             console.log(`получаем ответ на запрос ${requestId}: `, result);
             resolve(result);
         });
@@ -144,28 +147,34 @@ async function getCharacteristics(message){
 
 async function test(){
     const resultPhenomen = await getPhenomenon({
-        ResultFolder: 'C:\\Users\\User\\Downloads\\IsodataV7\\Isodata\\Isodata\\bin\\Debug\\Karpati',
+        ResultFolder: 'C:\\Users\\User\\Downloads\\Карпаты2\\resultKarpati2015-2016',
         LeftUpper: {
-            Latitude: 49.203399,
-            Longitude: 24.0546005
+			Latitude: 48.3387,
+            Longitude: 23.8908  
         },
         RightLower:{
-            Latitude: 48.7853,
-            Longitude: 25.087399
+            Latitude: 47.9317,
+            Longitude: 24.4236
         },
 		Phenomenon: 1,
         DataFolders:[
-            'C:\\Users\\User\\Downloads\\IsodataV7\\Isodata\\Isodata\\bin\\Debug\\Karpati\\2014',
-            'C:\\Users\\User\\Downloads\\IsodataV7\\Isodata\\Isodata\\bin\\Debug\\Karpati\\2015'
+            'C:\\Users\\User\\Downloads\\Карпаты2\\185026_20150824',
+            'C:\\Users\\User\\Downloads\\Карпаты2\\185026_20160826'
         ]
     });
+
+
+
+
     console.log('Результат ---------------', JSON.stringify(resultPhenomen));
 
 }
 
 setTimeout(test, 2000);
 
-
+function confirm(msg){
+    return channel.ack(msg);
+}
 
 module.exports = {
     getPhenomenon: getPhenomenon,
@@ -188,7 +197,5 @@ module.exports = {
     listenEmsDataNormalizationServiceResponsesChannel: (event, cb) => {
         eventEmitter.on(event, cb);
     },
-    confirm: msg => {
-        return channel.ack(msg);
-    }
+    confirm: confirm
 };

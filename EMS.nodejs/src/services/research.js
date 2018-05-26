@@ -2,6 +2,10 @@ const researchController = require('../controllers/research');
 const downloadScheduler = require('./downloadScheduller');
 const amqp = require('./../amqp/index');
 const uuid = require('uuid/v4');
+const fs = require('fs');
+const config = require('config');
+const util = require('util');
+
 
 const SERVICES = {
     SRTM: require('./SRTM'),
@@ -119,6 +123,8 @@ async function handleResearch(research, startData, endData, countYears = 2, coor
 
     const requestId = researchRes.id;
 
+    await createUserResFolders(requestId);
+
     setTimeout(async () => {
         // По названию исследования узнаём снимки каких спутников нам нужны и Какие сервисы их получают
         const satellitesHandle = RESEARCHES[research].satellites;
@@ -171,9 +177,24 @@ async function handleResearch(research, startData, endData, countYears = 2, coor
         await researchController.setStatus(researchRes.id, STATE.CALIBRATION.code);
         await researchController.setPathsDownload(researchRes.id, arrayLandsat);
 
-        // После получения снимков Landsat
+        // После получения снимков Landsat\
 
-        // Проверим есть ли откалиброванные данные
+
+
+        // Проверим есть ли откалиброванные данные для каждой папки
+        for (let i = 0; i < arrayLandsat.length; i++) {
+            const pathCheck = arrayLandsat[i];
+            if(!(await checkExistFolder(`${pathCheck}\\NormalizationData`))){ // Если нет отклаброванный данных
+                console.log('Калибруем данные для: pathCheck');
+                amqp.calibration({
+                    Folder: pathCheck,
+                    SatelliteType: satellites.LANDSAT.type
+                });
+            }
+        }
+
+
+
         // if (!true) {
         //     // отправим запрос на калибровку данных
         //     const resultCalibration = await amqp.calibration({});
@@ -198,10 +219,10 @@ async function handleResearch(research, startData, endData, countYears = 2, coor
 
         const needSatellites = Object.keys(needSatellitesForCharacteristics);
 
-        for(let i =0;i<needSatellites.length;i++){
-          const satellite = needSatellites[i];
-            if(satellite==='LANDSAT'){ // Мы получали данные перед обнуружением явления
-                needSatellitesForCharacteristics[satellite] = arrayLandsat[arrayLandsat.length-1];
+        for (let i = 0; i < needSatellites.length; i++) {
+            const satellite = needSatellites[i];
+            if (satellite === 'LANDSAT') { // Мы получали данные перед обнуружением явления
+                needSatellitesForCharacteristics[satellite] = arrayLandsat[arrayLandsat.length - 1];
                 continue;
             }
             const serviceName = satellites[satellite].service;
@@ -209,13 +230,13 @@ async function handleResearch(research, startData, endData, countYears = 2, coor
             switch (serviceName) {
                 case 'SRTM': {
                     const srtmResult = await SERVICES[serviceName].getDownloadLink(satelliteName, coord);
-                    needSatellitesForCharacteristics[satellite] = await _downloadAsync(uuid(),srtmResult);
+                    needSatellitesForCharacteristics[satellite] = (await _downloadAsync(uuid(), srtmResult))[0];
 
                     break;
                 }
                 case 'USGS': {
                     const usgsResult = await SERVICES[serviceName].getDownloadLink(satelliteName, startData, endData, 1, coord, cloudMax, month);
-                    needSatellitesForCharacteristics[satellite] = await _downloadAsync(uuid(), usgsResult);
+                    needSatellitesForCharacteristics[satellite] = (await _downloadAsync(uuid(), usgsResult))[0];
 
                     break;
                 }
@@ -231,8 +252,6 @@ async function handleResearch(research, startData, endData, countYears = 2, coor
             //     }, ...
             // ],
         });
-
-
 
 
         // downloadScheduler.addToQueDownload({
@@ -270,6 +289,24 @@ async function _downloadAsync(requestId, data) {
     })
 }
 
+async function checkExistFolder(dir){
+    const exists = util.promisify(fs.exists);
+    return await exists(dir);
+
+}
+async function createUserResFolders(uuid) {
+    const dir = `${config.resultUserPath}\\${uuid}`;
+    const mkdir = util.promisify(fs.mkdir);
+    const exists = util.promisify(fs.exists);
+
+    if (!(await exists(dir))) {
+        await mkdir(dir);
+    }
+
+    await mkdir(`${dir}\\phenomenon`);
+    await mkdir(`${dir}\\characteristics`);
+    return dir;
+}
 
 module.exports = {
     handleResearch
