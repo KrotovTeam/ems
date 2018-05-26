@@ -95,30 +95,32 @@ namespace DeterminingPhenomenonService.Helpers
         {
 
             OSGeo.GDAL.Driver outputDriver = Gdal.GetDriverByName("GTiff");
-            Dataset outputDataset = outputDriver.Create(filename, width, height, 1, dataType, null);
-            if (argin != null)
+            using (Dataset outputDataset = outputDriver.Create(filename, width, height, 1, dataType, null))
             {
-                outputDataset.SetGeoTransform(argin);
-            }
+                if (argin != null)
+                {
+                    outputDataset.SetGeoTransform(argin);
+                }
 
-            Band outputband = outputDataset.GetRasterBand(1);
-            switch (dataType)
-            {
-                case DataType.GDT_UInt16:
-                    outputband.WriteRaster(0, 0, width, height, (short[])data, width, height, 0, 0);
-                    break;
-                case DataType.GDT_Byte:
-                    outputband.WriteRaster(0, 0, width, height, (byte[])data, width, height, 0, 0);
-                    break;
-            }
+                Band outputband = outputDataset.GetRasterBand(1);
+                switch (dataType)
+                {
+                    case DataType.GDT_UInt16:
+                        outputband.WriteRaster(0, 0, width, height, (short[]) data, width, height, 0, 0);
+                        break;
+                    case DataType.GDT_Byte:
+                        outputband.WriteRaster(0, 0, width, height, (byte[]) data, width, height, 0, 0);
+                        break;
+                }
 
-            if (!string.IsNullOrEmpty(shapeSrs))
-            {
-                outputDataset.SetProjection(shapeSrs);
-            }
+                if (!string.IsNullOrEmpty(shapeSrs))
+                {
+                    outputDataset.SetProjection(shapeSrs);
+                }
 
-            outputDataset.FlushCache();
-            outputband.FlushCache();
+                outputDataset.FlushCache();
+                outputband.FlushCache();
+            }
 
             return filename;
         }

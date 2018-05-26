@@ -106,8 +106,17 @@ namespace DeterminingPhenomenonService
 
                     double currentNdvi = Helper.CalculateNdviForCurrentTemporaryPoint(currentTemporaryBuffers, temporaryClustersDatas, row, col);
 
-                    var dynamic = Math.Abs(currentNdvi - pastNdvi) / currentNdvi;
+                    double dynamic = -1.0;
 
+                    if (phenomenon == PhenomenonType.ForestPlantationsDeseases)
+                    {
+                        dynamic = pastNdvi >= 0.2 && pastNdvi < 1 ? 
+                                    (pastNdvi > currentNdvi ? 
+                                        Math.Abs(currentNdvi - pastNdvi) / currentNdvi 
+                                        : 0) 
+                                    : 0;
+                    }
+                    
                     dymanicMask[row * width + col] = (byte)(dynamic >= 0.3 ? 1 : 0);
                 }
             }
