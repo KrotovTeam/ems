@@ -1,4 +1,4 @@
-﻿namespace DeterminingPhenomenonService.Objects
+﻿namespace Common.Objects
 {
     public class CuttedImageInfo
     {

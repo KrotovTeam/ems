@@ -53,6 +53,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Stubs", "Stubs", "{FA45EED6
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NormalizationServiceStub", "Stubs\NormalizationServiceStub\NormalizationServiceStub.csproj", "{1C08B337-902C-4CC5-8CBB-348072A3208D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrawImageLibrary", "Libs\DrawImageLibrary\DrawImageLibrary.csproj", "{AA665EFE-94C5-4F93-BA1D-F06180E97CE1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -123,6 +125,10 @@ Global
 		{1C08B337-902C-4CC5-8CBB-348072A3208D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C08B337-902C-4CC5-8CBB-348072A3208D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C08B337-902C-4CC5-8CBB-348072A3208D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA665EFE-94C5-4F93-BA1D-F06180E97CE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA665EFE-94C5-4F93-BA1D-F06180E97CE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA665EFE-94C5-4F93-BA1D-F06180E97CE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA665EFE-94C5-4F93-BA1D-F06180E97CE1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -148,6 +154,7 @@ Global
 		{C41EF321-EEEB-4A6E-8FED-B94EDE613F6F} = {850CBE39-112E-4CDC-A4FC-36F39135A40E}
 		{76E4992C-BC28-4CF6-B36E-7D73EE2FAFA1} = {C41EF321-EEEB-4A6E-8FED-B94EDE613F6F}
 		{1C08B337-902C-4CC5-8CBB-348072A3208D} = {FA45EED6-1925-4E44-968E-36BAE32B4296}
+		{AA665EFE-94C5-4F93-BA1D-F06180E97CE1} = {4A7DB9EC-EE70-401A-AE2E-E557A2562BFF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0DF4ED1A-F495-4CAC-9DE6-262C7DBACA55}

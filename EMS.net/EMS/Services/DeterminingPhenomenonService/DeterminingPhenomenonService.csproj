@@ -100,7 +100,6 @@
     <Compile Include="Helpers\ClipImageHelper.cs" />
     <Compile Include="Helpers\Helper.cs" />
     <Compile Include="Helpers\ValidationHelper.cs" />
-    <Compile Include="Objects\CuttedImageInfo.cs" />
     <Compile Include="Objects\DeterminingPhenomenonResponse.cs" />
     <Compile Include="GdalConfiguration.cs" />
     <Compile Include="Program.cs" />
@@ -131,6 +130,10 @@
     <ProjectReference Include="..\..\Common\Common.Helpers\Common.Helpers.csproj">
       <Project>{1c3ea9ca-822e-4c74-8207-0ec7bd98dcb8}</Project>
       <Name>Common.Helpers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\Common.Objects\Common.Objects.csproj">
+      <Project>{8CBF0AE8-CDC9-4CBE-9CDC-2734BF8BA636}</Project>
+      <Name>Common.Objects</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Common\Common.PointsReaders\Common.PointsReaders.csproj">
       <Project>{078146e0-f13f-4bf8-a883-75a598ada16d}</Project>

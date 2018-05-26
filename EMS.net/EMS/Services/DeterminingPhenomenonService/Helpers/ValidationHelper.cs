@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Common.Enums;
-using DeterminingPhenomenonService.Objects;
+using Common.Objects;
 using OSGeo.GDAL;
 using OSGeo.OSR;
 
