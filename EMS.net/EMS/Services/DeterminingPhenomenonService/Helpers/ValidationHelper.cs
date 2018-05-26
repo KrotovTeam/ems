@@ -70,6 +70,7 @@ namespace DeterminingPhenomenonService.Helpers
                     var xsize = geotransform[1];
                     var ysize = geotransform[5];
                     var utmCoordinates = Helper.ConvertLatLonToUtm(coordinates, ds);
+
                     using (var band = ds.GetRasterBand(1))
                     {
                         var projectionRef = ds.GetProjectionRef();
@@ -81,17 +82,9 @@ namespace DeterminingPhenomenonService.Helpers
                         var col2 = Convert.ToInt32((utmCoordinates[ImageCorner.LowerRight][0] - xinit) / xsize);
                         var colSize = col2 - col1 + 1;
                         var rowSize = row2 - row1 + 1;
-
-                        if (!cornersIndexes.ContainsKey(ImageCorner.UpperLeft))
-                        {
-                            cornersIndexes.Add(ImageCorner.UpperLeft, new[]
-                            {
-                                col1,
-                                row1
-                            });
-                        }
+                       
                         cloudMask = cloudMask ?? new byte[colSize * rowSize];
-                        cloudMask = GetCloudMaskByBandAndCoordinates(band, cornersIndexes, colSize, rowSize, cloudMask);
+                        cloudMask = GetCloudMaskByBandAndCoordinates(band, new []{col1, row1}, colSize, rowSize, cloudMask);
                         width = colSize;
                         height = rowSize;
                     }
@@ -116,11 +109,11 @@ namespace DeterminingPhenomenonService.Helpers
             return isValidCloudy;
         }
 
-        private static byte[] GetCloudMaskByBandAndCoordinates(Band qaBand, Dictionary<ImageCorner, int[]> cornersIndexes, int width, int height, byte[] cloudMask)
+        private static byte[] GetCloudMaskByBandAndCoordinates(Band qaBand, int[] upperCornerIndexes, int width, int height, byte[] cloudMask)
         {
             var buffer = new short[width * height];
 
-            qaBand.ReadRaster(cornersIndexes[ImageCorner.UpperLeft][0], cornersIndexes[ImageCorner.UpperLeft][1], width, height, buffer, width, height, 0, 0);
+            qaBand.ReadRaster(upperCornerIndexes[0], upperCornerIndexes[1], width, height, buffer, width, height, 0, 0);
             byte[] currentCloudMask = buffer.Select(x => (byte)(IsCloud(x) ? 1 : 0)).ToArray();
             for (int i = 0; i < cloudMask.Length; i++)
             {

@@ -149,12 +149,12 @@ async function test(){
     const resultPhenomen = await getPhenomenon({
         ResultFolder: 'C:\\Users\\User\\Downloads\\Карпаты2\\resultKarpati2015-2016',
         LeftUpper: {
-			Latitude: 48.4951,
-            Longitude: 23.4659 
+			Latitude: 49.2215,
+            Longitude: 24.0042 
         },
         RightLower:{
-            Latitude: 48.1187,
-            Longitude: 24.1141
+            Latitude: 48.7891,
+            Longitude: 24.6305
         },
 		phenomenon: 1,
         DataFolders:[
