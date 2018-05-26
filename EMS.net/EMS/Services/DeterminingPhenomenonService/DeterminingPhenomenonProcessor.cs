@@ -43,15 +43,15 @@ namespace DeterminingPhenomenonService
             {
                 
                 var files = Directory.EnumerateFiles(folder).ToList();
-                var channel4 = files.SingleOrDefault(f => f.EndsWith("B4.tif", StringComparison.InvariantCultureIgnoreCase));
-                var channel5 = files.SingleOrDefault(f => f.EndsWith("B5.tif", StringComparison.InvariantCultureIgnoreCase));
+                var channel4 = files.SingleOrDefault(f => f.EndsWith("B4.tif.l8n", StringComparison.InvariantCultureIgnoreCase));
+                var channel5 = files.SingleOrDefault(f => f.EndsWith("B5.tif.l8n", StringComparison.InvariantCultureIgnoreCase));
 
-                using (var isodataPointsReader = new LandsatIsodataPointsReader(channel4 + ".l8n", channel5 + ".l8n"))
+                using (var isodataPointsReader = new LandsatIsodataPointsReader(channel4, channel5))
                 {
                     List<Cluster> clusters;
                     var jsonClustersFilename = folder + @"/B4_B5_clusters.json";
                    
-                    if (string.IsNullOrEmpty(files.FirstOrDefault(f => f.Contains("clusters.json") && !f.Contains("cutted"))))
+                    if (string.IsNullOrEmpty(files.FirstOrDefault(f => f.Contains("B4_B5_clusters.json"))))
                     {
                         clusters = clusteringManager.Process(isodataPointsReader, new NdviIsodataProfile());
                         JsonHelper.Serialize(jsonClustersFilename, clusters);
@@ -112,8 +112,8 @@ namespace DeterminingPhenomenonService
                 }
             }
 
-            bool isValidDynamic = true;//DynaValidateDynamic();
-           
+            var amountDynamicPoints = dymanicMask.Count(p => p > 0) ;//DynaValidateDynamic();
+            
 
             var path = Helper.SaveDataInFile(dynamicResultFilename, dymanicMask, width, heigth, DataType.GDT_Byte);
 

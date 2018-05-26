@@ -147,19 +147,19 @@ async function getCharacteristics(message){
 
 async function test(){
     const resultPhenomen = await getPhenomenon({
-        ResultFolder: 'C:\\Users\\User\\Downloads\\IsodataV7\\Isodata\\Isodata\\bin\\Debug\\Karpati',
+        ResultFolder: 'C:\\Users\\User\\Downloads\\Карпаты2\\resultKarpati2015-2016',
         LeftUpper: {
-            Latitude: 49.203399,
-            Longitude: 24.0546005
+			Latitude: 48.3387,
+            Longitude: 23.8908  
         },
         RightLower:{
-            Latitude: 48.7853,
-            Longitude: 25.087399
+            Latitude: 47.9317,
+            Longitude: 24.4236
         },
 		Phenomenon: 1,
         DataFolders:[
-            'C:\\Users\\User\\Downloads\\IsodataV7\\Isodata\\Isodata\\bin\\Debug\\Karpati\\2014',
-            'C:\\Users\\User\\Downloads\\IsodataV7\\Isodata\\Isodata\\bin\\Debug\\Karpati\\2015'
+            'C:\\Users\\User\\Downloads\\Карпаты2\\185026_20150824',
+            'C:\\Users\\User\\Downloads\\Карпаты2\\185026_20160826'
         ]
     });
 
