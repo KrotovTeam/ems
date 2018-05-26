@@ -1,12 +1,13 @@
 const path = require('path');
 
 module.exports = {
-    phpSessionId: 'nkls8pj8aaggk78eekfitgrur2',
+    phpSessionId: 's5d14rj1b90j6i9ft0d1m4v2g1',
     downloadFolderPath: path.resolve('./external/download'),
     unzipFolderPath: path.resolve('./external/unzip'),
     exampleImageFolderPath: path.resolve('./external/image'),
     testMetaDataFolderPath: path.resolve('./external/testMetaData'),
     sortDownloadDataPath: path.resolve('./external/sortDownloadData'),
+    resultUserPath:path.resolve('./external/resultUser'),
     amqp: {
         rabbitMQ: {
             url: 'amqp://localhost'
