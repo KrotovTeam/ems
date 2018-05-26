@@ -41,7 +41,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CuttedImageInfo.cs" />
-    <Compile Include="LandsatMetadata.cs" />
+    <Compile Include="Landsat\LandsatDataDescription.cs" />
+    <Compile Include="Landsat\LandsatMetadata.cs" />
+    <Compile Include="Landsat\LandsatSnapshotDescription.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
