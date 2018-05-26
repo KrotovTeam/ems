@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Common.Enums;
 using Common.Objects;
+using DrawImageLibrary;
 using OSGeo.GDAL;
 using OSGeo.OSR;
 
@@ -110,6 +111,7 @@ namespace DeterminingPhenomenonService.Helpers
             double[] argin = { coordinates[ImageCorner.UpperLeft][0], 30, 0, coordinates[ImageCorner.LowerRight][1], 0, -30 };
 
             Helper.SaveDataInFile(resultCloudMaskFilename, cloudMask, width, height, DataType.GDT_Byte, argin, inputShapeSrs);
+            //DrawLib.DrawMask(cloudMask, width, height, resultCloudMaskFilename);
 
             return isValidCloudy;
         }
