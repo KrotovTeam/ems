@@ -10,6 +10,7 @@ using Common.Enums;
 using Common.Helpers;
 using Common.PointsReaders;
 using DeterminingPhenomenonService.Helpers;
+using DrawImageLibrary;
 using Isodata;
 using Isodata.Abstraction;
 using Isodata.Objects;
@@ -26,8 +27,12 @@ namespace DeterminingPhenomenonService
         public string ResultFolder;
         public PhenomenonType Phenomenon;
 
-        private string _pathToCloudMaskFile = @"/cloudMask.tif";
-        private string _pathToDynamicFile = @"/dynamic.tif";
+        private string _pathToCloudMaskFile = @"/cloudMask.png";
+        private string _pathToDynamicFile = @"/dynamic.png";
+        private string _pathToEdgedDynamicFile = @"/edged_dynamic.png";
+        private string _pathToVisibleImage = @"/visible.png";
+        private string _pathToVisibleDynamicFile = @"/visible_dynamic.png";
+
 
         public bool Proccess()
         {
@@ -106,17 +111,39 @@ namespace DeterminingPhenomenonService
 
                     double currentNdvi = Helper.CalculateNdviForCurrentTemporaryPoint(currentTemporaryBuffers, temporaryClustersDatas, row, col);
 
-                    var dynamic = Math.Abs(currentNdvi - pastNdvi) / currentNdvi;
+                    double dynamic = -1.0;
 
+                    if (phenomenon == PhenomenonType.ForestPlantationsDeseases)
+                    {
+                        dynamic = pastNdvi >= 0.2 && pastNdvi < 1 ? 
+                                    (pastNdvi > currentNdvi ? 
+                                        Math.Abs(currentNdvi - pastNdvi) / currentNdvi 
+                                        : 0) 
+                                    : 0;
+                    }
+                    
                     dymanicMask[row * width + col] = (byte)(dynamic >= 0.3 ? 1 : 0);
                 }
             }
 
-            var amountDynamicPoints = dymanicMask.Count(p => p > 0) ;//DynaValidateDynamic();
-            
+            var amountDynamicPoints = dymanicMask.Count(p => p > 0);
 
-            var path = Helper.SaveDataInFile(dynamicResultFilename, dymanicMask, width, heigth, DataType.GDT_Byte);
+            var currentFolder = DataFolders.Last();
+            var currentFiles = Directory.EnumerateFiles(currentFolder);
+            var naturalFiles = currentFiles.Where(f =>
+                f.EndsWith("B2.TIF.l8n") || f.EndsWith("B3.TIF.l8n") || f.EndsWith("B4.TIF.l8n"));
 
+            var currentImageInfo =
+                ClipImageHelper.GetCuttedImageInfoByCoordinates(currentFiles.First(f => f.EndsWith("B4.TIF")),
+                    coordinates);
+
+            DrawLib.DrawMask(dymanicMask, width, heigth, $"{ResultFolder}{_pathToDynamicFile}");
+            DrawLib.DrawEdges($"{ResultFolder}{_pathToDynamicFile}", $"{ResultFolder}{_pathToEdgedDynamicFile}");
+            DrawLib.DrawNaturalColor(naturalFiles.First(f => f.EndsWith("B4.TIF.l8n")), 
+                                     naturalFiles.First(f => f.EndsWith("B3.TIF.l8n")), 
+                                     naturalFiles.First(f => f.EndsWith("B2.TIF.l8n")),
+                                     currentImageInfo, $"{ResultFolder}{_pathToVisibleImage}");
+            DrawLib.DrawMask($"{ResultFolder}{_pathToEdgedDynamicFile}", $"{ResultFolder}{_pathToVisibleImage}", $"{ResultFolder}{_pathToVisibleDynamicFile}");
             return true;
             //DrawManager.DrawDynamicMask(path, @"Karpati/dynamicMask.bmp");
         }

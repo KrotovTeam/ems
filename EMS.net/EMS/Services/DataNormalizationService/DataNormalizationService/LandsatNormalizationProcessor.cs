@@ -29,19 +29,19 @@ namespace DataNormalizationService
         /// <summary>
         /// Нормализация снимка Landsat
         /// </summary>
-        /// <param name="fileName">Наименнование файла</param>
-        /// <param name="folder">Папка</param>
+        /// <param name="filePath">Наименнование файла</param>
+        /// <param name="folder">Папка куда положить результат</param>
         /// <param name="ml">RADIANCE_MULT_BAND_X</param>
         /// <param name="al">RADIANCE_ADD_BAND_X</param>
         /// <param name="sunElevation">SUN_ELEVATION</param>
         /// <param name="d">EARTH_SUN_DISTANCE</param>
         /// <param name="radianceMax">RADIANCE_MAXIMUM_BAND_X</param>
         /// <param name="reflectanceMax">REFLECTANCE_MAXIMUM_BAND_X</param>
-        public void Normalization(string fileName, double ml, double al, double sunElevation, double d, double radianceMax, double reflectanceMax)
+        public void Normalization(string filePath, string folder, double ml, double al, double sunElevation, double d, double radianceMax, double reflectanceMax)
         {
-            _logger.Info($"Нормализация файла {fileName}...");
+            _logger.Info($"Нормализация файла {filePath}...");
             // Если файл уже существует не делать нормализацию
-            var normalizedFileName = $"{fileName}{_extension}";
+            var normalizedFileName = $@"{folder}\{Path.GetFileName(filePath)}{_extension}";
             if (File.Exists(normalizedFileName))
             {
                 _logger.Info($"{normalizedFileName} уже существует");
@@ -51,7 +51,7 @@ namespace DataNormalizationService
             var stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            var channel = Gdal.Open(fileName, Access.GA_ReadOnly);
+            var channel = Gdal.Open(filePath, Access.GA_ReadOnly);
 
             using (var currentBand = channel.GetRasterBand(1))
             {
@@ -98,7 +98,7 @@ namespace DataNormalizationService
             }
 
             stopWatch.Stop();
-            _logger.Info($"Файл {fileName} нормализован, время {stopWatch.Elapsed:g}");
+            _logger.Info($"Файл {filePath} нормализован, время {stopWatch.Elapsed:g}");
         }
 
         #endregion

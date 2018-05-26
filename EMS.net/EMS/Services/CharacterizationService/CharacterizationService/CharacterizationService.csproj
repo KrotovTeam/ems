@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{76E4992C-BC28-4CF6-B36E-7D73EE2FAFA1}</ProjectGuid>
+    <ProjectGuid>{8770C708-6296-4128-8230-92FC819D0193}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>DeterminingPhenomenonService</RootNamespace>
-    <AssemblyName>DeterminingPhenomenonService</AssemblyName>
+    <RootNamespace>CharacterizationService</RootNamespace>
+    <AssemblyName>CharacterizationService</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -35,52 +35,52 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="gdalconst_csharp, Version=1.0.5387.28601, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GDAL.1.11.1\lib\net40\gdalconst_csharp.dll</HintPath>
+      <HintPath>..\..\..\packages\GDAL.1.11.1\lib\net40\gdalconst_csharp.dll</HintPath>
     </Reference>
     <Reference Include="gdal_csharp, Version=1.0.5387.28601, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GDAL.1.11.1\lib\net40\gdal_csharp.dll</HintPath>
+      <HintPath>..\..\..\packages\GDAL.1.11.1\lib\net40\gdal_csharp.dll</HintPath>
     </Reference>
     <Reference Include="GreenPipes, Version=2.1.1.108, Culture=neutral, PublicKeyToken=b800c4cfcdeea87b, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GreenPipes.2.1.1\lib\net452\GreenPipes.dll</HintPath>
+      <HintPath>..\..\..\packages\GreenPipes.2.1.1\lib\net452\GreenPipes.dll</HintPath>
     </Reference>
     <Reference Include="MassTransit, Version=5.1.2.1528, Culture=neutral, PublicKeyToken=b8e0e9f2f1e657fa, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MassTransit.5.1.2\lib\net452\MassTransit.dll</HintPath>
+      <HintPath>..\..\..\packages\MassTransit.5.1.2\lib\net452\MassTransit.dll</HintPath>
     </Reference>
     <Reference Include="MassTransit.RabbitMqTransport, Version=5.1.2.1528, Culture=neutral, PublicKeyToken=b8e0e9f2f1e657fa, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MassTransit.RabbitMQ.5.1.2\lib\net452\MassTransit.RabbitMqTransport.dll</HintPath>
+      <HintPath>..\..\..\packages\MassTransit.RabbitMQ.5.1.2\lib\net452\MassTransit.RabbitMqTransport.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Diagnostics.Tracing.EventSource, Version=1.1.28.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.28\lib\net46\Microsoft.Diagnostics.Tracing.EventSource.dll</HintPath>
+      <HintPath>..\..\..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.28\lib\net46\Microsoft.Diagnostics.Tracing.EventSource.dll</HintPath>
     </Reference>
     <Reference Include="NewId, Version=3.0.1.17, Culture=neutral, PublicKeyToken=b8e0e9f2f1e657fa, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NewId.3.0.1\lib\net452\NewId.dll</HintPath>
+      <HintPath>..\..\..\packages\NewId.3.0.1\lib\net452\NewId.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json.Bson, Version=1.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.Bson.1.0.1\lib\net45\Newtonsoft.Json.Bson.dll</HintPath>
+      <HintPath>..\..\..\packages\Newtonsoft.Json.Bson.1.0.1\lib\net45\Newtonsoft.Json.Bson.dll</HintPath>
     </Reference>
     <Reference Include="ogr_csharp, Version=1.0.5387.28600, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GDAL.1.11.1\lib\net40\ogr_csharp.dll</HintPath>
+      <HintPath>..\..\..\packages\GDAL.1.11.1\lib\net40\ogr_csharp.dll</HintPath>
     </Reference>
     <Reference Include="osr_csharp, Version=1.0.5387.28600, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GDAL.1.11.1\lib\net40\osr_csharp.dll</HintPath>
+      <HintPath>..\..\..\packages\GDAL.1.11.1\lib\net40\osr_csharp.dll</HintPath>
     </Reference>
     <Reference Include="RabbitMQ.Client, Version=5.0.0.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\RabbitMQ.Client.5.0.1\lib\net451\RabbitMQ.Client.dll</HintPath>
+      <HintPath>..\..\..\packages\RabbitMQ.Client.5.0.1\lib\net451\RabbitMQ.Client.dll</HintPath>
     </Reference>
     <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Serilog.2.7.1\lib\net46\Serilog.dll</HintPath>
+      <HintPath>..\..\..\packages\Serilog.2.5.0\lib\net46\Serilog.dll</HintPath>
     </Reference>
     <Reference Include="Serilog.Sinks.Console, Version=3.1.1.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Serilog.Sinks.Console.3.1.1\lib\net45\Serilog.Sinks.Console.dll</HintPath>
+      <HintPath>..\..\..\packages\Serilog.Sinks.Console.3.1.1\lib\net45\Serilog.Sinks.Console.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
+      <HintPath>..\..\..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -89,18 +89,13 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="Topshelf, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b800c4cfcdeea87b, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Topshelf.4.0.4\lib\net452\Topshelf.dll</HintPath>
+      <HintPath>..\..\..\packages\Topshelf.4.0.4\lib\net452\Topshelf.dll</HintPath>
     </Reference>
     <Reference Include="Topshelf.Serilog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b800c4cfcdeea87b, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Topshelf.Serilog.4.0.4\lib\net452\Topshelf.Serilog.dll</HintPath>
+      <HintPath>..\..\..\packages\Topshelf.Serilog.4.0.4\lib\net452\Topshelf.Serilog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DeterminingPhenomenonProcessor.cs" />
-    <Compile Include="Helpers\ClipImageHelper.cs" />
-    <Compile Include="Helpers\Helper.cs" />
-    <Compile Include="Helpers\ValidationHelper.cs" />
-    <Compile Include="Objects\DeterminingPhenomenonResponse.cs" />
     <Compile Include="GdalConfiguration.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -111,66 +106,38 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Bus\BusContracts\BusContracts.csproj">
+    <Content Include="GdalConfiguration.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Bus\BusContracts\BusContracts.csproj">
       <Project>{a745da87-1a5d-4390-86f3-0395f8cc783d}</Project>
       <Name>BusContracts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Bus\BusManager\BusManager.csproj">
+    <ProjectReference Include="..\..\..\Bus\BusManager\BusManager.csproj">
       <Project>{0d3bd373-7594-43a9-8de8-68b771876562}</Project>
       <Name>BusManager</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Common\Common.Constants\Common.Constants.csproj">
+    <ProjectReference Include="..\..\..\Common\Common.Constants\Common.Constants.csproj">
       <Project>{c7564c11-ca5d-4ac7-b1e8-9d18422b830d}</Project>
       <Name>Common.Constants</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Common\Common.Enums\Common.Enums.csproj">
-      <Project>{D695AC71-EFDF-45D5-A818-C0E0A84DDCE3}</Project>
+    <ProjectReference Include="..\..\..\Common\Common.Enums\Common.Enums.csproj">
+      <Project>{d695ac71-efdf-45d5-a818-c0e0a84ddce3}</Project>
       <Name>Common.Enums</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Common\Common.Helpers\Common.Helpers.csproj">
-      <Project>{1c3ea9ca-822e-4c74-8207-0ec7bd98dcb8}</Project>
-      <Name>Common.Helpers</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Common\Common.Objects\Common.Objects.csproj">
-      <Project>{8CBF0AE8-CDC9-4CBE-9CDC-2734BF8BA636}</Project>
+    <ProjectReference Include="..\..\..\Common\Common.Objects\Common.Objects.csproj">
+      <Project>{8cbf0ae8-cdc9-4cbe-9cdc-2734bf8ba636}</Project>
       <Name>Common.Objects</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Common\Common.PointsReaders\Common.PointsReaders.csproj">
-      <Project>{078146e0-f13f-4bf8-a883-75a598ada16d}</Project>
-      <Name>Common.PointsReaders</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Libs\DrawImageLibrary\DrawImageLibrary.csproj">
-      <Project>{aa665efe-94c5-4f93-ba1d-f06180e97ce1}</Project>
-      <Name>DrawImageLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Libs\Isodata\Isodata.Abstraction\Isodata.Abstraction.csproj">
-      <Project>{ee531a5c-60a9-48d6-ac4c-fcde12ddc4d8}</Project>
-      <Name>Isodata.Abstraction</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Libs\Isodata\Isodata.Helpers\Isodata.Helpers.csproj">
-      <Project>{96bd2ca5-fd08-41f1-aabf-ab749ba05030}</Project>
-      <Name>Isodata.Helpers</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Libs\Isodata\Isodata.Objects\Isodata.Objects.csproj">
-      <Project>{de1342d9-4e36-4d46-b8d9-4157e5e45ef7}</Project>
-      <Name>Isodata.Objects</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Libs\Isodata\Isodata\Isodata.csproj">
-      <Project>{9e3e9a96-0df5-4521-950d-b6e302eae61b}</Project>
-      <Name>Isodata</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="GdalConfiguration.vb" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\..\packages\GDAL.Native.1.11.1\build\net40\GDAL.Native.targets" Condition="Exists('..\..\packages\GDAL.Native.1.11.1\build\net40\GDAL.Native.targets')" />
+  <Import Project="..\..\..\packages\GDAL.Native.1.11.1\build\net40\GDAL.Native.targets" Condition="Exists('..\..\..\packages\GDAL.Native.1.11.1\build\net40\GDAL.Native.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\GDAL.Native.1.11.1\build\net40\GDAL.Native.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\GDAL.Native.1.11.1\build\net40\GDAL.Native.targets'))" />
-    <Error Condition="!Exists('..\..\packages\GDAL.Plugins.1.11.1\build\net40\GDAL.Plugins.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\GDAL.Plugins.1.11.1\build\net40\GDAL.Plugins.targets'))" />
+    <Error Condition="!Exists('..\..\..\packages\GDAL.Native.1.11.1\build\net40\GDAL.Native.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\GDAL.Native.1.11.1\build\net40\GDAL.Native.targets'))" />
+    <Error Condition="!Exists('..\..\..\packages\GDAL.Plugins.1.11.1\build\net40\GDAL.Plugins.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\GDAL.Plugins.1.11.1\build\net40\GDAL.Plugins.targets'))" />
   </Target>
-  <Import Project="..\..\packages\GDAL.Plugins.1.11.1\build\net40\GDAL.Plugins.targets" Condition="Exists('..\..\packages\GDAL.Plugins.1.11.1\build\net40\GDAL.Plugins.targets')" />
+  <Import Project="..\..\..\packages\GDAL.Plugins.1.11.1\build\net40\GDAL.Plugins.targets" Condition="Exists('..\..\..\packages\GDAL.Plugins.1.11.1\build\net40\GDAL.Plugins.targets')" />
 </Project>
