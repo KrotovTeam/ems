@@ -47,9 +47,6 @@
     <Compile Include="IDeterminingPhenomenonRequest.cs" />
     <Compile Include="IDeterminingPhenomenonResponse.cs" />
     <Compile Include="IGeographicPoint.cs" />
-    <Compile Include="IReliefCharacteristicProduct.cs" />
-    <Compile Include="IReliefCharacteristicRequest.cs" />
-    <Compile Include="IReliefCharacteristicResponse.cs" />
     <Compile Include="IСharacterizationRequest.cs" />
     <Compile Include="IСharacterizationResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
