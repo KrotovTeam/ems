@@ -30,5 +30,11 @@ namespace Common.Constants
         public const string PathToNormalizedDataFolder = @"/NormalizationData";
 
         #endregion
+
+        #region Paths to characteristics result
+
+        public const string PathToDamagedAreaResult = @"\areaOfDamage.json";
+
+        #endregion
     }
 }

@@ -100,10 +100,12 @@
     <Compile Include="Abstraction\AbstractCharacterizationProcessor.cs" />
     <Compile Include="Abstraction\AbstractReliefCharacteristicProcessor.cs" />
     <Compile Include="GdalConfiguration.cs" />
+    <Compile Include="Objects\AreaOfDamage\AreaOfDamageResult.cs" />
     <Compile Include="Objects\CharacterizationResponse\CharacteristicResult.cs" />
     <Compile Include="Objects\CharacterizationResponse\СharacterizationResponse.cs" />
     <Compile Include="Objects\DigitalReliefModel\SrtmDataset.cs" />
     <Compile Include="Objects\DigitalReliefModel\SrtmFile.cs" />
+    <Compile Include="Processors\AreaOfDamage\AreaOfDamageCharacterizationProcessor.cs" />
     <Compile Include="Processors\DigitalReliefModelCharacterizationProcessor.cs" />
     <Compile Include="Processors\DigitalReliefModel\ExpositionReliefCharacterisitcProcessor.cs" />
     <Compile Include="Processors\DigitalReliefModel\HeigthReliefCharacterisitcProcessor.cs" />

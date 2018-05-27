@@ -29,7 +29,7 @@ namespace Common.Helpers
         /// <param name="filename"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static string Serialize<T>(string filename, T data) where T:class 
+        public static string Serialize<T>(string filename, T data) where T: class 
         {
             if (data == null)
             {
