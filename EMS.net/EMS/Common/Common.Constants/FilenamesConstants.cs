@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Common.Constants
+﻿namespace Common.Constants
 {
     public class FilenamesConstants
     {
@@ -13,6 +7,7 @@ namespace Common.Constants
         public const string B4B5Clusters = @"\B4_B5_clusters.json";
 
         #endregion
+
         #region Paths to dynamic result filenames
 
         public const string PathToCloudMaskTiffFile = @"\cloudMask.tif";
@@ -22,6 +17,7 @@ namespace Common.Constants
         public const string PathToVisibleImage = @"\visible.png";
         public const string PathToVisibleDynamicFile = @"\visible_dynamic.png";
         public const string PathToDynamicGeoPointsJson = @"\dynamicGeoPoints.json";
+
         #endregion
 
         #region Data folders names

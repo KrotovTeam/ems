@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CharacterizationService.Abstraction;
+﻿using CharacterizationService.Abstraction;
 using CharacterizationService.Objects.AreaOfDamage;
 using Common.Constants;
 using Common.Helpers;
@@ -11,7 +6,7 @@ using Common.Objects;
 using DrawImageLibrary;
 using Topshelf.Logging;
 
-namespace CharacterizationService.Processors
+namespace CharacterizationService.Processors.AreaOfDamage
 {
     public class AreaOfDamageCharacterizationProcessor:AbstractCharacterizationProcessor
     {
