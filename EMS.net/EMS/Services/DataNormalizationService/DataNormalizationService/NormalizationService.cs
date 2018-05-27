@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using BusContracts;
 using Common.Constants;
@@ -54,6 +55,11 @@ namespace DataNormalizationService
 
             var normalizationDataFolder = $@"{request.Folder}{FilenamesConstants.PathToNormalizedDataFolder}";
 
+            if (!Directory.Exists(normalizationDataFolder))
+            {
+                Directory.CreateDirectory(normalizationDataFolder);
+            }
+
             processor.Normalization(folderDescription.Channel1.Raw, normalizationDataFolder,
                 radiometricRescaling.RadianceMultBand1, radiometricRescaling.RadianceAddBand1,
                 imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
@@ -89,10 +95,10 @@ namespace DataNormalizationService
                 imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
                 minMaxRadiance.RadianceMaximumBand7, minMaxReflectance.ReflectanceMaximumBand7);
 
-            processor.Normalization(folderDescription.Channel8.Raw, normalizationDataFolder,
-                radiometricRescaling.RadianceMultBand8, radiometricRescaling.RadianceAddBand8,
-                imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
-                minMaxRadiance.RadianceMaximumBand8, minMaxReflectance.ReflectanceMaximumBand8);
+            //processor.Normalization(folderDescription.Channel8.Raw, normalizationDataFolder,
+            //    radiometricRescaling.RadianceMultBand8, radiometricRescaling.RadianceAddBand8,
+            //    imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
+            //    minMaxRadiance.RadianceMaximumBand8, minMaxReflectance.ReflectanceMaximumBand8);
 
             processor.Normalization(folderDescription.Channel9.Raw, normalizationDataFolder,
                 radiometricRescaling.RadianceMultBand9, radiometricRescaling.RadianceAddBand9,

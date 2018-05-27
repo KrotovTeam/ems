@@ -327,3 +327,7 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+/EMS.nodejs/external/image
+/EMS.nodejs/external/download
+/EMS.nodejs/external/sortDownloadData/Landsat_8_C1
+/EMS.nodejs/external/resultUser

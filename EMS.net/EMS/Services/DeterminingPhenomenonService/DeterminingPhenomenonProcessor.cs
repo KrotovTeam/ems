@@ -21,6 +21,7 @@ using Isodata.Objects;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OSGeo.GDAL;
+using Topshelf.Logging;
 using IsodataMathHelper = Isodata.Helpers.MathHelper;
 
 namespace DeterminingPhenomenonService
@@ -39,14 +40,15 @@ namespace DeterminingPhenomenonService
         private readonly string _pathToEdgedDynamicFile;
         private readonly string _pathToVisibleImage;
         private readonly string _pathToVisibleDynamicFile;
-        private readonly string _pathToClustersFolder;
+        private string _pathToClustersFolder;
         private readonly string _pathToDynamicPointsJson;
-        
-       
 
-        public DeterminingPhenomenonProcessor(string[] dataFolders, string resultFolder, GeographicPolygon polygon,
+        private readonly LogWriter _logger;
+
+        public DeterminingPhenomenonProcessor(LogWriter logger, string[] dataFolders, string resultFolder, GeographicPolygon polygon,
             PhenomenonType phenomenon)
         {
+            _logger = logger;
             _dataFolders = dataFolders;
             _resultFolder = resultFolder;
             _phenomenon = phenomenon;
@@ -58,17 +60,17 @@ namespace DeterminingPhenomenonService
             _pathToEdgedDynamicFile = $@"{_resultFolder}{FilenamesConstants.PathToEdgedDynamicFile}";
             _pathToVisibleImage = $@"{_resultFolder}{FilenamesConstants.PathToVisibleImage}";
             _pathToVisibleDynamicFile = $@"{_resultFolder}{FilenamesConstants.PathToVisibleDynamicFile}";
-            _pathToClustersFolder = $@"{_resultFolder}{FilenamesConstants.PathToClustersFolder}";
             _pathToDynamicPointsJson = $@"{_resultFolder}{FilenamesConstants.PathToDynamicGeoPointsJson}";
         }
 
         public bool Proccess()
         {
             //если невалидно, то говорим пользователю о том, что невозможно обнаружить явление и подсчитать его характеристики.
+            _logger.Info($"Сервис обнаружения явления. Текущее действие: валидация облачности.");
             var isValidCloudy = ValidationHelper.CloudValidation(_dataFolders, _polygon, _pathToCloudMaskTiffFile,
                 _pathToCloudMaskPngFile);
-            if (!isValidCloudy)
-                return false;
+            //if (!isValidCloudy)
+            //    return false;
 
             var clusteringManager = new ClusteringManager();
 
@@ -109,6 +111,7 @@ namespace DeterminingPhenomenonService
                     }
                     else
                     {
+                        _pathToClustersFolder = $@"{folder}{FilenamesConstants.PathToClustersFolder}";
                         clusters = clusteringManager.Process(isodataPointsReader, new NdviIsodataProfile());
                         JsonHelper.Serialize($"{_pathToClustersFolder}{jsonClustersFilename}", clusters);
                     }
