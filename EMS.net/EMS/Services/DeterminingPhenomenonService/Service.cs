@@ -33,13 +33,14 @@ namespace DeterminingPhenomenonService
 
         private async Task ProcessRequest(IDeterminingPhenomenonRequest request)
         {
+            Logger.Info($"Получен запрос (RequestId = {request.RequestId}) на обнаружение явления {request.Phenomenon}.");
             var polygon = new GeographicPolygon()
             {
                 UpperLeft = request.LeftUpper,
                 LowerRight = request.RightLower
             };
 
-            var processor = new DeterminingPhenomenonProcessor(request.DataFolders, request.ResultFolder, polygon, request.Phenomenon);
+            var processor = new DeterminingPhenomenonProcessor(Logger, request.DataFolders, request.ResultFolder, polygon, request.Phenomenon);
 
             var response = new DeterminingPhenomenonResponse
             {
@@ -49,6 +50,7 @@ namespace DeterminingPhenomenonService
 
 
             await _busManager.Send<IDeterminingPhenomenonResponse>(BusQueueConstants.DeterminingPhenomenonResponsesQueueName, response);
+            Logger.Info($"Обработан запрос (RequestId = {response.RequestId}) на обнаружение явления {request.Phenomenon}.");
         }
 
         private Dictionary<string, Action<IRabbitMqReceiveEndpointConfigurator>> GetBusConfigurations()
