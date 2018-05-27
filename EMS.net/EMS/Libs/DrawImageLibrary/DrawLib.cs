@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
-using System.Runtime.Remoting.Messaging;
 using AForge.Imaging.Filters;
 using Common.Objects;
 using Common.PointsReaders;
@@ -13,20 +12,39 @@ namespace DrawImageLibrary
 {
     public static class DrawLib
     {
-
         /// <summary>
-        /// Создать изображение с белым фоном
+        /// Создать изображение с легендой
         /// </summary>
-        /// <param name="width"></param>
-        /// <param name="heigth"></param>
-        /// <param name="fileName"></param>
-        public static void CreateImage(int width, int heigth, string fileName)
+        /// <param name="width">Ширина</param>
+        /// <param name="heigth">Высота</param>
+        /// <param name="legendFileName">Абсолютный путь к файлу легенды</param>
+        /// <returns></returns>
+        public static Bitmap CreateImageWithLegend(int width, int heigth, string legendFileName)
         {
-            using (var bitmap = new Bitmap(width, heigth))
-            using (var graphics = Graphics.FromImage(bitmap))
+            using (var legend = new Bitmap(legendFileName))
             {
-                graphics.FillRectangle(Brushes.White, 0, 0, width, heigth);
-                bitmap.Save(fileName, ImageFormat.Png);
+                var bitmapWidth = width + legend.Width;
+                var bitmapHeigth = heigth;
+                if (heigth < legend.Height)
+                {
+                    bitmapHeigth = legend.Height;
+                }
+
+                var bitmap = new Bitmap(bitmapWidth, bitmapHeigth);
+                using (var graphics = Graphics.FromImage(bitmap))
+                {
+                   graphics.FillRectangle(Brushes.White, 0, 0, bitmap.Width, bitmap.Height);
+                }
+
+                var x = bitmap.Width - legend.Width;
+                var y = bitmap.Height / 2 - legend.Height / 2;
+
+                using (var graphics = Graphics.FromImage(bitmap))
+                {
+                    graphics.DrawImage(legend, x, y, legend.Width, legend.Height);
+                }
+
+                return bitmap;
             }
         }
 

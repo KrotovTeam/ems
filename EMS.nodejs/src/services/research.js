@@ -123,7 +123,7 @@ async function handleResearch(research, startData, endData, countYears = 2, coor
 
     const requestId = researchRes.id;
 
-    await createUserResFolders(requestId);
+    const userDir = await createUserResFolders(requestId);
 
     setTimeout(async () => {
         // По названию исследования узнаём снимки каких спутников нам нужны и Какие сервисы их получают
@@ -176,47 +176,57 @@ async function handleResearch(research, startData, endData, countYears = 2, coor
         // Файлы скачались безошибочно
         await researchController.setStatus(researchRes.id, STATE.CALIBRATION.code);
         await researchController.setPathsDownload(researchRes.id, arrayLandsat);
-
-        // После получения снимков Landsat\
-
-
-
-        // Проверим есть ли откалиброванные данные для каждой папки
-        for (let i = 0; i < arrayLandsat.length; i++) {
-            const pathCheck = arrayLandsat[i];
-            if(!(await checkExistFolder(`${pathCheck}\\NormalizationData`))){ // Если нет отклаброванный данных
-                console.log('Калибруем данные для: pathCheck');
-                amqp.calibration({
-                    Folder: pathCheck,
-                    SatelliteType: satellites.LANDSAT.type
-                });
-            }
-        }
-
-
-
-        // if (!true) {
-        //     // отправим запрос на калибровку данных
-        //     const resultCalibration = await amqp.calibration({});
-        //     // if(resultCalibration.status){}
-        // }else{
-        //     await researchController.setStatus(researchRes.id, STATE.FIND_PHENOMENON.code);
+        //
+        // // После получения снимков Landsat\
+        //
+        //
+        // // Проверим есть ли откалиброванные данные для каждой папки
+        // for (let i = 0; i < arrayLandsat.length; i++) {
+        //     const pathCheck = arrayLandsat[i];
+        //     if (!(await checkExistFolder(`${pathCheck}\\NormalizationData`))) { // Если нет отклаброванный данных
+        //         console.log('Калибруем данные для: pathCheck');
+        //         await amqp.calibration({
+        //             folder: pathCheck,
+        //             satelliteType: satellites.LANDSAT.type
+        //         });
+        //         console.log('Калибровка прошла успаешно калибровка: ')
+        //     }
         // }
-        // //отправим запрос на определение наличие явления
-        // const getPhenomenonResult = await amqp.getPhenomenon({});
-
-        // if(phenomenResult){
-        //     await researchController.setStatus(researchRes.id, STATE.DOWNLOAD_DATA_FOR_CHARACTERISTICS.code);
-        // }else{
-        //     await researchController.setStatus(researchRes.id, STATE.NO_FIND_PHENOMENON.code);
+        // // Начнем поиск явления
+        // await researchController.setStatus(researchRes.id, STATE.FIND_PHENOMENON.code);
+        //
+        //
+        // const getPhenomenonResult = await amqp.getPhenomenon({
+        //     resultFolder: `${userDir}\\phenomenon`,
+        //     leftUpper: {
+        //         latitude: coord[2],
+        //         Longitude: coord[1]
+        //     },
+        //     rightLower: {
+        //         latitude: coord[0],
+        //         longitude: coord[3]
+        //     },
+        //     phenomenon: RESEARCHES[research].type,
+        //     dataFolders: arrayLandsat
+        // });
+        //
+        //
+        // if(!getPhenomenonResult.isDetermined){
+        //     return await researchController.setStatus(researchRes.id, STATE.NO_FIND_PHENOMENON.code);
         // }
+        //
+        // await researchController.setStatus(researchRes.id, STATE.DOWNLOAD_DATA_FOR_CHARACTERISTICS.code);
+
+
         const needSatellitesForCharacteristics = {};
-        RESEARCHES[research].characteristics.forEach(characteristicName => {
+
+        const characteristics = RESEARCHES[research].characteristics;
+
+        characteristics.forEach(characteristicName => {
             const satellite = CHARACTERISTICS[characteristicName].satellite;
-            needSatellitesForCharacteristics[satellite] = 1;
+            needSatellitesForCharacteristics[satellite] = '';
         });
         // Скачаем данные для каждого спутника
-
         const needSatellites = Object.keys(needSatellitesForCharacteristics);
 
         for (let i = 0; i < needSatellites.length; i++) {
@@ -242,12 +252,14 @@ async function handleResearch(research, startData, endData, countYears = 2, coor
                 }
             }
         }
+
+
         const characteristicsResult = await amqp.getCharacteristics({
             // PhenomenonType: 1 (2, 3, 4) // тип явления
             // Characteristics: [
             //     {
             //         SatelliteType: 1 (2, 3, 4) // тип спутника
-            //         Path: '*\\'// Путь к папке с данными
+            //         Path: ''// Путь к папке с данными
             //         CharacteristicType: 1 (2, 3,4) // Тип явления
             //     }, ...
             // ],
@@ -289,11 +301,12 @@ async function _downloadAsync(requestId, data) {
     })
 }
 
-async function checkExistFolder(dir){
+async function checkExistFolder(dir) {
     const exists = util.promisify(fs.exists);
     return await exists(dir);
 
 }
+
 async function createUserResFolders(uuid) {
     const dir = `${config.resultUserPath}\\${uuid}`;
     const mkdir = util.promisify(fs.mkdir);

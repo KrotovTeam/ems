@@ -43,8 +43,8 @@ function createChannel(connection) {
             confirm(msg);
             const data = JSON.parse(msg.content);
             console.log(data);
-            if (data.message.RequestId) {
-                eventEmitter.emit(data.message.RequestId, data.message, msg);
+            if (data.message.requestId) {
+                eventEmitter.emit(data.message.requestId, data.message, msg);
             }
         }
 
@@ -87,7 +87,7 @@ async function getPhenomenon(message){
         messageType: ['urn:message:BusContracts:IDeterminingPhenomenonRequest'],
         message
     };
-    message.RequestId = requestId;
+    message.requestId = requestId;
 
     return new Promise(async (resolve, reject)=>{
         eventEmitter.on(requestId, (result, origMsg)=>{
@@ -97,7 +97,7 @@ async function getPhenomenon(message){
         });
         console.log(`Отправляем запрос ${requestId}: `,data);
         await channel.sendToQueue(phenomenonRequestChannel, Buffer.from(JSON.stringify(data)), {persistent: true});
-       // await channel.sendToQueue(phenomenonResultChannel, Buffer.from(JSON.stringify({message: {RequestId: requestId}})), {persistent: true});
+        //await channel.sendToQueue(phenomenonResultChannel, Buffer.from(JSON.stringify({message: {RequestId: requestId}})), {persistent: true});
 
     });
 }
@@ -108,7 +108,7 @@ async function calibration(message){
         messageType: ['urn:message:BusContracts:IDataNormalizationRequest'],
         message
     };
-    message.RequestId = requestId;
+    message.requestId = requestId;
 
     return new Promise(async (resolve, reject)=>{
         eventEmitter.on(requestId, (result, origMsg)=>{
@@ -126,7 +126,7 @@ async function getCharacteristics(message){
         messageType: ['urn:message:BusContracts:IDataNormalizationRequest'],
         message
     };
-    message.RequestId = requestId;
+    message.requestId = requestId;
 
     return new Promise(async (resolve, reject)=>{
         eventEmitter.on(requestId, (result, origMsg)=>{
@@ -145,32 +145,32 @@ async function getCharacteristics(message){
 
 
 
-async function test(){
-    const resultPhenomen = await getPhenomenon({
-        ResultFolder: 'C:\\Users\\User\\Downloads\\IsodataV7\\Isodata\\Isodata\\bin\\Debug\\Karpati',
-        LeftUpper: {
-            Latitude: 49.203399,
-            Longitude: 24.0546005
-        },
-        RightLower:{
-            Latitude: 48.7853,
-            Longitude: 25.087399
-        },
-        Phenomenon: 1,
-        DataFolders:[
-            'C:\\Users\\User\\Downloads\\IsodataV7\\Isodata\\Isodata\\bin\\Debug\\Karpati\\2014',
-            'C:\\Users\\User\\Downloads\\IsodataV7\\Isodata\\Isodata\\bin\\Debug\\Karpati\\2015'
-        ]
-    });
-
-
-
-
-    console.log('Результат ---------------', JSON.stringify(resultPhenomen));
-
-}
-
-setTimeout(test, 2000);
+// async function test(){
+//     const resultPhenomen = await getPhenomenon({
+//         ResultFolder: 'C:\\Users\\User\\Downloads\\Карпаты2\\resultKarpati2015-2016',
+//         LeftUpper: {
+//             Latitude: 48.3387,
+//             Longitude: 23.8908
+//         },
+//         RightLower:{
+//             Latitude: 47.9317,
+//             Longitude: 24.4236
+//         },
+//         Phenomenon: 1,
+//         DataFolders:[
+//             'C:\\Users\\User\\Downloads\\Карпаты2\\185026_20150824',
+//             'C:\\Users\\User\\Downloads\\Карпаты2\\185026_20160826'
+//         ]
+//     });
+//
+//
+//
+//
+//     console.log('Результат ---------------', JSON.stringify(resultPhenomen));
+//
+// }
+//
+// setTimeout(test, 2000);
 
 function confirm(msg){
     return channel.ack(msg);

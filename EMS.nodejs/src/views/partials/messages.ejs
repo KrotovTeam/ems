@@ -1,0 +1,8 @@
+<% if(messages){ %>
+<% locals.messages.forEach(function (mess){ %>
+<div class="<%= mess.type %>" role="alert">
+    <%= mess.text %>
+</div>
+<% }); %>
+<% removeMessages() %>
+<% } %>

@@ -6,8 +6,8 @@ module.exports = db => {
     return db.define('users', {
         userId: {
             primaryKey: true,
-            type: Sequelize.STRING,
-            //autoIncrement: true
+            type: Sequelize.INTEGER,
+            autoIncrement: true
         },
         username: {type: Sequelize.STRING},
         password: {type: Sequelize.STRING},

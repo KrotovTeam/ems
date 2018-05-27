@@ -1,6 +1,6 @@
 ﻿using Common.Objects;
 
-namespace ReliefModelService.Objects
+namespace CharacterizationService.Objects.DigitalReliefModel
 {
     public class SrtmFile
     {

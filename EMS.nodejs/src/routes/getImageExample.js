@@ -32,7 +32,7 @@ const RESEARCHES = {
 };
 
 router.post('/', async (req, res, next) => {
-    const username = req.cookies.user ? JSON.parse(req.cookies.user).username : null;
+    const username = res.locals.user.username;
     const dateStart = req.body.dateStart;
     const dateEnd = req.body.dateEnd;
     const research = RESEARCHES[req.body.research];

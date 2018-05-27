@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using BusContracts;
 using Common.Helpers;
 using Common.Objects;
 using OSGeo.GDAL;
 
-namespace ReliefModelService.Objects
+namespace CharacterizationService.Objects.DigitalReliefModel
 {
     public class SrtmDataset
     {
@@ -75,7 +76,7 @@ namespace ReliefModelService.Objects
                     {
                         Name = $"{latitudeLetter}{Math.Abs(latitudes[y]):00}{longitudeLetter}{Math.Abs(longtitudes[x]):000}.hgt"
                     };
-                    srtmFile.IsExists = File.Exists($@"{_folder}{srtmFile.Name}");
+                    srtmFile.IsExists = File.Exists($@"{_folder}\{srtmFile.Name}");
                     _grid[y, x] = srtmFile;
                 }
             }
@@ -250,7 +251,7 @@ namespace ReliefModelService.Objects
 
                     if (_grid[x, y].IsExists)
                     {
-                        using (var data = Gdal.Open($@"{_folder}{_grid[x, y].Name}", Access.GA_ReadOnly))
+                        using (var data = Gdal.Open($@"{_folder}\{_grid[x, y].Name}", Access.GA_ReadOnly))
                         using (var band = data.GetRasterBand(1))
                         {
                             band.ReadRaster(0, 0, band.XSize, band.YSize, buffer, band.XSize, band.YSize, 0, 0);

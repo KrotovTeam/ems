@@ -25,17 +25,33 @@ app.use(express.static(path.join(__dirname, 'src/views'))); //Проброс в�
 app.use(express.static(path.join(__dirname, 'external'))); //Проброс всех ресурсов для сайта
 app.set('view engine', 'ejs');
 
+app.use(require('./src/middlewares/messages'));
+app.use(function (req, res, next) {
+    res.locals.user = req.session.user || null;
+    next();
+});
+
 app.use('/', require('./src/routes/index'));
 app.use('/auth', require('./src/routes/auth'));
-app.use('/getImageExample', require('./src/routes/getImageExample'));
-app.use('/map' /* jwt, authorizedJWT*/, require('./src/routes/map'));
-app.use('/research' /* jwt, authorizedJWT*/, require('./src/routes/research'));
+app.use('/getImageExample', checkUser, require('./src/routes/getImageExample'));
+app.use('/map', checkUser/* jwt, authorizedJWT*/, require('./src/routes/map'));
+app.use('/research', checkUser /* jwt, authorizedJWT*/, require('./src/routes/research'));
+app.use('/login' /* jwt, authorizedJWT*/, require('./src/routes/login'));
+app.use('/registration' /* jwt, authorizedJWT*/, require('./src/routes/registration'));
 
 // подключаем обработчик успешных запросов (для форматирования вывода)
 app.use(`/`, successHandler);
 
 // подключаем обработчик ошибок
 app.use(errorHandler);
+
+
+function checkUser(req, res, next) {
+    if (res.locals.user) {
+        return next();
+    }
+    return res.redirect('/login');
+}
 
 app.listen(2002, () => {
     console.log('Example app listening on port 3001!');

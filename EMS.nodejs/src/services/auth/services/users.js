@@ -29,6 +29,13 @@ module.exports = {
 
         return await UsersController.generateToken(profile);
     },
+
+    registration: async req => {
+        validate(req, authenticateScheme);
+
+        return  await UsersController.registration(req.username, req.password);
+
+    },
     /**
      * Ф-я выполняет обновление токена доступа
      * @param {Object} req Объект, содержащий данные запроса
@@ -47,4 +54,5 @@ module.exports = {
      * @return {Promise}
      */
     checkAccess: async req => await UsersController.checkAccess(req.token, req._action),
+
 };

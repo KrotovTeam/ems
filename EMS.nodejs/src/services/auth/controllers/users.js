@@ -12,6 +12,7 @@ const {errors} = require('./../../../../utils');
 
 // подключаем кэш для хранения сессий пользователей
 const sessionCache = redis.createClient(config.redis);
+const bcrypt = require('bcryptjs');
 
 module.exports = {
     /**
@@ -19,7 +20,7 @@ module.exports = {
      * @param {string} username Логин пользователя
      * @return {Object}
      */
-    getProfile: async username=> {
+    getProfile: async username => {
         let profile = await Users.findOne({where: {username}});
         if (profile && profile.userId) {
             return profile;
@@ -114,6 +115,18 @@ module.exports = {
                     resolve({success: profile.role && profile.role === role || false});
                 });
             });
+        });
+    },
+    registration: async (username, password) => {
+        let profile = await Users.findOne({where: {username}});
+        if (profile) {
+            return null;
+        }
+
+        return await Users.create({
+            username,
+            password: bcrypt.hashSync(password, config.auth.salt),
+            email: 'user@gmail.com'
         });
     }
 };

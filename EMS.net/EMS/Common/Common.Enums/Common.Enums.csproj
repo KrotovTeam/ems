@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CharacteristicType.cs" />
+    <Compile Include="EnumsExtension.cs" />
     <Compile Include="ImageCorner.cs" />
     <Compile Include="Landsat8Channel.cs" />
     <Compile Include="PhenomenonType.cs" />
