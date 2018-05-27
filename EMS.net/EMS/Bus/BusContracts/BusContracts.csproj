@@ -40,14 +40,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ICharacteristicDescription.cs" />
+    <Compile Include="ICharacteristicResult.cs" />
     <Compile Include="IDataNormalizationRequest.cs" />
     <Compile Include="IDataNormalizationResponse.cs" />
     <Compile Include="IDeterminingPhenomenonRequest.cs" />
     <Compile Include="IDeterminingPhenomenonResponse.cs" />
     <Compile Include="IGeographicPoint.cs" />
-    <Compile Include="IReliefCharacteristicProduct.cs" />
-    <Compile Include="IReliefCharacteristicRequest.cs" />
-    <Compile Include="IReliefCharacteristicResponse.cs" />
+    <Compile Include="IСharacterizationRequest.cs" />
+    <Compile Include="IСharacterizationResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

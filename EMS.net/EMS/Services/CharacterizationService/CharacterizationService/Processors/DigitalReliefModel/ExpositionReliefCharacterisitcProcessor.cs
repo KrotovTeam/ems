@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using BusContracts;
-using Common.Enums;
-using ReliefModelService.Abstraction;
-using ReliefModelService.Objects;
+using CharacterizationService.Abstraction;
+using CharacterizationService.Objects.DigitalReliefModel;
+using DrawImageLibrary;
 
-namespace ReliefModelService.Processors
+namespace CharacterizationService.Processors.DigitalReliefModel
 {
     public class ExpositionReliefCharacterisitcProcessor : AbstractReliefCharacteristicProcessor
     {
-        public override IReliefCharacteristicProduct Process(SrtmDataset dataset, string folder)
+        public override string Process(SrtmDataset dataset, string folder)
         {
-            var legend = new Bitmap(@"..\..\Content\exposition.png");
-            var filePath = $@"{folder}exposition.tif";
-            using (var result = CreateImage(dataset, legend))
+            var filePath = $@"{folder}\exposition.png";
+            using (var result = DrawLib.CreateImageWithLegend(dataset.Width, dataset.Heigth, @"..\..\Content\exposition.png"))
             {
                 for (var x = 1; x < dataset.Width - 1; x++)
                 {
@@ -45,16 +43,10 @@ namespace ReliefModelService.Processors
                     }
                 }
 
-                SetLegend(result, legend);
-                legend.Dispose();
-                result.Save(filePath, ImageFormat.Tiff);
+                result.Save(filePath, ImageFormat.Png);
             }
 
-            return new ReliefCharacteristicProduct
-            {
-                FilePath = filePath,
-                Type = ReliefCharacteristicType.Exposition
-            };
+            return filePath;
         }
 
         private Color GetColor(double aspect)
