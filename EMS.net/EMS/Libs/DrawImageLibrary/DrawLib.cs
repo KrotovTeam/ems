@@ -189,19 +189,22 @@ namespace DrawImageLibrary
         /// <summary>
         /// Возвращает кол-во точек, в которых была обнаружена динамика
         /// </summary>
-        /// <param name="dynamicFilename">Файл маски динамики</param>
+        /// <param name="edgedDynamicFileName">Файл маски динамики</param>
         /// <returns></returns>
-        public static int GetAmountOfDynamicPoints(string dynamicFilename)
+        public static int GetAmountOfDynamicPoints(string edgedDynamicFileName)
         {
-            int amountOfDynamicPoints = 0;
-            using (var dynamic = new Bitmap(dynamicFilename))
+            var amountOfDynamicPoints = 0;
+            var filters = new FiltersSequence(new HomogenityEdgeDetector(), new Closing(), new GaussianBlur(5, 17));
+
+            using (var edgedDynamic = new Bitmap(edgedDynamicFileName))
+            using (var transformed = filters.Apply(edgedDynamic))
             {
-                for (int i = 0; i < dynamic.Height; i++)
+                for (var i = 0; i < transformed.Height; i++)
                 {
-                    for (int j = 0; j < dynamic.Width; j++)
+                    for (var j = 0; j < transformed.Width; j++)
                     {
-                        var pixel = dynamic.GetPixel(j, i);
-                        if (pixel.R == 255 && pixel.G == 0 && pixel.B == 0)
+                        var pixel = transformed.GetPixel(j, i);
+                        if (pixel.R > 0)
                         {
                             amountOfDynamicPoints++;
                         }
