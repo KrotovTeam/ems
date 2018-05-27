@@ -102,6 +102,10 @@ async function getPhenomenon(message){
     });
 }
 
+
+
+
+
 async function calibration(message){
     const requestId = uuid();
     const data = {
@@ -146,7 +150,7 @@ async function getCharacteristics(message){
 
 
 async function test(){
-    const resultPhenomen = await getPhenomenon({
+    const resultPhenomen = await calibration({
          ResultFolder: 'C:\\Users\\User\\Downloads\\Карпаты2\\resultKarpati2015-2016',
         LeftUpper: {
 			Latitude: 48.5819,
@@ -162,7 +166,22 @@ async function test(){
             'C:\\Users\\User\\Downloads\\Карпаты2\\185026_20160826'
         ]
     });
-
+    await calibration({
+        ResultFolder: 'C:\\Users\\User\\Downloads\\Карпаты2\\resultKarpati2015-2016',
+        LeftUpper: {
+            Latitude: 48.5819,
+            Longitude: 23.6326
+        },
+        RightLower:{
+            Latitude: 48.0633,
+            Longitude: 24.3522
+        },
+        Phenomenon: 1,
+        DataFolders:[
+            'C:\\Users\\User\\Downloads\\Карпаты2\\185026_20150824',
+            'C:\\Users\\User\\Downloads\\Карпаты2\\185026_20160826'
+        ]
+    });
 
 
 

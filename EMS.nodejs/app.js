@@ -10,6 +10,11 @@ const successHandler = require('./src/middlewares/successHandler');
 const errorHandler = require('./src/middlewares/errorHandler');
 //const mm = require('../diplom/src/services/auth/services/users');
 
+
+process.on('uncaughtException', function(err) {
+    console.log('Caught exception: ' + err);
+});
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'src/views'));
 

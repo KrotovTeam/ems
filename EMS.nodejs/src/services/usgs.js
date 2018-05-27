@@ -469,18 +469,21 @@ async function getDownloadLink(satellite, startData, endData, countYears = 2, co
 
     // Формируем объект уникальных сцен для первого элемента, для пересичения
     const listUnikScene = {};
-    res[keysDate[0]].forEach(e => {
-        const sceneId = getUniqSceneId(satellite)(e.displayId);
-        if (!listUnikScene[sceneId]) {
-            const initValue = {};
-            for (let i = 0; i < keysDate.length; i++) {
-                initValue[keysDate[i]] = 0;
+
+    keysDate.forEach(date=>{
+        res[date].forEach(e => {
+            const sceneId = getUniqSceneId(satellite)(e.displayId);
+            if (!listUnikScene[sceneId]) {
+                const initValue = {};
+                for (let i = 0; i < keysDate.length; i++) {
+                    initValue[keysDate[i]] = 0;
+                }
+                listUnikScene[sceneId] = {};
+                const coordScene = e.spatialFootprint.coordinates[0].slice(1);
+                listUnikScene[sceneId].coord = coordScene;
+                listUnikScene[sceneId].years = initValue;
             }
-            listUnikScene[sceneId] = {};
-            const coordScene = e.spatialFootprint.coordinates[0].slice(1);
-            listUnikScene[sceneId].coord = coordScene;
-            listUnikScene[sceneId].years = initValue;
-        }
+        })
     });
 
     for (let i = 0; i < keysDate.length; i++) {
