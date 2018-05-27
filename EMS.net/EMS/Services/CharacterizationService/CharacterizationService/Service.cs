@@ -5,6 +5,7 @@ using BusContracts;
 using CharacterizationService.Abstraction;
 using CharacterizationService.Objects.CharacterizationResponse;
 using CharacterizationService.Processors;
+using CharacterizationService.Processors.AreaOfDamage;
 using Common.Constants;
 using Common.Enums;
 using MassTransit;

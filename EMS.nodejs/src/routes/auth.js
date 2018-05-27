@@ -25,7 +25,6 @@ router.post('/authenticate', async (req, res) => {
         res.redirect('/login');
     }
 });
-
 router.post('/registration', async (req, res) => {
 
     let user = null;
@@ -49,7 +48,6 @@ router.post('/registration', async (req, res) => {
         res.redirect('/registration');
     }
 });
-
 router.post('/refreshToken', async (req, res, next) => {
     req.result = await authorizationService.refreshToken({
         token: req.body.token

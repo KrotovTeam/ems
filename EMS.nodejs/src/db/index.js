@@ -2,7 +2,6 @@
 
 const config = require('config');
 const Sequelize = require('sequelize');
-
 const Op = Sequelize.Op;
 
 // выполняем создание объекта для работы с БД
