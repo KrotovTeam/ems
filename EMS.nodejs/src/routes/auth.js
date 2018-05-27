@@ -41,9 +41,9 @@ router.post('/registration', async (req, res) => {
 
 
     if (user) {
-        //user.username = req.body.username;
-        //req.session.user = user;
-        res.redirect('/login');
+        user.username = req.body.username;
+        req.session.user = user;
+        res.redirect('/');
     } else {
         res.error('Пользователь с таким именем уже существует!!!');
         res.redirect('/registration');
