@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Common.Enums;
+using Common.Objects;
 
 namespace BusContracts
 {

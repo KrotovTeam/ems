@@ -1,4 +1,5 @@
 ﻿using BusContracts;
+using Common.Objects;
 using Topshelf.Logging;
 
 namespace CharacterizationService.Abstraction
