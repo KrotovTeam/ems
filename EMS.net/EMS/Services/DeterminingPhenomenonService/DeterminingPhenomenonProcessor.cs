@@ -40,7 +40,7 @@ namespace DeterminingPhenomenonService
         private readonly string _pathToEdgedDynamicFile;
         private readonly string _pathToVisibleImage;
         private readonly string _pathToVisibleDynamicFile;
-        private readonly string _pathToClustersFolder;
+        private string _pathToClustersFolder;
         private readonly string _pathToDynamicPointsJson;
 
         private readonly LogWriter _logger;
@@ -60,7 +60,6 @@ namespace DeterminingPhenomenonService
             _pathToEdgedDynamicFile = $@"{_resultFolder}{FilenamesConstants.PathToEdgedDynamicFile}";
             _pathToVisibleImage = $@"{_resultFolder}{FilenamesConstants.PathToVisibleImage}";
             _pathToVisibleDynamicFile = $@"{_resultFolder}{FilenamesConstants.PathToVisibleDynamicFile}";
-            _pathToClustersFolder = $@"{_resultFolder}{FilenamesConstants.PathToClustersFolder}";
             _pathToDynamicPointsJson = $@"{_resultFolder}{FilenamesConstants.PathToDynamicGeoPointsJson}";
         }
 
@@ -70,8 +69,8 @@ namespace DeterminingPhenomenonService
             _logger.Info($"Сервис обнаружения явления. Текущее действие: валидация облачности.");
             var isValidCloudy = ValidationHelper.CloudValidation(_dataFolders, _polygon, _pathToCloudMaskTiffFile,
                 _pathToCloudMaskPngFile);
-            if (!isValidCloudy)
-                return false;
+            //if (!isValidCloudy)
+            //    return false;
 
             var clusteringManager = new ClusteringManager();
 
@@ -112,6 +111,7 @@ namespace DeterminingPhenomenonService
                     }
                     else
                     {
+                        _pathToClustersFolder = $@"{folder}{FilenamesConstants.PathToClustersFolder}";
                         clusters = clusteringManager.Process(isodataPointsReader, new NdviIsodataProfile());
                         JsonHelper.Serialize($"{_pathToClustersFolder}{jsonClustersFilename}", clusters);
                     }

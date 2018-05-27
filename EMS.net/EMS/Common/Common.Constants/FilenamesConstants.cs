@@ -23,7 +23,7 @@
         #region Data folders names
 
         public const string PathToClustersFolder = @"\clusters";
-        public const string PathToNormalizedDataFolder = @"/NormalizationData";
+        public const string PathToNormalizedDataFolder = @"\NormalizationData";
 
         #endregion
 

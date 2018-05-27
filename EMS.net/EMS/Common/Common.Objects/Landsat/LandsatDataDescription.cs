@@ -258,7 +258,7 @@ namespace Common.Objects.Landsat
             ClustersJson = new List<string>();
 
             var clustersFolder = $@"{folder}{FilenamesConstants.PathToClustersFolder}";
-            
+
             if (Directory.Exists(clustersFolder))
             {
                 var clustersFiles = Directory.GetFiles(clustersFolder);
@@ -266,6 +266,10 @@ namespace Common.Objects.Landsat
                 {
                    ClustersJson.AddRange(clustersFiles);
                 } 
+            }
+            else
+            {
+                Directory.CreateDirectory(clustersFolder);
             }
 
             #endregion
