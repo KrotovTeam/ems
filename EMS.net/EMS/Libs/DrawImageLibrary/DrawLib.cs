@@ -161,6 +161,11 @@ namespace DrawImageLibrary
             }
         }
 
+        /// <summary>
+        /// Возвращает список точек, которые являются помечеными в маске(например, динамика)
+        /// </summary>
+        /// <param name="maskFilename"></param>
+        /// <returns></returns>
         public static List<Point> GetMaskIndexes(string maskFilename)
         {
             List<Point> pointsIndexes= new List<Point>();
@@ -179,6 +184,32 @@ namespace DrawImageLibrary
             }
 
             return pointsIndexes;
+        }
+
+        /// <summary>
+        /// Возвращает кол-во точек, в которых была обнаружена динамика
+        /// </summary>
+        /// <param name="dynamicFilename">Файл маски динамики</param>
+        /// <returns></returns>
+        public static int GetAmountOfDynamicPoints(string dynamicFilename)
+        {
+            int amountOfDynamicPoints = 0;
+            using (var dynamic = new Bitmap(dynamicFilename))
+            {
+                for (int i = 0; i < dynamic.Height; i++)
+                {
+                    for (int j = 0; j < dynamic.Width; j++)
+                    {
+                        var pixel = dynamic.GetPixel(j, i);
+                        if (pixel.R == 255 && pixel.G == 0 && pixel.B == 0)
+                        {
+                            amountOfDynamicPoints++;
+                        }
+                    }
+                }
+            }
+
+            return amountOfDynamicPoints;
         }
 
         private static Bitmap ToGrayscale(Bitmap bmp)

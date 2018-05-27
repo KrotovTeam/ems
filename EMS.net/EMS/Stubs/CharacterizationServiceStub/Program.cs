@@ -20,10 +20,10 @@ namespace CharacterizationServiceStub
                 {
                     new
                     {
-                        SatelliteType = SatelliteType.Srtm,
-                        DataFolder = @"F:\SRTM_DATA",
-                        ResultFolder = @"F:\SRTM_RESULT",
-                        CharacteristicType = CharacteristicType.DigitalReliefModel
+                        SatelliteType = SatelliteType.Landsat8,
+                        DataFolder = @"C:\Users\User\Downloads\Карпаты2\resultKarpati2015-2016",
+                        ResultFolder = @"C:\Users\User\Downloads\Карпаты2\resultKarpati2015-2016\Characteristics",
+                        CharacteristicType = CharacteristicType.AreaOfDamage
                     }
                 },
                 LeftUpper = new

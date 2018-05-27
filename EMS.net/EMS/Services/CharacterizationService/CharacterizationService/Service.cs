@@ -22,6 +22,7 @@ namespace CharacterizationService
         private readonly Dictionary<CharacteristicType, AbstractCharacterizationProcessor> _processorsDictionary =
             new Dictionary<CharacteristicType, AbstractCharacterizationProcessor>
             {
+                {CharacteristicType.AreaOfDamage, new AreaOfDamageCharacterizationProcessor(Logger) },
                 {CharacteristicType.DigitalReliefModel, new DigitalReliefModelCharacterizationProcessor(Logger)}
             };
 
@@ -61,7 +62,6 @@ namespace CharacterizationService
                         characteristic.DataFolder, characteristic.ResultFolder)
                 };
                 response.Results.Add(result);
-
             }
 
             await _busManager.Send<IСharacterizationResponse>(BusQueueConstants.CharacterizationResponseQueueName, response);
