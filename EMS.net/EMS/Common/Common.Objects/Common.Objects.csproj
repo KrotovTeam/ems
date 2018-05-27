@@ -41,10 +41,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CuttedImageInfo.cs" />
+    <Compile Include="GeographicPoint.cs" />
+    <Compile Include="IGeographicPoint.cs" />
     <Compile Include="Landsat\LandsatDataDescription.cs" />
     <Compile Include="Landsat\LandsatMetadata.cs" />
     <Compile Include="Landsat\LandsatSnapshotDescription.cs" />
+    <Compile Include="Point.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common.Constants\Common.Constants.csproj">
+      <Project>{c7564c11-ca5d-4ac7-b1e8-9d18422b830d}</Project>
+      <Name>Common.Constants</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common.Enums\Common.Enums.csproj">
+      <Project>{d695ac71-efdf-45d5-a818-c0e0a84ddce3}</Project>
+      <Name>Common.Enums</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using Common.Enums;
 using Common.Objects;
+using Common.Objects.Landsat;
+using DeterminingPhenomenonService.Objects;
 using DrawImageLibrary;
 using OSGeo.GDAL;
 using OSGeo.OSR;
@@ -12,16 +14,20 @@ namespace DeterminingPhenomenonService.Helpers
 {
     public static class ValidationHelper
     {
-        public static bool ValidateBuffers(Dictionary<string, List<double[,]>> temporaryDataBuffers)
+        public static bool ValidateBuffers(IEnumerable<LandsatCuttedBuffers> temporaryBuffers)
         {
             var imagesSizes = new List<CuttedImageInfo>();
-            foreach (var temporaryDataBuffer in temporaryDataBuffers)
+            foreach (var temporaryDataBuffer in temporaryBuffers.SelectMany(b => b.Channels.Select( ch => ch.Value)))
             {
-                var cuttedImageInfos = temporaryDataBuffer.Value.Select(imageData => new CuttedImageInfo { Height = imageData.GetLength(0), Width = imageData.GetLength(1) });
-                imagesSizes.AddRange(cuttedImageInfos);
+                var cuttedImageInfos = new CuttedImageInfo
+                {
+                    Height = temporaryDataBuffer.GetLength(0),
+                    Width = temporaryDataBuffer.GetLength(1)
+                };
+                imagesSizes.Add(cuttedImageInfos);
             }
 
-            var currentImageInfo = imagesSizes.FirstOrDefault();
+            var currentImageInfo = imagesSizes.First();
             foreach (var imageInfo in imagesSizes.Skip(1))
             {
                 if (currentImageInfo.Width == imageInfo.Width && currentImageInfo.Height == imageInfo.Height)
@@ -45,48 +51,37 @@ namespace DeterminingPhenomenonService.Helpers
             return false;
         }
 
-        public static bool CloudValidation(string[] folders, Dictionary<ImageCorner, double[]> coordinates, string resultCloudMaskFilename)
+        public static bool CloudValidation(string[] folders, GeographicPolygon polygon, string resultCloudMaskTifFilename, string resultCloudMaskPngFilename)
         {
-            Dictionary<ImageCorner, int[]> cornersIndexes = new Dictionary<ImageCorner, int[]>();
             byte[] cloudMask = null;
             int width = 0;
             SpatialReference tifProjection = null;
             int height = 0;
+            var utmPolygon = new UtmPolygon();
             foreach (var folder in folders)
             {
-                var qaFile = Directory.EnumerateFiles(folder).First(f => f.Contains("BQA"));
-                if (string.IsNullOrEmpty(qaFile))
-                {
-                    return false;
-                }
+                var landsatData = new LandsatDataDescription(folder);
+                var qaFile = landsatData.ChannelBqa;
 
                 using (var ds = Gdal.Open(qaFile, Access.GA_ReadOnly))
                 {
                     double[] geotransform = new double[6];
                     ds.GetGeoTransform(geotransform);
-                    var xinit = geotransform[0];
-                    var yinit = geotransform[3];
 
-                    var xsize = geotransform[1];
-                    var ysize = geotransform[5];
-                    var utmCoordinates = Helper.ConvertLatLonToUtm(coordinates, ds);
+                    utmPolygon = Helper.ConvertGeographicPolygonToUtm(polygon, ds);
 
                     using (var band = ds.GetRasterBand(1))
                     {
                         var projectionRef = ds.GetProjectionRef();
                         tifProjection = new SpatialReference(projectionRef);
+                        
+                        var cuttedImageInfo = ClipImageHelper.GetCuttedImageInfoByPolygonData(utmPolygon, geotransform);
 
-                        var row1 = Convert.ToInt32((utmCoordinates[ImageCorner.UpperLeft][1] - yinit) / ysize);
-                        var col1 = Convert.ToInt32((utmCoordinates[ImageCorner.UpperLeft][0] - xinit) / xsize);
-                        var row2 = Convert.ToInt32((utmCoordinates[ImageCorner.LowerRight][1] - yinit) / ysize);
-                        var col2 = Convert.ToInt32((utmCoordinates[ImageCorner.LowerRight][0] - xinit) / xsize);
-                        var colSize = col2 - col1 + 1;
-                        var rowSize = row2 - row1 + 1;
-                       
-                        cloudMask = cloudMask ?? new byte[colSize * rowSize];
-                        cloudMask = GetCloudMaskByBandAndCoordinates(band, new []{col1, row1}, colSize, rowSize, cloudMask);
-                        width = colSize;
-                        height = rowSize;
+                        cloudMask = cloudMask ?? new byte[cuttedImageInfo.Width * cuttedImageInfo.Height];
+                        cloudMask = GetCloudMaskByBandAndCoordinates(band, cuttedImageInfo, cloudMask);
+
+                        width = cuttedImageInfo.Width;
+                        height = cuttedImageInfo.Height;
                     }
                 }
             }
@@ -101,19 +96,19 @@ namespace DeterminingPhenomenonService.Helpers
             bool isValidCloudy = percentOfCloudedPoints < 0.14;
 
             tifProjection.ExportToWkt(out var inputShapeSrs);
-            double[] argin = { coordinates[ImageCorner.UpperLeft][0], 30, 0, coordinates[ImageCorner.LowerRight][1], 0, -30 };
+            double[] argin = { polygon.UpperLeft.Latitude, 30, 0, polygon.UpperLeft.Longitude, 0, -30 };
 
-            Helper.SaveDataInFile(resultCloudMaskFilename, cloudMask, width, height, DataType.GDT_Byte, argin, inputShapeSrs);
-            //DrawLib.DrawMask(cloudMask, width, height, resultCloudMaskFilename);
+            Helper.SaveDataInFile(resultCloudMaskTifFilename, cloudMask, width, height, DataType.GDT_Byte, argin, inputShapeSrs);
+            DrawLib.DrawMask(cloudMask, width, height, resultCloudMaskPngFilename);
 
             return isValidCloudy;
         }
 
-        private static byte[] GetCloudMaskByBandAndCoordinates(Band qaBand, int[] upperCornerIndexes, int width, int height, byte[] cloudMask)
+        private static byte[] GetCloudMaskByBandAndCoordinates(Band qaBand, CuttedImageInfo imageInfo, byte[] cloudMask)
         {
-            var buffer = new short[width * height];
+            var buffer = new short[imageInfo.Width * imageInfo.Height];
 
-            qaBand.ReadRaster(upperCornerIndexes[0], upperCornerIndexes[1], width, height, buffer, width, height, 0, 0);
+            qaBand.ReadRaster(imageInfo.Col, imageInfo.Row, imageInfo.Width, imageInfo.Height, buffer, imageInfo.Width, imageInfo.Height, 0, 0);
             byte[] currentCloudMask = buffer.Select(x => (byte)(IsCloud(x) ? 1 : 0)).ToArray();
             for (int i = 0; i < cloudMask.Length; i++)
             {
@@ -130,6 +125,17 @@ namespace DeterminingPhenomenonService.Helpers
 
         private static readonly List<int> СloudesConstants = new List<int>()
         {
+            ////Cirrus Confidence - Low
+            //2720, 2722, 2724, 2728, 2732, 2752, 2756, 2760, 2764, 2800, 2804, 2804, 2808, 2812, 2976,
+            //2980, 2984, 2988, 3008, 3012, 3016, 3020, 3744, 3748, 3752, 3756, 3780, 3784, 3788,
+            ////Cloud Confidence-Low
+            //2720, 2722, 2724, 2728, 2732, 2976, 2980, 2984, 2988, 3744, 3748, 3752, 3756, 6816, 6820, 6824,
+            //6828, 7072, 7076, 7080, 7084, 7840, 7844, 7848, 7852,
+            //Snow-ice high
+            3744, 3748, 3752, 3756, 3776, 3780, 3784, 3788, 7840, 7844, 7848, 7852, 7872, 7876, 7880, 7884,
+            //Cloud Confidence - Medium
+            2752, 2756, 2760, 2764, 3008, 3012, 3016, 3020, 3776, 3780, 3784, 3788,
+            6848, 6852, 6856, 6860, 7104, 7108, 7112, 7116, 7872, 7876, 7880, 7884,
             //Cloud Confidence - High
             2800, 2804, 2808, 2812, 3008, 2752, 6896 ,6900, 6904, 6908,
             //Cloud Shadow - High

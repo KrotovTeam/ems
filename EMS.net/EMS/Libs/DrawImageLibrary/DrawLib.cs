@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using AForge.Imaging.Filters;
 using Common.Objects;
 using Common.PointsReaders;
+using Point = Common.Objects.Point;
 
 namespace DrawImageLibrary
 {
@@ -125,7 +127,7 @@ namespace DrawImageLibrary
         /// <param name="resultFilename">Результирующий файл, содержащий контуры</param>
         public static void DrawEdges(string filename, string resultFilename)
         {
-            var canny = new CannyEdgeDetector();
+            var canny = new CannyEdgeDetector((byte)80, (byte)180);
 
             var inputBmp = new Bitmap(filename);
 
@@ -157,6 +159,26 @@ namespace DrawImageLibrary
 
                 bitmap.Save(resultFileName, ImageFormat.Png);
             }
+        }
+
+        public static List<Point> GetMaskIndexes(string maskFilename)
+        {
+            List<Point> pointsIndexes= new List<Point>();
+            using (var dynamic = new Bitmap(maskFilename))
+            {
+                for (int i = 0; i < dynamic.Height; i++)
+                {
+                    for (int j = 0; j < dynamic.Width; j++)
+                    {
+                        if (dynamic.GetPixel(j, i).R > 0)
+                        {
+                            pointsIndexes.Add(new Point { X = j, Y = i });
+                        }
+                    }
+                }
+            }
+
+            return pointsIndexes;
         }
 
         private static Bitmap ToGrayscale(Bitmap bmp)

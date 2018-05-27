@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using BusContracts;
 using CharacterizationService.Abstraction;
 using CharacterizationService.Objects.DigitalReliefModel;
 using CharacterizationService.Processors.DigitalReliefModel;
+using Common.Objects;
 using Topshelf.Logging;
 
 namespace CharacterizationService.Processors

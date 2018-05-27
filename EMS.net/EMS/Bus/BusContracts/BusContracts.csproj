@@ -42,19 +42,22 @@
   <ItemGroup>
     <Compile Include="ICharacteristicDescription.cs" />
     <Compile Include="ICharacteristicResult.cs" />
+	<Compile Include="IСharacterizationRequest.cs" />
+    <Compile Include="IСharacterizationResponse.cs" />
     <Compile Include="IDataNormalizationRequest.cs" />
     <Compile Include="IDataNormalizationResponse.cs" />
     <Compile Include="IDeterminingPhenomenonRequest.cs" />
     <Compile Include="IDeterminingPhenomenonResponse.cs" />
-    <Compile Include="IGeographicPoint.cs" />
-    <Compile Include="IСharacterizationRequest.cs" />
-    <Compile Include="IСharacterizationResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Common.Enums\Common.Enums.csproj">
       <Project>{d695ac71-efdf-45d5-a818-c0e0a84ddce3}</Project>
       <Name>Common.Enums</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\Common.Objects\Common.Objects.csproj">
+      <Project>{8cbf0ae8-cdc9-4cbe-9cdc-2734bf8ba636}</Project>
+      <Name>Common.Objects</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

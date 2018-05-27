@@ -1,4 +1,6 @@
-﻿namespace CharacterizationService.Objects.DigitalReliefModel
+﻿using Common.Objects;
+
+namespace CharacterizationService.Objects.DigitalReliefModel
 {
     public class SrtmFile
     {

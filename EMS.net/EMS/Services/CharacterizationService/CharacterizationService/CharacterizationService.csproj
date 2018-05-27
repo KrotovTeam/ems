@@ -102,7 +102,6 @@
     <Compile Include="GdalConfiguration.cs" />
     <Compile Include="Objects\CharacterizationResponse\CharacteristicResult.cs" />
     <Compile Include="Objects\CharacterizationResponse\СharacterizationResponse.cs" />
-    <Compile Include="Objects\DigitalReliefModel\Point.cs" />
     <Compile Include="Objects\DigitalReliefModel\SrtmDataset.cs" />
     <Compile Include="Objects\DigitalReliefModel\SrtmFile.cs" />
     <Compile Include="Processors\DigitalReliefModelCharacterizationProcessor.cs" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using BusContracts;
 using Common.Helpers;
+using Common.Objects;
 using OSGeo.GDAL;
 
 namespace CharacterizationService.Objects.DigitalReliefModel

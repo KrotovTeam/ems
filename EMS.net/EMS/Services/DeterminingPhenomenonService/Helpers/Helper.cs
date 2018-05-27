@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Common.Enums;
+using Common.Objects;
+using DeterminingPhenomenonService.Objects;
 using Isodata.Helpers;
 using Isodata.Objects;
 using OSGeo.GDAL;
@@ -26,37 +28,81 @@ namespace DeterminingPhenomenonService.Helpers
             }
         }
 
-        public static Dictionary<ImageCorner, double[]> ConvertLatLonToUtm(Dictionary<ImageCorner, double[]> coordinates, Dataset ds)
+        public static UtmPolygon ConvertGeographicPolygonToUtm(GeographicPolygon polygon, Dataset ds)
         {
-            var utmPoints = new Dictionary<ImageCorner, double[]>();
             SpatialReference monUtm = new SpatialReference(ds.GetProjectionRef());
 
+            var utmPolygon = new UtmPolygon();
 
             SpatialReference monGeo = new SpatialReference(ds.GetProjectionRef());
             monGeo.ImportFromEPSG(4326);
-            foreach (var coordinate in coordinates)
-            {
-                double[] res = new double[3];
+            double[] res = new double[3];
 
-                CoordinateTransformation coordTrans = new CoordinateTransformation(monGeo, monUtm);
-                coordTrans.TransformPoint(res, coordinate.Value[1], coordinate.Value[0], 0);
-                utmPoints.Add(coordinate.Key, new double[] { res[0], res[1] });
-            }
+            CoordinateTransformation coordTrans = new CoordinateTransformation(monGeo, monUtm);
 
-            return utmPoints;
+            coordTrans.TransformPoint(res, polygon.UpperLeft.Longitude, polygon.UpperLeft.Latitude, 0);
+            utmPolygon.UpperLeft.Easting = res[0];
+            utmPolygon.UpperLeft.Northing = res[1];
+
+            coordTrans.TransformPoint(res, polygon.LowerRight.Longitude, polygon.LowerRight.Latitude, 0);
+            utmPolygon.LowerRight.Easting = res[0];
+            utmPolygon.LowerRight.Northing = res[1];
+
+            return utmPolygon;
         }
 
-        public static double CalculateAverageNdviForPastTemporaryPoint(Dictionary<string, List<double[,]>> pastTemporartyBuffers, 
-            Dictionary<string, List<Cluster>> temporaryClustersDatas, int row, int col)
+        public static GeographicPoint ConvertUtmPointToGeographic(UtmPoint utmPoint, Dataset ds)
+        {
+            SpatialReference monUtm = new SpatialReference(ds.GetProjectionRef());
+
+            var geoPoint = new GeographicPoint();
+
+            SpatialReference monGeo = new SpatialReference(ds.GetProjectionRef());
+            monGeo.ImportFromEPSG(4326);
+            double[] res = new double[3];
+
+            CoordinateTransformation coordTrans = new CoordinateTransformation(monUtm, monGeo);
+
+            coordTrans.TransformPoint(res, utmPoint.Easting, utmPoint.Northing, 0);
+            geoPoint.Longitude = res[0];
+            geoPoint.Latitude = res[1];
+
+            return geoPoint;
+        }
+
+        public static GeographicPolygon ConvertUtmPolygonToGeographic(UtmPolygon utmPolygon, Dataset ds)
+        {
+            SpatialReference monUtm = new SpatialReference(ds.GetProjectionRef());
+
+            var geoPolygon = new GeographicPolygon();
+
+            SpatialReference monGeo = new SpatialReference(ds.GetProjectionRef());
+            monGeo.ImportFromEPSG(4326);
+            double[] res = new double[3];
+
+            CoordinateTransformation coordTrans = new CoordinateTransformation(monUtm, monGeo);
+
+            coordTrans.TransformPoint(res, utmPolygon.UpperLeft.Easting, utmPolygon.UpperLeft.Northing, 0);
+            geoPolygon.UpperLeft.Longitude = res[0];
+            geoPolygon.UpperLeft.Latitude = res[1];
+
+            coordTrans.TransformPoint(res, utmPolygon.LowerRight.Easting, utmPolygon.LowerRight.Northing, 0);
+            geoPolygon.LowerRight.Longitude = res[0];
+            geoPolygon.LowerRight.Latitude = res[1];
+
+            return geoPolygon;
+        }
+
+        public static double CalculateAverageNdviForPastTemporaryPoint(List<TemporaryData> pastTemporaryDatas, int row, int col)
         {
             double ndvi = 0;
 
-            var buffersCount = pastTemporartyBuffers.Count;
+            var buffersCount = pastTemporaryDatas.Count;
             var sum = 0.0;
-            foreach (var temporaryBuffer in pastTemporartyBuffers)
+            foreach (var pastTemporaryData in pastTemporaryDatas)
             {
-                var values = new[] { temporaryBuffer.Value.First()[row, col], temporaryBuffer.Value.Last()[row, col] };
-                var perfectCluster = temporaryClustersDatas[temporaryBuffer.Key].OrderBy(z => MathHelper.EuclideanDistance(values, z.CenterCluster)).First();
+                var perfectCluster = CalculateNdviInnerForTemporaryData(pastTemporaryData, row, col);
+
                 sum += CalculateNdvi(perfectCluster.CenterCluster[0], perfectCluster.CenterCluster[1]);
             }
 
@@ -65,24 +111,15 @@ namespace DeterminingPhenomenonService.Helpers
             return ndvi;
         }
 
-        public static double CalculateNdviForCurrentTemporaryPoint(KeyValuePair<string, List<double[,]>> currentTemporaryBuffers,
-            Dictionary<string, List<Cluster>> temporaryClustersDatas, int row, int col)
+        public static double CalculateNdviForCurrentTemporaryPoint(TemporaryData currentTemporaryData, int row, int col)
         {
-            var currentValues = new[]
-            {
-                currentTemporaryBuffers.Value.First()[row, col],
-                currentTemporaryBuffers.Value.Last()[row, col]
-            };
-
-            var perfectCluster = temporaryClustersDatas[currentTemporaryBuffers.Key]
-                .OrderBy(z => MathHelper.EuclideanDistance(currentValues, z.CenterCluster)).First();
+            var perfectCluster = CalculateNdviInnerForTemporaryData(currentTemporaryData, row, col);
 
             return CalculateNdvi(perfectCluster.CenterCluster[0], perfectCluster.CenterCluster[1]);
         }
 
         public static double CalculateNdvi(double red, double nir)
         {
-
             var operand1 = nir - red;
             var operand2 = nir + red;
 
@@ -123,6 +160,21 @@ namespace DeterminingPhenomenonService.Helpers
             }
 
             return filename;
+        }
+
+        private static Cluster CalculateNdviInnerForTemporaryData(TemporaryData currentTemporaryData, int row, int col)
+        {
+            var currentValues = new[]
+            {
+                currentTemporaryData.Buffers.Channels[Landsat8Channel.Channel4][row, col],
+                currentTemporaryData.Buffers.Channels[Landsat8Channel.Channel5][row, col]
+            };
+
+            var perfectCluster = currentTemporaryData.Clusters
+                .OrderBy(z => MathHelper.EuclideanDistance(currentValues, z.CenterCluster))
+                .First();
+
+            return perfectCluster;
         }
 
     }
