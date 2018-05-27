@@ -457,6 +457,15 @@ async function getDownloadLink(satellite, startData, endData, countYears = 2, co
     const res = await getImageInfoErrayDate(satellite, searchTimeRandgeDownload(countYears, month, endData), coord, cloudMax);
 
     const keysDate = Object.keys(res);
+
+
+    for(let i = 0; i<keysDate.length;i++){
+        if(res[keysDate[i]].length===0){
+            return [];
+        }
+    }
+
+
     // Формируем объект уникальных сцен для первого элемента, для пересичения
     const listUnikScene = {};
     res[keysDate[0]].forEach(e => {
