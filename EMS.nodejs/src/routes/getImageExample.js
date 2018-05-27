@@ -45,7 +45,7 @@ router.post('/', async (req, res, next) => {
     const coord = [lowerLeftLatitude, lowerLeftLongitude, upperRightLatitude, upperRightLongitude];
     const cloudMax = parseInt(req.body.cloudMax);
 
-    req.result = await researchService.handleResearch(research, dateStart, dateEnd, countYears, coord, cloudMax, month, username);;
+    req.result = await researchService.handleResearch(research, dateStart, dateEnd, countYears, coord, cloudMax, month, username);
     next();
 });
 

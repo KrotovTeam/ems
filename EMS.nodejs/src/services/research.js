@@ -122,6 +122,8 @@ async function handleResearch(research, startData, endData, countYears = 2, coor
     const researchRes = await researchController.create(username, RESEARCHES[research].name, coord, [], countYears, [], [],
         [], cloudMax, month, 1);
 
+    console.log(countYears);
+
     const requestId = researchRes.id;
 
     const userDir = await createUserResFolders(requestId);
@@ -142,6 +144,7 @@ async function handleResearch(research, startData, endData, countYears = 2, coor
                 case 'SRTM': {
                     const srtmResult = await SERVICES[serviceName].getDownloadLink(satelliteName, coord);
                     if (srtmResult.length === 0) {//Если модуль не получил ссылки для скачивания
+                        console.log('Подходящие снимки не найдены!!!');
                         return await researchController.setStatus(researchRes.id, STATE.ERROR_GET_PHOTOS.code);
                     }
                     linksDownload = linksDownload.concat(srtmResult);
@@ -151,6 +154,7 @@ async function handleResearch(research, startData, endData, countYears = 2, coor
                 case 'USGS': {
                     const usgsResult = await SERVICES[serviceName].getDownloadLink(satelliteName, startData, endData, countYears, coord, cloudMax, month);
                     if (usgsResult.length === 0) { //Если модуль не получил ссылки для скачивания
+                        console.log('Подходящие снимки не найдены!!!');
                         return await researchController.setStatus(researchRes.id, STATE.ERROR_GET_PHOTOS.code);
                     }
                     linksDownload = linksDownload.concat(usgsResult);
