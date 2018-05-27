@@ -12,6 +12,16 @@
         /// <summary>
         /// Сентинель-2
         /// </summary>
-        Sentinel2 = 2
+        Sentinel2 = 2,
+
+        /// <summary>
+        /// Модис
+        /// </summary>
+        Modis = 3,
+
+        /// <summary>
+        /// СРТМ
+        /// </summary>
+        Srtm = 4
     }
 }
