@@ -10,7 +10,6 @@ namespace CharacterizationService.Processors.AreaOfDamage
 {
     public class AreaOfDamageCharacterizationProcessor:AbstractCharacterizationProcessor
     {
-        private string  _pathToDynamicMask;
         private const int LandsatPixelSize = 30;
         
         public AreaOfDamageCharacterizationProcessor(LogWriter logger) : base(logger)
@@ -20,10 +19,10 @@ namespace CharacterizationService.Processors.AreaOfDamage
 
         public override string[] Process(IGeographicPoint leftUpper, IGeographicPoint rigthLower, string dataFolder, string resultFolder)
         {
-            _pathToDynamicMask = $@"{dataFolder}{FilenamesConstants.PathToDynamicFile}";
+            var pathToEdgedDynamic = $@"{dataFolder}{FilenamesConstants.PathToEdgedDynamicFile}";
             var pathToAreOfDamageResult = $@"{resultFolder}{FilenamesConstants.PathToDamagedAreaResult}";
 
-            var amountOfDynamicPoints = DrawLib.GetAmountOfDynamicPoints(_pathToDynamicMask);
+            var amountOfDynamicPoints = DrawLib.GetAmountOfDynamicPoints(pathToEdgedDynamic);
 
             double areaOfDamage = amountOfDynamicPoints * LandsatPixelSize;
 

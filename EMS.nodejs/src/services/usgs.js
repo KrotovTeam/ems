@@ -465,6 +465,7 @@ async function getDownloadLink(satellite, startData, endData, countYears = 2, co
         }
     }
 
+    console.log(res.length);
 
     // Формируем объект уникальных сцен для первого элемента, для пересичения
     const listUnikScene = {};
