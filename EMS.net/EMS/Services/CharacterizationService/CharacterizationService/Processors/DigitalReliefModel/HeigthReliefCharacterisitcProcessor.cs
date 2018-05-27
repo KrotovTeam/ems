@@ -1,19 +1,17 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
-using BusContracts;
-using Common.Enums;
-using ReliefModelService.Abstraction;
-using ReliefModelService.Objects;
+using CharacterizationService.Abstraction;
+using CharacterizationService.Objects.DigitalReliefModel;
+using DrawImageLibrary;
 
-namespace ReliefModelService.Processors
+namespace CharacterizationService.Processors.DigitalReliefModel
 {
     public class HeigthReliefCharacterisitcProcessor : AbstractReliefCharacteristicProcessor
     {
-        public override IReliefCharacteristicProduct Process(SrtmDataset dataset, string folder)
+        public override string Process(SrtmDataset dataset, string folder)
         {
-            var legend = new Bitmap(@"..\..\Content\heigth.png");
             var filePath = $@"{folder}\height.png";
-            using (var result = CreateImage(dataset, legend))
+            using (var result = DrawLib.CreateImageWithLegend(dataset.Width, dataset.Heigth, @"..\..\Content\heigth.png"))
             {
                 for (var x = 1; x < dataset.Width - 1; x++)
                 {
@@ -24,16 +22,10 @@ namespace ReliefModelService.Processors
                     }
                 }
 
-                SetLegend(result, legend);
-                legend.Dispose();
                 result.Save(filePath, ImageFormat.Png);
             }
 
-            return new ReliefCharacteristicProduct
-            {
-                FilePath = filePath,
-                Type = ReliefCharacteristicType.Height
-            };
+            return filePath;
         }
 
         private Color GetColor(short? value)

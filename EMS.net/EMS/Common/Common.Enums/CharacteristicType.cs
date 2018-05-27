@@ -1,17 +1,16 @@
-﻿namespace Common.Enums
+﻿using System.ComponentModel;
+
+namespace Common.Enums
 {
     public enum CharacteristicType
     {
+        [Description("")]
         Unknown = 0,
 
-        /// <summary>
-        /// Площадь повреждений
-        /// </summary>
+        [Description("Площадь повреждений")]
         AreaOfDamage = 1,
 
-        /// <summary>
-        /// Цифоровая модель рельефа
-        /// </summary>
+        [Description("Цифровая модель рельефа")]
         DigitalReliefModel = 2
     }
 }
