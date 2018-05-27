@@ -4,15 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D695AC71-EFDF-45D5-A818-C0E0A84DDCE3}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Common.Enums</RootNamespace>
-    <AssemblyName>Common.Enums</AssemblyName>
+    <ProjectGuid>{0FD31E79-3D68-465D-87FD-CCFD92539C79}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CharacterizationServiceStub</RootNamespace>
+    <AssemblyName>CharacterizationServiceStub</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -40,14 +42,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CharacteristicType.cs" />
-    <Compile Include="EnumsExtension.cs" />
-    <Compile Include="ImageCorner.cs" />
-    <Compile Include="Landsat8Channel.cs" />
-    <Compile Include="PhenomenonType.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReliefCharacteristicType.cs" />
-    <Compile Include="SatelliteType.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bus\BusContracts\BusContracts.csproj">
+      <Project>{a745da87-1a5d-4390-86f3-0395f8cc783d}</Project>
+      <Name>BusContracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Bus\BusManager\BusManager.csproj">
+      <Project>{0d3bd373-7594-43a9-8de8-68b771876562}</Project>
+      <Name>BusManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\Common.Constants\Common.Constants.csproj">
+      <Project>{c7564c11-ca5d-4ac7-b1e8-9d18422b830d}</Project>
+      <Name>Common.Constants</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\Common.Enums\Common.Enums.csproj">
+      <Project>{d695ac71-efdf-45d5-a818-c0e0a84ddce3}</Project>
+      <Name>Common.Enums</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace ReliefModelService.Objects
+﻿namespace CharacterizationService.Objects.DigitalReliefModel
 {
     public class Point
     {

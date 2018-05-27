@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ReliefModelService")]
+[assembly: AssemblyTitle("CharacterizationServiceStub")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ReliefModelService")]
+[assembly: AssemblyProduct("CharacterizationServiceStub")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("86b0bdf0-221d-482b-816d-38aee452a153")]
+[assembly: Guid("0fd31e79-3d68-465d-87fd-ccfd92539c79")]
 
 // Version information for an assembly consists of the following four values:
 //
