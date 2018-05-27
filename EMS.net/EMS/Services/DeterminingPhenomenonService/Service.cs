@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using BusContracts;
 using Topshelf;
 using Common.Constants;
-using Common.Enums;
+using DeterminingPhenomenonService.Objects;
 using MassTransit;
 using MassTransit.RabbitMqTransport;
 using Topshelf.Logging;
@@ -33,20 +33,20 @@ namespace DeterminingPhenomenonService
 
         private async Task ProcessRequest(IDeterminingPhenomenonRequest request)
         {
-            var processor = new DeterminingPhenomenonProcessor();
-            processor.Phenomenon = request.Phenomenon;
-            processor.Coordinates = new Dictionary<ImageCorner, double[]>()
+            var polygon = new GeographicPolygon()
             {
-                {ImageCorner.UpperLeft, new []{request.LeftUpper.Latitude, request.LeftUpper.Longitude}},
-                {ImageCorner.LowerRight, new[]{request.RightLower.Latitude, request.RightLower.Longitude}},
+                UpperLeft = request.LeftUpper,
+                LowerRight = request.RightLower
             };
-            processor.ResultFolder = request.ResultFolder;
-            processor.DataFolders = request.DataFolders;
 
-            var response = new DeterminingPhenomenonResponse();
+            var processor = new DeterminingPhenomenonProcessor(request.DataFolders, request.ResultFolder, polygon, request.Phenomenon);
 
-            response.RequestId = request.RequestId;
-            response.IsDetermined = processor.Proccess();
+            var response = new DeterminingPhenomenonResponse
+            {
+                RequestId = request.RequestId,
+                IsDetermined = processor.Proccess()
+            };
+
 
             await _busManager.Send<IDeterminingPhenomenonResponse>(BusQueueConstants.DeterminingPhenomenonResponsesQueueName, response);
         }

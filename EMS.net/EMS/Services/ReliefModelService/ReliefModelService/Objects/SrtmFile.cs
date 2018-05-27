@@ -1,4 +1,6 @@
-﻿namespace ReliefModelService.Objects
+﻿using Common.Objects;
+
+namespace ReliefModelService.Objects
 {
     public class SrtmFile
     {

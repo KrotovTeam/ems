@@ -1,4 +1,4 @@
-﻿namespace BusContracts
+﻿namespace Common.Objects
 {
     public interface IGeographicPoint
     {

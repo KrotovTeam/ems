@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BusContracts;
 using Common.Helpers;
+using Common.Objects;
 using OSGeo.GDAL;
 
 namespace ReliefModelService.Objects

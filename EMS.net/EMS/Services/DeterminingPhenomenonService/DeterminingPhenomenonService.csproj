@@ -102,6 +102,12 @@
     <Compile Include="Helpers\ValidationHelper.cs" />
     <Compile Include="Objects\DeterminingPhenomenonResponse.cs" />
     <Compile Include="GdalConfiguration.cs" />
+    <Compile Include="Objects\DeterminingPhenomenonResult.cs" />
+    <Compile Include="Objects\GeographicPolygon.cs" />
+    <Compile Include="Objects\LandsatCuttedBuffers.cs" />
+    <Compile Include="Objects\TemporaryData.cs" />
+    <Compile Include="Objects\UtmPoint.cs" />
+    <Compile Include="Objects\UtmPolygon.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service.cs" />

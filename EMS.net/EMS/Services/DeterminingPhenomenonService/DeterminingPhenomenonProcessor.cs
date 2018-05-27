@@ -6,15 +6,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BusContracts;
+using Common.Constants;
 using Common.Enums;
 using Common.Helpers;
+using Common.Objects;
+using Common.Objects.Landsat;
 using Common.PointsReaders;
 using DeterminingPhenomenonService.Helpers;
+using DeterminingPhenomenonService.Objects;
 using DrawImageLibrary;
 using Isodata;
 using Isodata.Abstraction;
 using Isodata.Objects;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using OSGeo.GDAL;
 using IsodataMathHelper = Isodata.Helpers.MathHelper;
 
@@ -22,81 +27,134 @@ namespace DeterminingPhenomenonService
 {
     public class DeterminingPhenomenonProcessor
     {
-        public Dictionary<ImageCorner, double[]> Coordinates;
-        public string[] DataFolders;
-        public string ResultFolder;
-        public PhenomenonType Phenomenon;
+        //public Dictionary<ImageCorner, double[]> Coordinates;
+        private readonly GeographicPolygon _polygon;
+        private readonly string[] _dataFolders;
+        private readonly string _resultFolder;
+        private readonly PhenomenonType _phenomenon;
 
-        private string _pathToCloudMaskFile = @"/cloudMask.png";
-        private string _pathToDynamicFile = @"/dynamic.png";
-        private string _pathToEdgedDynamicFile = @"/edged_dynamic.png";
-        private string _pathToVisibleImage = @"/visible.png";
-        private string _pathToVisibleDynamicFile = @"/visible_dynamic.png";
+        private readonly string _pathToCloudMaskTiffFile;
+        private readonly string _pathToCloudMaskPngFile;
+        private readonly string _pathToDynamicFile;
+        private readonly string _pathToEdgedDynamicFile;
+        private readonly string _pathToVisibleImage;
+        private readonly string _pathToVisibleDynamicFile;
+        private readonly string _pathToClustersFolder;
+        private readonly string _pathToDynamicPointsJson;
+        
+       
 
+        public DeterminingPhenomenonProcessor(string[] dataFolders, string resultFolder, GeographicPolygon polygon,
+            PhenomenonType phenomenon)
+        {
+            _dataFolders = dataFolders;
+            _resultFolder = resultFolder;
+            _phenomenon = phenomenon;
+            _polygon = polygon;
+
+            _pathToCloudMaskTiffFile = $@"{_resultFolder}{FilenamesConstants.PathToCloudMaskTiffFile}";
+            _pathToCloudMaskPngFile = $@"{_resultFolder}{FilenamesConstants.PathToCloudMaskPngFile}";
+            _pathToDynamicFile = $@"{_resultFolder}{FilenamesConstants.PathToDynamicFile}";
+            _pathToEdgedDynamicFile = $@"{_resultFolder}{FilenamesConstants.PathToEdgedDynamicFile}";
+            _pathToVisibleImage = $@"{_resultFolder}{FilenamesConstants.PathToVisibleImage}";
+            _pathToVisibleDynamicFile = $@"{_resultFolder}{FilenamesConstants.PathToVisibleDynamicFile}";
+            _pathToClustersFolder = $@"{_resultFolder}{FilenamesConstants.PathToClustersFolder}";
+            _pathToDynamicPointsJson = $@"{_resultFolder}{FilenamesConstants.PathToDynamicGeoPointsJson}";
+        }
 
         public bool Proccess()
         {
             //если невалидно, то говорим пользователю о том, что невозможно обнаружить явление и подсчитать его характеристики.
-            var isValidCloudy = ValidationHelper.CloudValidation(DataFolders, Coordinates, ResultFolder + _pathToCloudMaskFile);
+            var isValidCloudy = ValidationHelper.CloudValidation(_dataFolders, _polygon, _pathToCloudMaskTiffFile,
+                _pathToCloudMaskPngFile);
             if (!isValidCloudy)
                 return false;
 
             var clusteringManager = new ClusteringManager();
 
-            var temporaryClusters = new Dictionary<string, List<Cluster>>();
-            foreach (var folder in DataFolders)
-            {
-                
-                var files = Directory.EnumerateFiles(folder).ToList();
-                var channel4 = files.SingleOrDefault(f => f.EndsWith("B4.tif.l8n", StringComparison.InvariantCultureIgnoreCase));
-                var channel5 = files.SingleOrDefault(f => f.EndsWith("B5.tif.l8n", StringComparison.InvariantCultureIgnoreCase));
+            List<TemporaryData> temporaryDatas = new List<TemporaryData>();
 
-                using (var isodataPointsReader = new LandsatIsodataPointsReader(channel4, channel5))
+            foreach (var folder in _dataFolders)
+            {
+
+                List<string> necessaryDataFiles = new List<string>();
+
+                var landsatData = new LandsatDataDescription(folder);
+
+                if (_phenomenon == PhenomenonType.ForestPlantationsDeseases)
                 {
-                    List<Cluster> clusters;
-                    var jsonClustersFilename = folder + @"/B4_B5_clusters.json";
-                   
-                    if (string.IsNullOrEmpty(files.FirstOrDefault(f => f.Contains("B4_B5_clusters.json"))))
+                    necessaryDataFiles.AddRange(
+                        new[] {landsatData.Channel4.Normalized, landsatData.Channel5.Normalized});
+                }
+
+                using (var isodataPointsReader = new LandsatIsodataPointsReader(necessaryDataFiles.ToArray()))
+                {
+                    List<Cluster> clusters = new List<Cluster>();
+                    var jsonClustersFilename = string.Empty;
+
+                    if (_phenomenon == PhenomenonType.ForestPlantationsDeseases)
                     {
-                        clusters = clusteringManager.Process(isodataPointsReader, new NdviIsodataProfile());
-                        JsonHelper.Serialize(jsonClustersFilename, clusters);
+                        jsonClustersFilename = FilenamesConstants.B4B5Clusters;
+                    }
+
+                    if (landsatData.ClustersJson.Any())
+                    {
+                        var fullPathToClustersJson =
+                            landsatData.ClustersJson.FirstOrDefault(f => f.Contains(jsonClustersFilename));
+
+                        if (!string.IsNullOrEmpty(fullPathToClustersJson))
+                        {
+                            clusters = JsonHelper.Deserialize<List<Cluster>>(fullPathToClustersJson);
+                        }
                     }
                     else
                     {
-                        clusters = JsonHelper.Deserialize<List<Cluster>>(jsonClustersFilename);
+                        clusters = clusteringManager.Process(isodataPointsReader, new NdviIsodataProfile());
+                        JsonHelper.Serialize($"{_pathToClustersFolder}{jsonClustersFilename}", clusters);
                     }
 
-                    temporaryClusters.Add(folder, clusters);
+                    var temporaryData = new TemporaryData
+                    {
+                        Clusters = clusters,
+                        DataDescription = landsatData
+                    };
+                    temporaryDatas.Add(temporaryData);
                 }
             }
 
-            var cloudMask = Helper.GetCloudMaskFromFile(ResultFolder + _pathToCloudMaskFile);
-           
-            return CalculateDynamic(temporaryClusters, Coordinates, cloudMask, Phenomenon, ResultFolder + _pathToDynamicFile);
+            var cloudMask = Helper.GetCloudMaskFromFile(_pathToCloudMaskTiffFile);
+
+            return CalculateDynamic(temporaryDatas, cloudMask, _phenomenon);
         }
 
-        private bool CalculateDynamic(Dictionary<string, List<Cluster>> temporaryClustersDatas, Dictionary<ImageCorner, double[]> coordinates, 
-            byte[] cloudMask, PhenomenonType phenomenon, string dynamicResultFilename)
+        private bool CalculateDynamic(List<TemporaryData> temporaryDatas,
+            byte[] cloudMask, PhenomenonType phenomenon)
         {
-            Dictionary<string, List<double[,]>> temporaryBuffers = GetTemporaryBuffers(temporaryClustersDatas, coordinates);
 
-            if (!ValidationHelper.ValidateBuffers(temporaryBuffers))
+            SetTemporaryCuttedBuffers(temporaryDatas);
+
+            if (!ValidationHelper.ValidateBuffers(temporaryDatas.Select(datas => datas.Buffers)))
             {
                 return false;
             }
 
-            //получаем любой снимок за последнюю временную область, чтобы определить результирующие ширину и высоту маски динамики 
-            var currentTemporaryImagesData = temporaryBuffers.LastOrDefault().Value.First();
+            //получаем данные за последнюю временную область
+            var currentTemporaryBuffers = temporaryDatas.LastOrDefault();
 
-            var width = currentTemporaryImagesData.GetLength(1);
-            var heigth = currentTemporaryImagesData.GetLength(0);
+            if (currentTemporaryBuffers == null)
+            {
+                return false;
+            }
+
+            //получаем любой снимок за последнюю временную область, чтобы определить результирующие ширину и высоту маски динамики
+            var currentImageTemporaryDataImage = currentTemporaryBuffers.Buffers.Channels[Landsat8Channel.Channel4];
+
+            var width = currentImageTemporaryDataImage.GetLength(1);
+            var heigth = currentImageTemporaryDataImage.GetLength(0);
 
             var dymanicMask = new byte[width * heigth];
 
-            //получаем данные за последнюю временную область
-            KeyValuePair<string, List<double[,]>> currentTemporaryBuffers = temporaryBuffers.LastOrDefault();
-
-            Dictionary<string, List<double[,]>> pastTemporaryBuffers = temporaryBuffers.Take(temporaryBuffers.Count - 1).ToDictionary(x => x.Key, x => x.Value);
+            var pastTemporaryDatasBuffers = temporaryDatas.Take(temporaryDatas.Count - 1).ToList();
 
             for (int row = 0; row < heigth; row++)
             {
@@ -107,73 +165,91 @@ namespace DeterminingPhenomenonService
                         continue;
                     }
 
-                    double pastNdvi = Helper.CalculateAverageNdviForPastTemporaryPoint(pastTemporaryBuffers, temporaryClustersDatas, row, col);
+                    double pastNdvi = Helper.CalculateAverageNdviForPastTemporaryPoint(pastTemporaryDatasBuffers, row, col);
 
-                    double currentNdvi = Helper.CalculateNdviForCurrentTemporaryPoint(currentTemporaryBuffers, temporaryClustersDatas, row, col);
+                    double currentNdvi = Helper.CalculateNdviForCurrentTemporaryPoint(currentTemporaryBuffers, row, col);
 
                     double dynamic = -1.0;
 
                     if (phenomenon == PhenomenonType.ForestPlantationsDeseases)
                     {
-                        dynamic = pastNdvi >= 0.2 && pastNdvi < 1 ? 
-                                    (pastNdvi > currentNdvi ? 
-                                        Math.Abs(currentNdvi - pastNdvi) / currentNdvi 
-                                        : 0) 
-                                    : 0;
+                        dynamic = pastNdvi >= 0.2 && pastNdvi < 1
+                            ? (pastNdvi > currentNdvi
+                                ? Math.Abs(currentNdvi - pastNdvi) / currentNdvi
+                                : 0)
+                            : 0;
                     }
-                    
+
                     dymanicMask[row * width + col] = (byte)(dynamic >= 0.3 ? 1 : 0);
                 }
             }
 
-            var amountDynamicPoints = dymanicMask.Count(p => p > 0);
+            int amountDynamicPoints = dymanicMask.Count(p => p > 0);
 
-            var currentFolder = DataFolders.Last();
-            var currentFiles = Directory.EnumerateFiles(currentFolder);
-            var naturalFiles = currentFiles.Where(f =>
-                f.EndsWith("B2.TIF.l8n") || f.EndsWith("B3.TIF.l8n") || f.EndsWith("B4.TIF.l8n"));
-
-            var currentImageInfo =
-                ClipImageHelper.GetCuttedImageInfoByCoordinates(currentFiles.First(f => f.EndsWith("B4.TIF")),
-                    coordinates);
-
-            DrawLib.DrawMask(dymanicMask, width, heigth, $"{ResultFolder}{_pathToDynamicFile}");
-            DrawLib.DrawEdges($"{ResultFolder}{_pathToDynamicFile}", $"{ResultFolder}{_pathToEdgedDynamicFile}");
-            DrawLib.DrawNaturalColor(naturalFiles.First(f => f.EndsWith("B4.TIF.l8n")), 
-                                     naturalFiles.First(f => f.EndsWith("B3.TIF.l8n")), 
-                                     naturalFiles.First(f => f.EndsWith("B2.TIF.l8n")),
-                                     currentImageInfo, $"{ResultFolder}{_pathToVisibleImage}");
-            DrawLib.DrawMask($"{ResultFolder}{_pathToEdgedDynamicFile}", $"{ResultFolder}{_pathToVisibleImage}", $"{ResultFolder}{_pathToVisibleDynamicFile}");
-            return true;
-            //DrawManager.DrawDynamicMask(path, @"Karpati/dynamicMask.bmp");
-        }
-
-        private Dictionary<string, List<double[,]>> GetTemporaryBuffers(Dictionary<string, List<Cluster>> temporaryClustersDatas, 
-            Dictionary<ImageCorner, double[]> coordinates)
-        {
-            Dictionary<string, List<double[,]>> temporaryBuffers = new Dictionary<string, List<double[,]>>();
-
-            foreach (var temporaryClustersData in temporaryClustersDatas)
+            if (amountDynamicPoints < 30)
             {
-                var temporaryNormilizedDataFiles = Directory.EnumerateFiles(temporaryClustersData.Key)
-                    .Where(f => f.Contains(".l8n") && !f.Contains("cutted"));
-
-                var pastTemporaryGeotiffDataFile =
-                    Directory.EnumerateFiles(temporaryClustersData.Key).First(f => f.EndsWith("B4.TIF", StringComparison.InvariantCultureIgnoreCase));
-
-                var cuttedImageInfo = ClipImageHelper.GetCuttedImageInfoByCoordinates(pastTemporaryGeotiffDataFile, coordinates);
-                
-                var temporaryDataBuffers = temporaryNormilizedDataFiles.Select(
-                    pastTemporaryNormilizedDataFile => ClipImageHelper.ReadBufferByIndexes(
-                        cuttedImageInfo,
-                        new LandsatNormilizedSnapshotReader(pastTemporaryNormilizedDataFile)
-                    )
-                ).ToList();
-
-                temporaryBuffers.Add(temporaryClustersData.Key, temporaryDataBuffers);
+                return false;
             }
 
-            return temporaryBuffers;
+            DrawDynamicResult(dymanicMask, width, heigth);
+            SaveDynamicGeoPoints();
+
+            return true;
+        }
+
+        private void SaveDynamicGeoPoints()
+        {
+            var dynamicPoints = DrawLib.GetMaskIndexes(_pathToEdgedDynamicFile);
+            var landsatDescription = new LandsatDataDescription(_dataFolders.Last());
+            var currentTemporaryImage = landsatDescription.Channel4.Raw;
+
+            var geographicPoints = ClipImageHelper.GetGeographicPointsByPointsIndexes(dynamicPoints, currentTemporaryImage, _polygon);
+
+            JsonHelper.Serialize(_pathToDynamicPointsJson, geographicPoints);
+        }
+
+        private void SetTemporaryCuttedBuffers(List<TemporaryData> temporaryDatas)
+        {
+            foreach (var temporaryData in temporaryDatas)
+            {
+                temporaryData.Buffers = new LandsatCuttedBuffers();
+                var temporaryDataBuffers = new LandsatCuttedBuffers();
+
+                if (_phenomenon == PhenomenonType.ForestPlantationsDeseases)
+                {
+                    var temporaryGeotiffDataFile = temporaryData.DataDescription.Channel4.Raw;
+
+                    var cuttedImageInfo =
+                        ClipImageHelper.GetCuttedImageInfoByPolygon(temporaryGeotiffDataFile, _polygon);
+
+                    foreach (var channelBuffer in temporaryDataBuffers.Channels)
+                    {
+                        var buffer = ClipImageHelper.ReadBufferByIndexes(cuttedImageInfo,
+                            new LandsatNormilizedSnapshotReader(
+                                temporaryData.DataDescription.GetLandsatSnapshotDescriptionByChannel(channelBuffer.Key)
+                                    .Normalized));
+
+                        temporaryData.Buffers.Channels[channelBuffer.Key] =  buffer;
+                    }
+                }
+            }
+        }
+
+        private void DrawDynamicResult(byte[] bytes, int width, int height)
+        {
+            var currentFolder = _dataFolders.Last();
+            var landsatDescription = new LandsatDataDescription(currentFolder);
+
+            var currentImageInfo = ClipImageHelper.GetCuttedImageInfoByPolygon(landsatDescription.Channel4.Raw, _polygon);
+
+            DrawLib.DrawMask(bytes, width, height, _pathToDynamicFile);
+
+            DrawLib.DrawEdges(_pathToDynamicFile, _pathToEdgedDynamicFile);
+
+            DrawLib.DrawNaturalColor(landsatDescription.Channel4.Normalized, landsatDescription.Channel3.Normalized, landsatDescription.Channel2.Normalized,
+                currentImageInfo, _pathToVisibleImage);
+
+            DrawLib.DrawMask(_pathToEdgedDynamicFile, _pathToVisibleImage, _pathToVisibleDynamicFile);
         }
     }
 }

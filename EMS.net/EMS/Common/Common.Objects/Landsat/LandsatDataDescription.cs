@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Common.Constants;
+using Common.Enums;
 
 namespace Common.Objects.Landsat
 {
@@ -85,7 +88,7 @@ namespace Common.Objects.Landsat
         /// Кластеры для 4 и 5 канала в json
         /// </summary>
         //TODO Подумать как это сделать
-        public string B4B5ClustersJson { get; set; }
+        public List<string> ClustersJson { get; set; }
 
         #endregion
 
@@ -120,8 +123,6 @@ namespace Common.Objects.Landsat
             {
                 throw new FileNotFoundException("Файл метаданных ANG в json не найден");
             }
-
-            B4B5ClustersJson = filenames.SingleOrDefault(name => name.EndsWith("B4_B5_clusters.json", StringComparison.InvariantCultureIgnoreCase));
 
             #region Raw snapshots
 
@@ -228,7 +229,7 @@ namespace Common.Objects.Landsat
 
             #region Normalized snapshots
 
-            var normalizationDataFolder = $@"{folder}\NormalizationData";
+            var normalizationDataFolder = $@"{folder}{FilenamesConstants.PathToNormalizedDataFolder}";
             if (Directory.Exists(normalizationDataFolder))
             {
                 var normalizedFilenames = Directory.GetFiles(normalizationDataFolder);
@@ -254,8 +255,34 @@ namespace Common.Objects.Landsat
                 // у 10 и 11 канала отсутствуют нормализованные файлы
             }
 
+            ClustersJson = new List<string>();
+
+            var clustersFolder = $@"{folder}{FilenamesConstants.PathToClustersFolder}";
+            
+            if (Directory.Exists(clustersFolder))
+            {
+                var clustersFiles = Directory.GetFiles(clustersFolder);
+                if (clustersFiles.Any())
+                {
+                   ClustersJson.AddRange(clustersFiles);
+                } 
+            }
+
             #endregion
 
+        }
+
+        public LandsatSnapshotDescription GetLandsatSnapshotDescriptionByChannel(Landsat8Channel channel)
+        {
+            switch (channel)
+            {
+                case Landsat8Channel.Channel4:
+                    return Channel4;
+                case Landsat8Channel.Channel5:
+                    return Channel5;
+                default:
+                    return null;
+            }
         }
 
         #endregion

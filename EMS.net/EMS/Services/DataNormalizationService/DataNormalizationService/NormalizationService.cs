@@ -52,7 +52,7 @@ namespace DataNormalizationService
 
             #region Channel normalization
 
-            var normalizationDataFolder = $@"{request.Folder}\NormalizationData";
+            var normalizationDataFolder = $@"{request.Folder}{FilenamesConstants.PathToNormalizedDataFolder}";
 
             processor.Normalization(folderDescription.Channel1.Raw, normalizationDataFolder,
                 radiometricRescaling.RadianceMultBand1, radiometricRescaling.RadianceAddBand1,

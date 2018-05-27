@@ -147,16 +147,16 @@ async function getCharacteristics(message){
 
 async function test(){
     const resultPhenomen = await getPhenomenon({
-        ResultFolder: 'C:\\Users\\User\\Downloads\\Карпаты2\\resultKarpati2015-2016',
+         ResultFolder: 'C:\\Users\\User\\Downloads\\Карпаты2\\resultKarpati2015-2016',
         LeftUpper: {
-			Latitude: 49.2215,
-            Longitude: 24.0042 
+			Latitude: 48.5819,
+            Longitude: 23.6326  
         },
         RightLower:{
-            Latitude: 48.7891,
-            Longitude: 24.6305
+            Latitude: 48.0633,
+            Longitude: 24.3522
         },
-		phenomenon: 1,
+		Phenomenon: 1,
         DataFolders:[
             'C:\\Users\\User\\Downloads\\Карпаты2\\185026_20150824',
             'C:\\Users\\User\\Downloads\\Карпаты2\\185026_20160826'

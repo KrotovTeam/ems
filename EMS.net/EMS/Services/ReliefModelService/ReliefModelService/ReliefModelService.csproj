@@ -90,7 +90,6 @@
   <ItemGroup>
     <Compile Include="Abstraction\AbstractReliefCharacteristicProcessor.cs" />
     <Compile Include="GdalConfiguration.cs" />
-    <Compile Include="Objects\Point.cs" />
     <Compile Include="Objects\ReliefCharacteristicProduct.cs" />
     <Compile Include="Objects\ReliefCharacteristicResponse.cs" />
     <Compile Include="Objects\SrtmDataset.cs" />
@@ -132,6 +131,10 @@
     <ProjectReference Include="..\..\..\Common\Common.Helpers\Common.Helpers.csproj">
       <Project>{1c3ea9ca-822e-4c74-8207-0ec7bd98dcb8}</Project>
       <Name>Common.Helpers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\Common.Objects\Common.Objects.csproj">
+      <Project>{8cbf0ae8-cdc9-4cbe-9cdc-2734bf8ba636}</Project>
+      <Name>Common.Objects</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

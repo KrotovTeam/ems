@@ -44,7 +44,6 @@
     <Compile Include="IDataNormalizationResponse.cs" />
     <Compile Include="IDeterminingPhenomenonRequest.cs" />
     <Compile Include="IDeterminingPhenomenonResponse.cs" />
-    <Compile Include="IGeographicPoint.cs" />
     <Compile Include="IReliefCharacteristicProduct.cs" />
     <Compile Include="IReliefCharacteristicRequest.cs" />
     <Compile Include="IReliefCharacteristicResponse.cs" />
@@ -54,6 +53,10 @@
     <ProjectReference Include="..\..\Common\Common.Enums\Common.Enums.csproj">
       <Project>{d695ac71-efdf-45d5-a818-c0e0a84ddce3}</Project>
       <Name>Common.Enums</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\Common.Objects\Common.Objects.csproj">
+      <Project>{8cbf0ae8-cdc9-4cbe-9cdc-2734bf8ba636}</Project>
+      <Name>Common.Objects</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
