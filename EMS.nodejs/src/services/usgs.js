@@ -230,6 +230,11 @@ function _getElementArea(e, coordSceneUser) {
     const x2 = parseFloat(sceneCoord[2]);
     const y2 = parseFloat(sceneCoord[3]);
 
+
+
+    const areaScene = allS(x1, y1, x2, y2, x1, y1, x2, y2,);
+    const all = allS(x1, y1, x2, y2, coordSceneUser[1], coordSceneUser[0], coordSceneUser[3], coordSceneUser[2]);
+    console.log(areaScene, '_', all);
     return allS(x1, y1, x2, y2, coordSceneUser[1], coordSceneUser[0], coordSceneUser[3], coordSceneUser[2])
 }
 
@@ -331,6 +336,122 @@ function checkSceneId(satellite) {
     }
 }
 
+
+function check(coordScene, coordUser){
+    const scene = {
+        leftUpper : {
+            lat: coordScene[0][1],
+            lon: coordScene[0][0],
+        },
+        leftDown : {
+            lat: coordScene[1][1],
+            lon: coordScene[1][0],
+        },
+        rightUpper: {
+            lat: coordScene[2][1],
+            lon: coordScene[2][0],
+        },
+        rightDown : {
+            lat:  coordScene[3][1],
+            lon: coordScene[3][0],
+        }
+    };
+    const user = {
+        leftUpper : {
+            lat: coordUser[2],
+            lon: coordUser[1],
+        },
+        leftDown : {
+            lat: coordUser[0],
+            lon: coordUser[1],
+        },
+        rightUpper: {
+            lat: coordUser[2],
+            lon: coordUser[3],
+        },
+        rightDown : {
+            lat: coordUser[0],
+            lon: coordUser[3],
+        }
+    };
+    // Для нижней левой точки находим 2 точки меньше по Lat
+    let lat = user.leftDown.lat;
+    let lon = user.leftDown.lon;
+    let countTemp = 0;
+
+    Object.keys(scene).forEach(e=>{
+        const latS = scene[e].lat;
+        const lonS = scene[e].lon;
+        if(lat>latS){
+            countTemp++;
+        }
+
+        if(lon>lonS){
+            countTemp++;
+        }
+    });
+    if(countTemp!==4){
+        return false;
+    }
+
+    // Для нижней правой точки находим 2 точки меньше по Lat
+    lat = user.rightDown.lat;
+    lon = user.rightDown.lon;
+    countTemp = 0;
+
+    Object.keys(scene).forEach(e=>{
+        const latS = scene[e].lat;
+        const lonS = scene[e].lon;
+        if(lat>latS){
+            countTemp++;
+        }
+        if(lon<lonS){
+            countTemp++;
+        }
+    });
+    if(countTemp!==4){
+        return false;
+    }
+
+    // Для верхней левой точки находим 2 точки меньше по Lat
+    lat = user.rightUpper.lat;
+    lon = user.rightUpper.lon;
+    countTemp = 0;
+
+    Object.keys(scene).forEach(e=>{
+        const latS = scene[e].lat;
+        const lonS = scene[e].lon;
+        if(lat<latS){
+            countTemp++;
+        }
+        if(lon>lonS){
+            countTemp++;
+        }
+    });
+    if(countTemp!==4){
+        return false;
+    }
+    // Для верхней правой точки находим 2 точки меньше по Lat
+    lat = user.leftUpper.lat;
+    lon = user.leftUpper.lon;
+    countTemp = 0;
+
+    Object.keys(scene).forEach(e=>{
+        const latS = scene[e].lat;
+        const lonS = scene[e].lon;
+        if(lat<latS){
+            countTemp++;
+        }
+        if(lon<lonS){
+            countTemp++;
+        }
+    });
+    if(countTemp!==4){
+        return false;
+    }
+
+    return true;
+}
 async function getDownloadLink(satellite, startData, endData, countYears = 2, coord = [59, 37, 59, 38], cloudMax = 100, month) {
     //const res = await getImageInfo(satellite, startData, endData, coord, cloudMax);
     const res = await getImageInfoErrayDate(satellite, searchTimeRandgeDownload(countYears, month, endData), coord, cloudMax);
@@ -345,7 +466,10 @@ async function getDownloadLink(satellite, startData, endData, countYears = 2, co
             for (let i = 0; i < keysDate.length; i++) {
                 initValue[keysDate[i]] = 0;
             }
-            listUnikScene[sceneId] = initValue;
+            listUnikScene[sceneId] = {};
+            const coordScene = e.spatialFootprint.coordinates[0].slice(1);
+            listUnikScene[sceneId].coord = coordScene;
+            listUnikScene[sceneId].years = initValue;
         }
     });
 
@@ -354,18 +478,18 @@ async function getDownloadLink(satellite, startData, endData, countYears = 2, co
         const arr = res[date];
         for (let j = 0; j < arr.length; j++) {
             const sceneId = getUniqSceneId(satellite)(arr[j].displayId);
-            if (listUnikScene[sceneId]) {
-                listUnikScene[sceneId][date]++;
+            if (listUnikScene[sceneId].years) {
+                listUnikScene[sceneId].years[date]++;
             }
         }
     }
 
-    // Сформируем массив индентификаторов сцен которые есть во сех годах
+    // Сформируем массив индентификаторов сцен которые есть во всех годах
     const commonScenes = Object.keys(listUnikScene).filter(sceneID => {
-        const dates = Object.keys(listUnikScene[sceneID]);
+        const dates = Object.keys(listUnikScene[sceneID].years);
 
         for (let i = 0; i < dates.length; i++) {
-            if (listUnikScene[sceneID][dates[i]] === 0) {
+            if (listUnikScene[sceneID].years[dates[i]] === 0) {
                 return false;
             }
         }
@@ -375,18 +499,31 @@ async function getDownloadLink(satellite, startData, endData, countYears = 2, co
     console.log('commonScenes', commonScenes);
 
 
-    const resByMaxArea = res[Object.keys(res)[0]].sort((a, b) => {// Сортируем по убыванию размеру общей площади
-        if (_getElementArea(a, coord) < _getElementArea(b, coord)) {
-            return 1;
-        }
-        if (_getElementArea(a, coord) > _getElementArea(b, coord)) {
-            return -1;
-        }
-        return 0;
+    // Отфильтруем сцены так что выбраная область не вылазила за пределы сцены
+    const needScenes = commonScenes.filter(sceneId =>{
+        return check(listUnikScene[sceneId].coord, coord);
     });
 
+    if (needScenes.length === 0){
+        return [];
+    }
 
-    let needIdScene = getNeedScene(satellite)(resByMaxArea, res);
+
+    let needIdScene = needScenes[0];
+
+
+    // const resByMaxArea = res[Object.keys(res)[0]].sort((a, b) => {// Сортируем по убыванию размеру общей площади
+    //     if (_getElementArea(a, coord) < _getElementArea(b, coord)) {
+    //         return 1;
+    //     }
+    //     if (_getElementArea(a, coord) > _getElementArea(b, coord)) {
+    //         return -1;
+    //     }
+    //     return 0;
+    // });
+    //
+    //
+    // let needIdScene = getNeedScene(satellite)(resByMaxArea, res);
 
 
     const needDownload = [];
@@ -403,11 +540,11 @@ async function getDownloadLink(satellite, startData, endData, countYears = 2, co
 
     console.log(needDownload);
 
-    for (let i = 0; i < needDownload.length; i++) {
-        if (!needDownload[i]) {
-            return [];
-        }
-    }
+    // for (let i = 0; i < needDownload.length; i++) {
+    //     if (!needDownload[i]) {
+    //         return [];
+    //     }
+    // }
 
     const filterResByCount = needDownload;
     const resData = [];
