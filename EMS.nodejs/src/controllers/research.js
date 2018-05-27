@@ -41,6 +41,14 @@ async function setPathsDownload(id, pathsDownload){
     }
     request.pathsDownload = pathsDownload;
     await request.save();
+}
+async function setPhenomenonResultFolder(id, phenomenonResultFolder){
+    const request = await Requests.findOne({where:{id}});
+    if(!request){
+        return console.log('request не найден');
+    }
+    request.phenomenonResultFolder = phenomenonResultFolder;
+    await request.save();
 
 }
 
@@ -77,4 +85,5 @@ module.exports = {
     setMiniImagePath,
     setLinksDownload,
     setStatus,
+    setPhenomenonResultFolder
 };

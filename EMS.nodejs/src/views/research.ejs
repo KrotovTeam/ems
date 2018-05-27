@@ -19,7 +19,10 @@
     <script src="js/jquery.simplePagination.js" type="text/javascript"></script>
     <style>
         #map {
-            width: 100%; height: 300PX ; padding: 0; margin: 0;
+            width: 100%;
+            height: 700px;
+            padding: 0;
+            margin: 0;
         }
     </style>
 
@@ -37,15 +40,15 @@
                             $('.list-group').append(`<a href="#" id="${arrayResearch[i].id}" name="menu_item" class="list-group-item list-group-item-action">${new Date(arrayResearch[i].createdAt).toISOString().substring(0, 10)} ${arrayResearch[i].researchName}</a>`);
                         }
                         listenClickMenuItem();
-                        $(function() {
+                        $(function () {
                             $('#paginator').pagination({
                                 items: data.data.total,
                                 itemsOnPage: 10,
                                 cssStyle: 'light-theme',
-                                onPageClick: function(pageNumber, event){
+                                onPageClick: function (pageNumber, event) {
                                     $.ajax({
                                         type: "GET",
-                                        url: `/research/list?skip=${(pageNumber-1)*10}&take=${10}`,
+                                        url: `/research/list?skip=${(pageNumber - 1) * 10}&take=${10}`,
                                         success: function (data) {
                                             if (data.code === 200) {
                                                 const arrayResearch = data.data.items;
@@ -89,28 +92,31 @@
         function createTable(infoObj) {
 
             const MONTH_ENUM = {
-                 1:'Январь',
-                 2:'Февраль',
-                 3:'Март',
-                 4:'Апрель',
-                 5:'Мая',
-                 6:'Июнь',
-                 7:'Июль',
-                 8:'Август',
-                 9:'Сентябрь',
-                 10:'Октябрь',
-                 11:'Ноябрь',
-                 12:'Декабрь'
+                1: 'Январь',
+                2: 'Февраль',
+                3: 'Март',
+                4: 'Апрель',
+                5: 'Мая',
+                6: 'Июнь',
+                7: 'Июль',
+                8: 'Август',
+                9: 'Сентябрь',
+                10: 'Октябрь',
+                11: 'Ноябрь',
+                12: 'Декабрь'
             };
 
             const STATE = {
-                1:'Создан. На обработке.',
-                2:'Загрузка снимков',
-                3:'Исследование сников',
-                4:'Обработка результатов',
-                5:'Завершен',
-                6:'Ошибка при получение снимков',
-                7:'Неизвестная ошибка'
+                1: 'Создан. На обработке.',
+                2: 'Загрузка снимков',
+                3: 'Калибровка данных',
+                4: 'Поиск явления',
+                5: 'Явление не найдено',
+                6: 'Загрузка дополнительных снимков для определения хар-к',
+                7: 'Вычисление характеристик',
+                8: 'Завершен',
+                9: 'Ошибка при получение снимков',
+                10: 'Неизвестная ошибка'
             };
 
             let elementTable = $('<table/>', {
@@ -177,14 +183,14 @@
             return elementTable;
         }
 
-        function _createTr(){
+        function _createTr() {
             return $('<tr/>'
             );
         }
 
-        function _createTd(data){
-            let td = $('<td/>',{
-                class: 'success'
+        function _createTd(data) {
+            let td = $('<td/>', {
+                    class: 'success'
                 }
             );
             td.append(data);
@@ -214,7 +220,7 @@
                                 class: 'col-lg-5',
                             });
                             let elementColMd4 = $('<div/>', {
-                                class: 'col-lg-5',
+                                class: 'col-lg-7',
                             });
                             let elementThumbnail = $('<div/>', {
                                 class: 'thumbnail',
@@ -224,61 +230,40 @@
                             elementRow.append(elementDiv);
 
                             $('.content').append(elementRow);
-                            for (let i = 0; i < data.data.miniImagePath.length; i++) {
-                                const imageName = data.data.miniImagePath[i].split('external\\')[1];
+                            // for (let i = 0; i < data.data.miniImagePath.length; i++) {
+                            //     const imageName = data.data.miniImagePath[i].split('external\\')[1];
+                            //     elementThumbnail.append(`<img src="${imageName}" alt="Lights" style="width:100%">`);
+                            // }
 
 
-                                elementThumbnail.append(`<img src="${imageName}" alt="Lights" style="width:100%">`);
-                            }
                             elementColMd4.append($('<div/>', {
                                 id: 'map'
                             }));
 
-                            ymaps.ready(init);
-                            var myMap, myGeoObject, myRectangle;
+                            const coordinateUser = data.data.coordinateUser.map(coor => parseFloat(coor));
 
-                            function init () {
+                            const coordinateCentr = [
+                                coordinateUser[0] + (coordinateUser[2] - coordinateUser[0]) / 2,
+                                coordinateUser[1] + (coordinateUser[3] - coordinateUser[1]) / 2,
+                            ]
+
+                            ymaps.ready(init);
+                            var myMap, myRectangle;
+
+                            function init() {
                                 myMap = new ymaps.Map('map', {
-                                    center: [55.674, 37.601],
-                                    zoom: 11
+                                    center: coordinateCentr,
+                                    zoom: 10
                                 }, {
                                     searchControlProvider: 'yandex#search'
                                 });
 
-                                // Cоздаем геообъект с типом геометрии "прямоугольник".
-                                myGeoObject = new ymaps.GeoObject({
-                                    // Геометрия = тип геометрии + координаты геообъекта.
-                                    geometry: {
-                                        // Тип геометрии - прямоугольник.
-                                        type: 'Rectangle',
-                                        // Координаты.
-                                        coordinates: [
-                                            [55.665, 37.66],
-                                            [55.64, 37.53]
-                                        ]
-                                    },
-                                    // Свойства.
-                                    properties: {
-                                        hintContent: 'Перетащи меня!',
-                                        balloonContent: 'Прямоугольник 2'
-                                    }
-                                }, {
-                                    // Опции.
-                                    // Объект можно перетаскивать.
-                                    draggable: true,
-                                    // Цвет и прозрачность заливки.
-                                    fillColor: '#ffff0022',
-                                    // Цвет и прозрачность границ.
-                                    strokeColor: '#3caa3c88',
-                                    // Ширина линии.
-                                    strokeWidth: 7
-                                });
-
+                                myMap.setType('yandex#satellite');
                                 // Создаем прямоугольник с помощью вспомогательного класса.
                                 myRectangle = new ymaps.Rectangle([
                                     // Задаем координаты диагональных углов прямоугольника.
-                                    [55.66, 37.60],
-                                    [55.71, 37.69]
+                                    [coordinateUser[0], coordinateUser[1]],
+                                    [coordinateUser[2], coordinateUser[3]]
                                 ], {
                                     //Свойства
                                     hintContent: 'Меня перетаскивать нельзя!',
@@ -289,27 +274,81 @@
                                     fillColor: '#7df9ff33',
                                     // Дополнительная прозрачность заливки..
                                     // Итоговая прозрачность будет не #33(0.2), а 0.1(0.2*0.5).
-                                    fillOpacity: 0.5,
+                                    fillOpacity: 0,
                                     // Цвет обводки.
-                                    strokeColor: '#0000FF',
+                                    strokeColor: '#000000',
                                     // Прозрачность обводки.
-                                    strokeOpacity: 0.5,
+                                    strokeOpacity: 0.9,
                                     // Ширина линии.
-                                    strokeWidth: 2,
+                                    strokeWidth: 5,
                                     // Радиус скругления углов.
                                     // Данная опция принимается только прямоугольником.
-                                    borderRadius: 6
+                                    //borderRadius: 20
                                 });
+
+
+                                var myCollection = new ymaps.GeoObjectCollection();
+                                if (data.data.phenomenonPoints) {
+                                    const phenomenonPoints = data.data.phenomenonPoints;
+                                    phenomenonPoints.forEach(point => {
+                                        // myMap.geoObjects.add( new ymaps.GeoObject({
+                                        //     geometry: {
+                                        //         type: "Point",
+                                        //         // Переведем строку с координатами в массив
+                                        //         coordinates:  [point.Latitude, point.Longitude]
+                                        //     }
+                                        // },
+                                        //     {
+                                        //         preset: "islands#darkGreenDotIcon"
+                                        //     }
+                                        // ));
+
+
+                                        // Добавляем круг на карту.
+                                    //     myMap.geoObjects.add(new ymaps.Circle([
+                                    //         // Координаты центра круга.
+                                    //         [point.Latitude, point.Longitude],
+                                    //         // Радиус круга в метрах.
+                                    //         30
+                                    //     ], {
+                                    //         // Описываем свойства круга.
+                                    //         // Содержимое балуна.
+                                    //         balloonContent: "Радиус круга - 10 км",
+                                    //         // Содержимое хинта.
+                                    //         hintContent: "Подвинь меня"
+                                    //     }, {
+                                    //         // Задаем опции круга.
+                                    //         // Включаем возможность перетаскивания круга.
+                                    //         // draggable: true,
+                                    //         // Цвет заливки.
+                                    //         // Последний байт (77) определяет прозрачность.
+                                    //         // Прозрачность заливки также можно задать используя опцию "fillOpacity".
+                                    //         //fillColor: "#DB709377",
+                                    //         // Цвет обводки.
+                                    //         strokeColor: "#ff0600",
+                                    //         // Прозрачность обводки.
+                                    //         strokeOpacity: 0,
+                                    //         // Ширина обводки в пикселях.
+                                    //         strokeWidth: 5
+                                    //     }));
+                                    })
+                                }
+
 
                                 myMap.geoObjects
                                     .add(myRectangle)
-                                    .add(myGeoObject);
+                                    .add(myCollection);
                             }
 
 
-
+                            if (data.data.phenomenonResultFolder) {
+                                const phenomenonName = `${data.data.phenomenonResultFolder.split('external\\')[1]}\\visible_dynamic.png`;
+                                elementDiv.append(`<img src="${phenomenonName}" alt="Lights" style="width:100%">`);
+                            }
                             elementDiv.append(`<p>${infoResearchString}</p>`);
                             elementDiv.append(createTable(data.data));
+
+
                             //elementThumbnail.append(`<img src="image\\xiroc.jpg" alt="Lights" style="width:100%">`);
                         }
                         else {
@@ -338,7 +377,7 @@
 
 <div class="container-fluid">
     <div class="row-fluid">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="list-group">
                 <a href="#" class="list-group-item active">
                     Выберите иследования
@@ -349,7 +388,7 @@
             </div>
             <div id="paginator"></div>
         </div>
-        <div class="col-md-7">
+        <div class="col-md-8">
             <div class="card mb-4 box-shadow">
                 <div class="content">
                     <img class="card-img-top"

@@ -22,6 +22,7 @@ module.exports = db => {
         numberYears: {type: Sequelize.INTEGER},
         pathsDownload: {type: Sequelize.JSON},
         linksDownload: {type: Sequelize.JSON},
+        phenomenonResultFolder: {type: Sequelize.STRING},
         cloudMax:{type: Sequelize.INTEGER},
         month: {type: Sequelize.INTEGER},
     });

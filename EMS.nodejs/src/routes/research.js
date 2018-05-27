@@ -4,7 +4,10 @@ const {Users, Requests} = require('../db/index');
 const boom = require('boom');
 const {validate} = require('../../utils');
 const createResearch = require('../schemes/createResearch');
-
+const fs = require('fs');
+const {promisify} = require('util');
+const exists = promisify(fs.exists);
+const readFile = promisify(fs.readFile);
 
 router.get('/', (req, res) => {
     res.render('research');
@@ -16,6 +19,15 @@ router.get('/:id/details', async (req, res, next) => {
     const request = await Requests.findOne({where: {id}});
     if (!request) {
         throw boom.notFound('Информация об исследование не найдена')
+    }
+
+
+    if(request.phenomenonResultFolder){
+        const JSONFilePath = `${request.phenomenonResultFolder}\\dynamicGeoPoints.json`;
+        if((await exists(JSONFilePath))){
+            const data = await readFile(JSONFilePath, 'utf8');
+            request.dataValues.phenomenonPoints = JSON.parse(data);
+        }
     }
 
     req.result = request;
@@ -39,6 +51,7 @@ router.get('/list', async (req, res, next) => {
         limit: take,
         offset: skip
     });
+
 
     req.result = {
         items: items.rows,

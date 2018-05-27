@@ -121,9 +121,10 @@ async function calibration(message){
     });
 }
 async function getCharacteristics(message){
+    console.log(message);
     const requestId = uuid();
     const data = {
-        messageType: ['urn:message:BusContracts:IDataNormalizationRequest'],
+        messageType: ['urn:message:BusContracts:IСharacterizationRequest'],
         message
     };
     message.requestId = requestId;

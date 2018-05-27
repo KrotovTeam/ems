@@ -58,7 +58,7 @@ router.post('/refreshToken', async (req, res, next) => {
     next();
 });
 router.post('/logout', async (req, res) => {
-    req.session.destroy((err)=> {
+    req.session.destroy(err => {
         if (err) throw err;
         res.redirect('/')
     });

@@ -16,12 +16,14 @@ const CHARACTERISTICS = {
     AREA_OF_DAMAGE: {
         title: 'площадь повреждений',
         satellite: 'LANDSAT',
-        type: 1
+        type: 1,
+        folder: 'areaOfDamage'
     },
     DIGITAL_RELIEF_MODEL: {
         title: 'Цифоровая модель рельефа',
         satellite: 'SRTM',
-        type: 2
+        type: 2,
+        folder: 'digitalReliefModel'
     }
 };
 
@@ -116,7 +118,6 @@ const STATE = {
     }
 };
 
-
 async function handleResearch(research, startData, endData, countYears = 2, coord = [59, 37, 59, 38], cloudMax = 100, month, username) {
     const researchRes = await researchController.create(username, RESEARCHES[research].name, coord, [], countYears, [], [],
         [], cloudMax, month, 1);
@@ -176,10 +177,10 @@ async function handleResearch(research, startData, endData, countYears = 2, coor
         // Файлы скачались безошибочно
         await researchController.setStatus(researchRes.id, STATE.CALIBRATION.code);
         await researchController.setPathsDownload(researchRes.id, arrayLandsat);
-        //
-        // // После получения снимков Landsat\
-        //
-        //
+
+        // После получения снимков Landsat\
+
+
         // // Проверим есть ли откалиброванные данные для каждой папки
         // for (let i = 0; i < arrayLandsat.length; i++) {
         //     const pathCheck = arrayLandsat[i];
@@ -195,9 +196,9 @@ async function handleResearch(research, startData, endData, countYears = 2, coor
         // // Начнем поиск явления
         // await researchController.setStatus(researchRes.id, STATE.FIND_PHENOMENON.code);
         //
-        //
+        // const pathPhenomenon = `${userDir}\\phenomenon`;
         // const getPhenomenonResult = await amqp.getPhenomenon({
-        //     resultFolder: `${userDir}\\phenomenon`,
+        //     resultFolder: pathPhenomenon,
         //     leftUpper: {
         //         latitude: coord[2],
         //         Longitude: coord[1]
@@ -215,6 +216,7 @@ async function handleResearch(research, startData, endData, countYears = 2, coor
         //     return await researchController.setStatus(researchRes.id, STATE.NO_FIND_PHENOMENON.code);
         // }
         //
+        // await researchController.setPhenomenonResultFolder(researchRes.id, pathPhenomenon);
         // await researchController.setStatus(researchRes.id, STATE.DOWNLOAD_DATA_FOR_CHARACTERISTICS.code);
 
 
@@ -254,34 +256,31 @@ async function handleResearch(research, startData, endData, countYears = 2, coor
         }
 
 
+
         const characteristicsResult = await amqp.getCharacteristics({
-            // PhenomenonType: 1 (2, 3, 4) // тип явления
-            // Characteristics: [
-            //     {
-            //         SatelliteType: 1 (2, 3, 4) // тип спутника
-            //         Path: ''// Путь к папке с данными
-            //         CharacteristicType: 1 (2, 3,4) // Тип явления
-            //     }, ...
-            // ],
+            phenomenonType: RESEARCHES[research].type,
+            characteristics: characteristics.map(character=>{
+                const ch = CHARACTERISTICS[character];
+                const sat = ch.satellite;
+
+                return {
+                    satelliteType: satellites[sat].type,
+                    dataFolder: needSatellitesForCharacteristics[sat],
+                    resultFolder: `${userDir}\\characteristics\\${ch.folder}`,
+                    characteristicType: ch.type
+                }
+            }),
+            leftUpper: {
+                latitude: coord[2],
+                Longitude: coord[1]
+            },
+            rightLower: {
+                latitude: coord[0],
+                longitude: coord[3]
+            }
         });
 
-
-        // downloadScheduler.addToQueDownload({
-        //     requestId,
-        //     data: linksDownload
-        // }, async (err, arrayPath) => {
-        //     if (err) {
-        //         await researchController.setStatus(researchRes.id, STATE.ERROR_GET_PHOTOS.code);
-        //     }
-        //
-        //     amqp.pushToEmsDataNormalizationServiceChannel({
-        //         messageType: ['urn:message:BusContracts:IDataNormalizationRequest'],
-        //         Folder: arrayPath[0],
-        //         SatelliteType: 1
-        //
-        //     });
-        //     amqp.listenEmsDataNormalizationServiceResponsesChannel();
-        // });
+        console.log(characteristicsResult);
     }, 10);
 
 
@@ -315,9 +314,16 @@ async function createUserResFolders(uuid) {
     if (!(await exists(dir))) {
         await mkdir(dir);
     }
+    const phenomenonDir = `${dir}\\phenomenon`;
+    const characteristicsDir = `${dir}\\characteristics`;
 
-    await mkdir(`${dir}\\phenomenon`);
-    await mkdir(`${dir}\\characteristics`);
+    if (!(await exists(phenomenonDir))) {
+        await mkdir(phenomenonDir);
+    }
+    if (!(await exists(characteristicsDir))) {
+        await mkdir(characteristicsDir);
+    }
+
     return dir;
 }
 
