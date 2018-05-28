@@ -28,11 +28,11 @@ function createChannel(connection) {
 
         // создаем необходимые очереди
         ch.assertQueue(phenomenonRequestChannel, {durable: true});
-        ch.assertQueue(phenomenonResultChannel, {durable: true});
+        ch.assertQueue(phenomenonResultChannel, {durable: true, noAck: true});
         ch.assertQueue(calibrateRequestChannel, {durable: true});
-        ch.assertQueue(calibrateResultChannel, {durable: true});
+        ch.assertQueue(calibrateResultChannel, {durable: true, noAck: true});
         ch.assertQueue(characteristicsRequestChannel, {durable: true});
-        ch.assertQueue(characteristicsResultChannel, {durable: true});
+        ch.assertQueue(characteristicsResultChannel, {durable: true, noAck: true});
         ch.assertQueue(errorChannel, {durable: true, noAck: true});
 
         // ch.prefetch(1);
@@ -112,7 +112,7 @@ async function calibration(message){
 
     return new Promise(async (resolve, reject)=>{
         eventEmitter.on(requestId, (result, origMsg)=>{
-            confirm(origMsg);
+            // confirm(origMsg);
             console.log(`получаем ответ на запрос ${requestId}: `, result);
             resolve(result);
         });
@@ -131,7 +131,7 @@ async function getCharacteristics(message){
 
     return new Promise(async (resolve, reject)=>{
         eventEmitter.on(requestId, (result, origMsg)=>{
-            confirm(origMsg);
+            // confirm(origMsg);
             console.log(`получаем ответ на запрос ${requestId}: `, result);
             resolve(result);
         });

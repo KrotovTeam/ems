@@ -51,12 +51,12 @@
             <li class="active"><a href="/">Главная</a></li>
             <li><a href="/map">Создать исследование</a></li>
             <li><a href="/research">Мои исследования</a></li>
-            <li><a href="/registration">Регистрация</a></li>
         </ul>
 
         <form class="navbar-form navbar-right" role="search" id="outform" action="/auth/logout" method="post"
               enctype="application/x-www-form-urlencoded">
             <% if (!locals.user){ %>
+            <a href="/registration" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Регистрация</a>
             <a href="/login" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Войти</a>
             <% }else{ %>
             <div id="123">

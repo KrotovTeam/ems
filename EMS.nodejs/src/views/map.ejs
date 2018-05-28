@@ -35,6 +35,7 @@
             padding: 5px;
         }
     </style>
+
 </head>
 <% include partials/headerNavigation.ejs %>
 <body>
@@ -48,19 +49,19 @@
         <div class="container-fluid">
             <form action="/getImageExample" method="post">
                 <div class="form-group row">
-                    <div class="col-xs-2">
+                    <div class="col-xs-3">
                         <label for="ex1">lowerLeft Lat</label>
                         <input class="form-control" name="lowerLeftLatitude" id="ex1" value="59">
                     </div>
-                    <div class="col-xs-2">
+                    <div class="col-xs-3">
                         <label for="ex1">lowerLeft Lon</label>
                         <input class="form-control" name="lowerLeftLongitude" id="ex2" value="37">
                     </div>
-                    <div class="col-xs-2">
+                    <div class="col-xs-3">
                         <label for="ex1">upperRight Lat</label>
                         <input class="form-control" name="upperRightLatitude" id="ex3" value="59">
                     </div>
-                    <div class="col-xs-2">
+                    <div class="col-xs-3">
                         <label for="ex1">upperRight Lon</label>
                         <input class="form-control" name="upperRightLongitude" id="ex4" value="38">
                     </div>
@@ -85,7 +86,7 @@
                 <div class="form-group">
                     <label for="sel1">Выбирите за сколько лет нужно провести иследование:</label>
                     <select class="form-control" name="countYears" id="sel1">
-                        <option>1</option>
+                        <!--<option>1</option>-->
                         <option>2</option>
                         <option>3</option>
                         <option>4</option>
@@ -99,7 +100,7 @@
                 <div class="form-group">
                     <label for="sel1">Выбирите максимальную облачность %:</label>
                     <select class="form-control" name="cloudMax" id="sel1">
-                        <option>0</option>
+                        <!--<option>0</option>-->
                         <option>10</option>
                         <option>20</option>
                         <option>30</option>
@@ -128,6 +129,7 @@
                     <button class="btn btn-primary" type="submit">Исследовать явление</button>
                 </div>
             </form>
+            <% include partials/messages.ejs %>
         </div>
     </div>
     <div class="col-md-9">

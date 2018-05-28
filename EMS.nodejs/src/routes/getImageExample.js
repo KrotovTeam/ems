@@ -31,7 +31,7 @@ const RESEARCHES = {
     'Поверхностные свалки': 'SURFACE_DUMPS',
 };
 
-router.post('/', async (req, res, next) => {
+router.post('/', async (req, res) => {
     const username = res.locals.user.username;
     const dateStart = req.body.dateStart;
     const dateEnd = req.body.dateEnd;
@@ -45,8 +45,16 @@ router.post('/', async (req, res, next) => {
     const coord = [lowerLeftLatitude, lowerLeftLongitude, upperRightLatitude, upperRightLongitude];
     const cloudMax = parseInt(req.body.cloudMax);
 
-    req.result = await researchService.handleResearch(research, dateStart, dateEnd, countYears, coord, cloudMax, month, username);
-    next();
+    try{
+        req.result = await researchService.handleResearch(research, dateStart, dateEnd, countYears, coord, cloudMax, month, username);
+    }catch (e) {
+        res.error('Запрос не создан, произошла ошибка');
+        return res.redirect('/map');
+    }
+
+    res.info('Запрос успешно создан и принят на обработку');
+    res.redirect('/map');
+    //next();
 });
 
 module.exports = router;

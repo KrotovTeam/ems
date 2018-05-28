@@ -3,6 +3,10 @@
 <div class="<%= mess.type %>" role="alert">
     <%= mess.text %>
 </div>
+<script>
+    $(".alert.alert-success").hide(8000);
+</script>
+
 <% }); %>
 <% removeMessages() %>
 <% } %>

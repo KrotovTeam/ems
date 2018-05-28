@@ -10,6 +10,10 @@ res.error = function(msg){
     return this.message(msg, 'alert alert-danger')
 };
 
+res.info = function(msg){
+    return this.message(msg, 'alert alert-success')
+};
+
 module.exports = function(req, res, next){
     res.locals.messages = req.session.messages || [];
     res.locals.removeMessages = function(){

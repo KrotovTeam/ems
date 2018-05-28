@@ -17,6 +17,8 @@ let channel = null;
 
 function createChannel(connection) {
     connection.createChannel((err, ch) => {
+        console.log(err);
+
         channel = ch;
         ch.on('error', err => {
             console.error('[AMQP] channel error', err.message);
@@ -28,11 +30,11 @@ function createChannel(connection) {
 
         // создаем необходимые очереди
         ch.assertQueue(phenomenonRequestChannel, {durable: true});
-        ch.assertQueue(phenomenonResultChannel, {durable: true});
+        ch.assertQueue(phenomenonResultChannel, {durable: true, noAck: true});
         ch.assertQueue(calibrateRequestChannel, {durable: true});
-        ch.assertQueue(calibrateResultChannel, {durable: true});
+        ch.assertQueue(calibrateResultChannel, {durable: true, noAck: true});
         ch.assertQueue(characteristicsRequestChannel, {durable: true});
-        ch.assertQueue(characteristicsResultChannel, {durable: true});
+        ch.assertQueue(characteristicsResultChannel, {durable: true, noAck: true});
         ch.assertQueue(errorChannel, {durable: true, noAck: true});
 
        // ch.prefetch(1);
@@ -40,7 +42,7 @@ function createChannel(connection) {
 
 
         function listenResult(msg){
-            confirm(msg);
+            //confirm(msg);
             const data = JSON.parse(msg.content);
             console.log(data);
             if (data.message.requestId) {
@@ -58,7 +60,7 @@ function createChannel(connection) {
  * Функция подключения к rabbitMQ
  */
 function connect() {
-    amqp.connect(config.amqp.rabbitMQ.url + '?heartbeat=60', (err, conn) => {
+    amqp.connect(config.amqp.rabbitMQ.url, (err, conn) => {
         if (err) {
             return setTimeout(connect, RECONNECT_TIME);
         }
@@ -116,7 +118,7 @@ async function calibration(message){
 
     return new Promise(async (resolve, reject)=>{
         eventEmitter.on(requestId, (result, origMsg)=>{
-            confirm(origMsg);
+            //confirm(origMsg);
             console.log(`получаем ответ на запрос ${requestId}: `, result);
             resolve(result);
         });
@@ -134,8 +136,8 @@ async function getCharacteristics(message){
 
     return new Promise(async (resolve, reject)=>{
         eventEmitter.on(requestId, (result, origMsg)=>{
-            confirm(origMsg);
-            console.log(`получаем ответ на запрос ${requestId}: `, result);
+           // confirm(origMsg);
+            console.log(`получeн ответ на запрос ${requestId}: `, result);
             resolve(result);
         });
         console.log(`Отправляем запрос ${requestId}: `,data);
