@@ -135,7 +135,7 @@ async function getApiKey() {
     return reqData.data;
 }
 
-async function getImageInfoErrayDate(satellite, arrayDate, coord, cloudMax = 100) {
+async function getImageInfoArrayDate(satellite, arrayDate, coord, cloudMax = 100) {
     let objRequest = {
         datasetName: satellite,
         spatialFilter: {
@@ -454,7 +454,7 @@ function check(coordScene, coordUser){
 }
 async function getDownloadLink(satellite, startData, endData, countYears = 2, coord = [59, 37, 59, 38], cloudMax = 100, month) {
     //const res = await getImageInfo(satellite, startData, endData, coord, cloudMax);
-    const res = await getImageInfoErrayDate(satellite, searchTimeRandgeDownload(countYears, month, endData), coord, cloudMax);
+    const res = await getImageInfoArrayDate(satellite, searchTimeRandgeDownload(countYears, month, endData), coord, cloudMax);
 
     const keysDate = Object.keys(res);
 

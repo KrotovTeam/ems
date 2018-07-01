@@ -140,12 +140,6 @@ async function getCharacteristics(message){
     });
 }
 
-
-
-
-
-
-
 // async function test(){
 //     const resultPhenomen = await getPhenomenon({
 //         ResultFolder: 'C:\\Users\\User\\Downloads\\Карпаты2\\resultKarpati2015-2016',

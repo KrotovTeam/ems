@@ -72,6 +72,11 @@ const satellites = {
         service: 'SRTM',
         type: 4
     },
+    SENTINEL_1: {
+        name: 'Sentinel_1',
+        service: 'SKY_HUB',
+        type: 5
+    },
 };
 
 
@@ -316,7 +321,6 @@ async function checkExistFolder(dir) {
     return await exists(dir);
 
 }
-
 
 async function createCharacteristicFolder(path, name){
     const dir = `${path}\\characteristics`;
