@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-    phpSessionId: 'ptbn0gtss1hpmidv6la0p94304',
+    phpSessionId: 'ao3p7gqji22it207uuvnh2pd75',
     downloadFolderPath: path.resolve('./external/download'),
     unzipFolderPath: path.resolve('./external/unzip'),
     exampleImageFolderPath: path.resolve('./external/image'),
