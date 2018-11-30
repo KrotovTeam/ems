@@ -3,7 +3,7 @@ using BusContracts;
 
 namespace CharacterizationService.Objects.CharacterizationResponse
 {
-    public class СharacterizationResponse : IСharacterizationResponse
+    public class SpectralСharacterizationResponse : ISpectralСharacterizationResponse
     {
         public string RequestId { get; set; }
         public List<ICharacteristicResult> Results { get; set; }

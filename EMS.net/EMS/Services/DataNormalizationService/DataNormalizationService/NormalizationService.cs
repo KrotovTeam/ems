@@ -60,25 +60,25 @@ namespace DataNormalizationService
                 Directory.CreateDirectory(normalizationDataFolder);
             }
 
-            processor.Normalization(folderDescription.Channel1.Raw, normalizationDataFolder,
-                radiometricRescaling.RadianceMultBand1, radiometricRescaling.RadianceAddBand1,
-                imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
-                minMaxRadiance.RadianceMaximumBand1, minMaxReflectance.ReflectanceMaximumBand1);
+            //processor.Normalization(folderDescription.Channel1.Raw, normalizationDataFolder,
+            //    radiometricRescaling.RadianceMultBand1, radiometricRescaling.RadianceAddBand1,
+            //    imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
+            //    minMaxRadiance.RadianceMaximumBand1, minMaxReflectance.ReflectanceMaximumBand1);
 
-            processor.Normalization(folderDescription.Channel2.Raw, normalizationDataFolder,
-                radiometricRescaling.RadianceMultBand2, radiometricRescaling.RadianceAddBand2,
-                imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
-                minMaxRadiance.RadianceMaximumBand2, minMaxReflectance.ReflectanceMaximumBand2);
+            //processor.Normalization(folderDescription.Channel2.Raw, normalizationDataFolder,
+            //    radiometricRescaling.RadianceMultBand2, radiometricRescaling.RadianceAddBand2,
+            //    imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
+            //    minMaxRadiance.RadianceMaximumBand2, minMaxReflectance.ReflectanceMaximumBand2);
 
-            processor.Normalization(folderDescription.Channel3.Raw, normalizationDataFolder,
-                radiometricRescaling.RadianceMultBand3, radiometricRescaling.RadianceAddBand3,
-                imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
-                minMaxRadiance.RadianceMaximumBand3, minMaxReflectance.ReflectanceMaximumBand3);
+            //processor.Normalization(folderDescription.Channel3.Raw, normalizationDataFolder,
+            //    radiometricRescaling.RadianceMultBand3, radiometricRescaling.RadianceAddBand3,
+            //    imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
+            //    minMaxRadiance.RadianceMaximumBand3, minMaxReflectance.ReflectanceMaximumBand3);
 
-            processor.Normalization(folderDescription.Channel4.Raw, normalizationDataFolder,
-                radiometricRescaling.RadianceMultBand4, radiometricRescaling.RadianceAddBand4,
-                imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
-                minMaxRadiance.RadianceMaximumBand4, minMaxReflectance.ReflectanceMaximumBand4);
+            //processor.Normalization(folderDescription.Channel4.Raw, normalizationDataFolder,
+            //    radiometricRescaling.RadianceMultBand4, radiometricRescaling.RadianceAddBand4,
+            //    imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
+            //    minMaxRadiance.RadianceMaximumBand4, minMaxReflectance.ReflectanceMaximumBand4);
 
             processor.Normalization(folderDescription.Channel5.Raw, normalizationDataFolder,
                 radiometricRescaling.RadianceMultBand5, radiometricRescaling.RadianceAddBand5,
@@ -90,20 +90,21 @@ namespace DataNormalizationService
                 imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
                 minMaxRadiance.RadianceMaximumBand6, minMaxReflectance.ReflectanceMaximumBand6);
 
-            processor.Normalization(folderDescription.Channel7.Raw, normalizationDataFolder,
-                radiometricRescaling.RadianceMultBand7, radiometricRescaling.RadianceAddBand7,
-                imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
-                minMaxRadiance.RadianceMaximumBand7, minMaxReflectance.ReflectanceMaximumBand7);
+            //processor.Normalization(folderDescription.Channel7.Raw, normalizationDataFolder,
+            //    radiometricRescaling.RadianceMultBand7, radiometricRescaling.RadianceAddBand7,
+            //    imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
+            //    minMaxRadiance.RadianceMaximumBand7, minMaxReflectance.ReflectanceMaximumBand7);
 
             //processor.Normalization(folderDescription.Channel8.Raw, normalizationDataFolder,
             //    radiometricRescaling.RadianceMultBand8, radiometricRescaling.RadianceAddBand8,
             //    imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
             //    minMaxRadiance.RadianceMaximumBand8, minMaxReflectance.ReflectanceMaximumBand8);
 
-            processor.Normalization(folderDescription.Channel9.Raw, normalizationDataFolder,
-                radiometricRescaling.RadianceMultBand9, radiometricRescaling.RadianceAddBand9,
-                imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
-                minMaxRadiance.RadianceMaximumBand9, minMaxReflectance.ReflectanceMaximumBand9);
+            //processor.Normalization(folderDescription.Channel9.Raw, normalizationDataFolder,
+            //    radiometricRescaling.RadianceMultBand9, radiometricRescaling.RadianceAddBand9,
+            //    imageAttributes.SunElevation, imageAttributes.EarthSunDistance,
+            //    minMaxRadiance.RadianceMaximumBand9, minMaxReflectance.ReflectanceMaximumBand9);
+
 
             #endregion
 

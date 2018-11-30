@@ -6,6 +6,8 @@ using CharacterizationService.Abstraction;
 using CharacterizationService.Objects.CharacterizationResponse;
 using CharacterizationService.Processors;
 using CharacterizationService.Processors.AreaOfDamage;
+using CharacterizationService.Processors.NDWI;
+using CharacterizationService.Processors.Temperature;
 using Common.Constants;
 using Common.Enums;
 using MassTransit;
@@ -23,8 +25,10 @@ namespace CharacterizationService
         private readonly Dictionary<CharacteristicType, AbstractCharacterizationProcessor> _processorsDictionary =
             new Dictionary<CharacteristicType, AbstractCharacterizationProcessor>
             {
-                {CharacteristicType.AreaOfDamage, new AreaOfDamageCharacterizationProcessor(Logger) },
-                {CharacteristicType.DigitalReliefModel, new DigitalReliefModelCharacterizationProcessor(Logger)}
+                //{CharacteristicType.AreaOfDamage, new AreaOfDamageCharacterizationProcessor(Logger) },
+                //{CharacteristicType.DigitalReliefModel, new DigitalReliefModelCharacterizationProcessor(Logger)}
+                {CharacteristicType.Temperature,  new TemperatureCharacterizationProcessor(Logger)},
+                {CharacteristicType.NDWI,  new NDWICharacterizationProcessor(Logger)}
             };
 
         public bool Start(HostControl hostControl)
@@ -42,11 +46,11 @@ namespace CharacterizationService
             return true;
         }
 
-        private async Task Process(IСharacterizationRequest request)
+        private async Task Process(ISpectralСharacterizationRequest request)
         {
             Logger.Info($"Получен запрос (RequestId = {request.RequestId})");
 
-            var response = new СharacterizationResponse
+            var response = new SpectralСharacterizationResponse
             {
                 RequestId = request.RequestId,
                 Results = new List<ICharacteristicResult>()
@@ -65,7 +69,7 @@ namespace CharacterizationService
                 response.Results.Add(result);
             }
 
-            await _busManager.Send<IСharacterizationResponse>(BusQueueConstants.CharacterizationResponseQueueName, response);
+            await _busManager.Send<ISpectralСharacterizationResponse>(BusQueueConstants.CharacterizationResponseQueueName, response);
 
             Logger.Info($"Запрос обработан (RequestId = {request.RequestId})");
         }
@@ -77,7 +81,7 @@ namespace CharacterizationService
                 {
                     BusQueueConstants.CharacterizationRequestQueueName, e =>
                     {
-                        e.Handler<IСharacterizationRequest>(context => Process(context.Message));
+                        e.Handler<ISpectralСharacterizationRequest>(context => Process(context.Message));
                     }
                 }
             };

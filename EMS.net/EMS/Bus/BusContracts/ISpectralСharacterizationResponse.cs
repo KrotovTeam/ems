@@ -2,7 +2,7 @@
 
 namespace BusContracts
 {
-    public interface IСharacterizationResponse
+    public interface ISpectralСharacterizationResponse
     {
         /// <summary>
         /// Идентификатор запроса

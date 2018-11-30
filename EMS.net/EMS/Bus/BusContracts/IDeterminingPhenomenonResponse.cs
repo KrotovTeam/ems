@@ -8,14 +8,8 @@ namespace BusContracts
 {
     public interface IDeterminingPhenomenonResponse
     {
-        /// <summary>
-        /// Признак обнаружения явления
-        /// </summary>
         bool IsDetermined { get; set; }
 
-        /// <summary>
-        /// Guid запроса пользователя
-        /// </summary>
         string RequestId { get; set; }
     }
 }

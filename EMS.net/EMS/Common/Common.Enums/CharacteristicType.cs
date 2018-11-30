@@ -11,6 +11,11 @@ namespace Common.Enums
         AreaOfDamage = 1,
 
         [Description("Цифровая модель рельефа")]
-        DigitalReliefModel = 2
+        DigitalReliefModel = 2,
+
+        [Description("Температура подстилающей поверхности")]
+        Temperature = 3,
+
+        NDWI = 4
     }
 }

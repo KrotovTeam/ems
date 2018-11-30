@@ -47,8 +47,10 @@ namespace DeterminingPhenomenonService
                 RequestId = request.RequestId,
                 IsDetermined = processor.Proccess()
             };
-
-
+            IDeterminingPhenomenonResponse resp =
+                new DeterminingPhenomenonResponse {IsDetermined = false, RequestId = "asdasdasd"};
+            var a = resp.IsDetermined;
+            var b = resp.RequestId;
             await _busManager.Send<IDeterminingPhenomenonResponse>(BusQueueConstants.DeterminingPhenomenonResponsesQueueName, response);
             Logger.Info($"Обработан запрос (RequestId = {response.RequestId}) на обнаружение явления {request.Phenomenon}.");
         }

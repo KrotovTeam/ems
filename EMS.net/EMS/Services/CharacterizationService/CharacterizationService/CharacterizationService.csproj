@@ -102,7 +102,7 @@
     <Compile Include="GdalConfiguration.cs" />
     <Compile Include="Objects\AreaOfDamage\AreaOfDamageResult.cs" />
     <Compile Include="Objects\CharacterizationResponse\CharacteristicResult.cs" />
-    <Compile Include="Objects\CharacterizationResponse\СharacterizationResponse.cs" />
+    <Compile Include="Objects\CharacterizationResponse\SpectralСharacterizationResponse.cs" />
     <Compile Include="Objects\DigitalReliefModel\SrtmDataset.cs" />
     <Compile Include="Objects\DigitalReliefModel\SrtmFile.cs" />
     <Compile Include="Processors\AreaOfDamage\AreaOfDamageCharacterizationProcessor.cs" />
@@ -110,6 +110,8 @@
     <Compile Include="Processors\DigitalReliefModel\ExpositionReliefCharacterisitcProcessor.cs" />
     <Compile Include="Processors\DigitalReliefModel\HeigthReliefCharacterisitcProcessor.cs" />
     <Compile Include="Processors\DigitalReliefModel\SkewReliefCharacterisitcProcessor.cs" />
+    <Compile Include="Processors\NDWI\NDWICharacterizationProcessor.cs" />
+    <Compile Include="Processors\Temperature\TemperatureCharacterizationProcessor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service.cs" />
@@ -149,9 +151,17 @@
       <Project>{8cbf0ae8-cdc9-4cbe-9cdc-2734bf8ba636}</Project>
       <Name>Common.Objects</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\Common.PointsReaders\Common.PointsReaders.csproj">
+      <Project>{078146e0-f13f-4bf8-a883-75a598ada16d}</Project>
+      <Name>Common.PointsReaders</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Libs\DrawImageLibrary\DrawImageLibrary.csproj">
       <Project>{aa665efe-94c5-4f93-ba1d-f06180e97ce1}</Project>
       <Name>DrawImageLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DeterminingPhenomenonService\DeterminingPhenomenonService.csproj">
+      <Project>{76e4992c-bc28-4cf6-b36e-7d73ee2fafa1}</Project>
+      <Name>DeterminingPhenomenonService</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

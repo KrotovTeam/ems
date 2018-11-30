@@ -118,11 +118,11 @@ namespace Common.Objects.Landsat
                 throw new FileNotFoundException("Файл метаданных MLT в json не найден");
             }
 
-            MetdataAngJson = filenames.SingleOrDefault(name => name.EndsWith("ANG.json", StringComparison.InvariantCultureIgnoreCase));
-            if (MetdataAngJson == null && withExceptions)
-            {
-                throw new FileNotFoundException("Файл метаданных ANG в json не найден");
-            }
+            //MetdataAngJson = filenames.SingleOrDefault(name => name.EndsWith("ANG.json", StringComparison.InvariantCultureIgnoreCase));
+            //if (MetdataAngJson == null && withExceptions)
+            //{
+            //    throw new FileNotFoundException("Файл метаданных ANG в json не найден");
+            //}
 
             #region Raw snapshots
 

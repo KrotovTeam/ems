@@ -223,10 +223,10 @@ namespace Common.Objects.Landsat
 
     public class TirsThermalConstants
     {
-        public string K1ConstantBand10 { get; set; }
-        public string K2ConstantBand10 { get; set; }
-        public string K1ConstantBand11 { get; set; }
-        public string K2ConstantBand11 { get; set; }
+        public double K1ConstantBand10 { get; set; }
+        public double K2ConstantBand10 { get; set; }
+        public double K1ConstantBand11 { get; set; }
+        public double K2ConstantBand11 { get; set; }
     }
 
     public class ProjectionParameters

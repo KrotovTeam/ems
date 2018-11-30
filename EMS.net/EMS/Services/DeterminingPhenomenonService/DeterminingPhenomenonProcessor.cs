@@ -66,11 +66,11 @@ namespace DeterminingPhenomenonService
         public bool Proccess()
         {
             //если невалидно, то говорим пользователю о том, что невозможно обнаружить явление и подсчитать его характеристики.
-            _logger.Info($"Сервис обнаружения явления. Текущее действие: валидация облачности.");
+            _logger.Info($"Сервис обнаружения явления. Статус: валидация облачности.");
             var isValidCloudy = ValidationHelper.CloudValidation(_dataFolders, _polygon, _pathToCloudMaskTiffFile,
                 _pathToCloudMaskPngFile);
-            //if (!isValidCloudy)
-            //    return false;
+            if (!isValidCloudy)
+                _logger.Info($"Сервис обнаружения явления. Статус: валидация на облачность не пройдена. Явление не обнаружено.");
 
             var clusteringManager = new ClusteringManager();
 
@@ -112,8 +112,10 @@ namespace DeterminingPhenomenonService
                     else
                     {
                         _pathToClustersFolder = $@"{folder}{FilenamesConstants.PathToClustersFolder}";
+                        _logger.Info($"Сервис обнаружения явления. Текущее действие: кластеризация данных {string.Join(",", necessaryDataFiles)}");
                         clusters = clusteringManager.Process(isodataPointsReader, new NdviIsodataProfile());
                         JsonHelper.Serialize($"{_pathToClustersFolder}{jsonClustersFilename}", clusters);
+                        _logger.Info($"Сервис обнаружения явления. Текущее действие: данные прошли кластеризацию. Кол-во кластеров: {clusters.Count}");
                     }
 
                     var temporaryData = new TemporaryData
@@ -133,7 +135,7 @@ namespace DeterminingPhenomenonService
         private bool CalculateDynamic(List<TemporaryData> temporaryDatas,
             byte[] cloudMask, PhenomenonType phenomenon)
         {
-
+            _logger.Info($"Сервис обнаружения явления. Статус: определение динамики изменений за {temporaryDatas.Count} лет");
             SetTemporaryCuttedBuffers(temporaryDatas);
 
             if (!ValidationHelper.ValidateBuffers(temporaryDatas.Select(datas => datas.Buffers)))
@@ -191,9 +193,11 @@ namespace DeterminingPhenomenonService
 
             if (amountDynamicPoints < 30)
             {
+                _logger.Info($"Сервис обнаружения явления. Статус: динамика измнений обнаружена, но имеет очень слабое воздействие на выбранную область.");
                 return false;
             }
 
+            _logger.Info($"Сервис обнаружения явления. Статус: отрисовка результатов динамики.");
             DrawDynamicResult(dymanicMask, width, heigth);
             SaveDynamicGeoPoints();
 

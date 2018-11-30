@@ -13,7 +13,7 @@ namespace DeterminingPhenomenonService.Helpers
     {
         public static CuttedImageInfo GetCuttedImageInfoByPolygon(string filename, GeographicPolygon polygon)
         {
-            CuttedImageInfo cuttedImageInfo = new CuttedImageInfo();
+            CuttedImageInfo cuttedImageInfo;
 
             using (var ds = Gdal.Open(filename, Access.GA_ReadOnly))
             {
